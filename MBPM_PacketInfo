@@ -1,0 +1,9 @@
+{
+	"PacketName":"MBTouhou",
+	"Version":"0.1.0",
+	"Attributes":["Embeddable"],
+	"OutputConfigurations":["StaticDebug","StaticRelease"],
+	"OutputTargetNames":{"StaticRelease":"MBTouhou_SR","StaticDebug":"MBTouhou_SD"},
+	"ExportedExecutableTargets":["MBTouhou"],
+	"Dependancies":["MBUtility"],
+}

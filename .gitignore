@@ -1,0 +1,11 @@
+/.vs/
+/Resources/
+/_Libs/
+/*/*.dll
+/out/
+/*.dll
+/*/*.exe
+/*/*.lib
+/*/*.ilk
+/*/*.pdb
+/MBPM_Builds/
