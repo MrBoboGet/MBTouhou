@@ -143,7 +143,7 @@ void JohanRightToLeftAttack::Update()
 			}
 			else
 			{
-				Object->Position.x = JohanRange * Math::Sign(Direction);
+				Object->Position.x = JohanRange * MBMath::sign(Direction);
 				Direction *= -1;
 			}
 			//kod som styr skapandet av projektiler
@@ -234,7 +234,7 @@ void JohanCirclingBulletAttack::Update()
 					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(Object->Position, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), MovingCircleBullet)));
 					BulletToCreate->Rotation = (360 / NumberOfBullets) * i;
 					BulletToCreate->Direction = 270;
-					BulletToCreate->Position = CircleCenter + Vector2D(Math::Cos(BulletToCreate->Rotation + 90 - 90 * RotationDirection), Math::Sin(BulletToCreate->Rotation + 90 - 90 * RotationDirection)) * CircleRadius;
+					BulletToCreate->Position = CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(BulletToCreate->Rotation + 90 - 90 * RotationDirection)), std::sin(MBMath::DegreeToRadian(BulletToCreate->Rotation + 90 - 90 * RotationDirection))) * CircleRadius;
 				}
 			}
 		}

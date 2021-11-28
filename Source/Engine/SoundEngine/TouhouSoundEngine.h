@@ -1,5 +1,5 @@
 #pragma once
-#include <fmod.hpp>
+//#include <fmod.hpp>
 #include <string>
 #include <unordered_map>
 class TouhouSoundEngine;
@@ -7,7 +7,7 @@ class TouhouSoundEngineChannel
 {
 	friend class TouhouSoundEngine;
 private:
-	FMOD::Channel* EngineChannelPointer = nullptr;
+	//FMOD::Channel* EngineChannelPointer = nullptr;
 public:
 	TouhouSoundEngineChannel();
 	~TouhouSoundEngineChannel();
@@ -26,7 +26,7 @@ public:
 	bool DynamicallyAllocatedAndTemporary = false;
 	void PlaySound();
 	void PlaySound(float PercentOfMaxVolume);
-	bool IsPlaying();
+	//bool IsPlaying();
 	void SetPause(bool Valuer);
 	TouhouSoundEngine* GetActiveEngine();
 	//void SetVolume(float Volume);
@@ -39,8 +39,8 @@ public:
 class TouhouSoundEngine
 {
 private:
-	FMOD::System* FmodSystem = nullptr;
-	std::unordered_map<std::string, FMOD::Sound*> CachedSounds = std::unordered_map<std::string, FMOD::Sound*>(0);
+	//FMOD::System* FmodSystem = nullptr;
+	//std::unordered_map<std::string, FMOD::Sound*> CachedSounds = std::unordered_map<std::string, FMOD::Sound*>(0);
 	static TouhouSoundEngine* ActiveEngine;
 public:
 	friend TouhouSoundEngine* TouhouSoundEngineSoundObject::GetActiveEngine();

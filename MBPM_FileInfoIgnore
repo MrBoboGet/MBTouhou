@@ -1,0 +1,8 @@
+Excludes:
+/.git/
+/.vs/
+/_Libs/
+/out/
+/fmod.dll/
+/fmodL.dll/
+/glew32.dll/

@@ -74,7 +74,7 @@ public:
 	OlikheterAvRektangel(Vector2D Position, Vector2D Hitboxen, float Rotation)
 	{
 		//kod som faktiskt skapar olikheterna
-		if(Math::FMod(Rotation,90) == 0)
+		if(std::fmod(Rotation,90) == 0)
 		{
 			//nu kommer det existera saker som är parallella med y axeln, vilket vi inte gillar
 			//därför sätter vi parallel flagen här och lutningen här då vi vet att det blir undantagsfall 
@@ -116,7 +116,7 @@ public:
 			Olikheter[3].Konstant = Sign24 * (Hitboxen.x / 2) + Position.y;
 			*/
 
-			float RotationUnder360 = Math::FMod(Rotation, 360);
+			float RotationUnder360 = std::fmod(Rotation, 360);
 			//alternativ, vi på samma sätt som under deassocierar dem med deras "äkta" position och kollar enbart vilken som är parallel med y axeln
 			bool Linje13Parallel = true;
 			if (RotationUnder360 == 0 || RotationUnder360 == 180 || RotationUnder360 == 360)
@@ -332,8 +332,8 @@ bool CollisionClass::Rectangle_Collision(Vector2D a_position,Vector2D a_Hitbox, 
 	
 	
 	//nu vill vi även assigna punkterna värden
-	float a_Diagonal = Math::sqrt(a_Hitbox.x * a_Hitbox.x + a_Hitbox.y * a_Hitbox.y);
-	float b_Diagonal = Math::sqrt(b_Hitbox.x * b_Hitbox.x + b_Hitbox.y * b_Hitbox.y);
+	float a_Diagonal = std::sqrt(a_Hitbox.x * a_Hitbox.x + a_Hitbox.y * a_Hitbox.y);
+	float b_Diagonal = std::sqrt(b_Hitbox.x * b_Hitbox.x + b_Hitbox.y * b_Hitbox.y);
 	for (int i = 0; i < a_Vertexes.size();i++)
 	{
 		//skillnaden från mittpunkten är diagonal som hypotenusa, med vinkel 45 + 90*i

@@ -146,7 +146,6 @@ set(PROJECT_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/SpelObjekt/Player_Attack_BigShot.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/SpelObjekt.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Texture.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Update.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Vector2D.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/VertexArray.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/VertexBuffer.h"

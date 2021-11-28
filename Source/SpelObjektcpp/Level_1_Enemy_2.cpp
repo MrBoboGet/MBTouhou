@@ -6,7 +6,7 @@
 #include<math.h>
 #include <Hitbox.h>
 #include <Engine.h>
-
+#include <MBUtility/MBMath.h>
 //extern std::vector<GameObject*> ActiveGameObjects;
 //extern std::vector<GameObject*> DeletedGameObjects;
 Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg) : Enemy("Fiende2.png", 1.6)
@@ -65,7 +65,7 @@ void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 	//std::cout << Deriv << " "<<Pointern->Timer<<  std::endl;
 
 	//blev lite lat och bara använde ett library, får kolla upp hur det faktiskt funkar sen
-	Pointern->Rotation = (Pointern->Direction + -1*(180.0f / Math::Pi) * std::asin(Deriv / (std::sqrt((Pointern->Speed)*(Pointern->Speed) + Deriv * Deriv)))-90);
+	Pointern->Rotation = (Pointern->Direction + -1*(180.0f / MBMath::Pi) * std::asin(Deriv / (std::sqrt((Pointern->Speed)*(Pointern->Speed) + Deriv * Deriv)))-90);
 	//std::cout << Pointern->Direction<<" " << Pointern->Rotation << " " << (180.0f / Math::Pi) * asin(Deriv / (Math::sqrt((Pointern->Speed)*Pointern->Speed + Deriv * Deriv)))<<" "<<Deriv << std::endl;
 	//nu ska vi lägga till så det blir rätt ortogonalt
 	Pointern->Position.x += std::cos(MBMath::DegreeToRadian(Pointern->Direction - 90)) * Deriv;

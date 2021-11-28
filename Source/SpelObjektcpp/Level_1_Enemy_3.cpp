@@ -72,8 +72,8 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 		Kula->Rotation = Kula->Direction-90;
 		Kula->Timer += 1;
 	}
-	Kula->Position.x += Math::Cos(Kula->Direction) * Kula->Speed;
-	Kula->Position.y += Math::Sin(Kula->Direction) * Kula->Speed;
+	Kula->Position.x += std::cos(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
+	Kula->Position.y += std::sin(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
 
 	//uppdaterar med bra kolliksion kod
 	if (CollisionClass::Rectangle_Collision(Spelaren->Position, Spelaren->Hitbox, Spelaren->Rotation, Kula->Position, Kula->Hitbox, Kula->Rotation))

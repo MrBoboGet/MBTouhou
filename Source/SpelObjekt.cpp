@@ -42,8 +42,8 @@ void Player_Bullet::Update()
 {
 	float X_Change = 0;
 	float Y_Change = 0;
-	X_Change += Math::Cos(Direction) * Speed;
-	Y_Change += Math::Sin(Direction) * Speed;
+	X_Change += std::cos(MBMath::DegreeToRadian(Direction)) * Speed;
+	Y_Change += std::sin(MBMath::DegreeToRadian(Direction)) * Speed;
 
 	Position.x += X_Change;
 	Position.y += Y_Change;
@@ -170,8 +170,8 @@ void Player::Update()
 	//std::cout << X_Change << " " << Y_Change << std::endl;
 	if (X_Change !=0 && Y_Change!=0)
 	{
-		X_Change /= Math::sqrt(2);
-		Y_Change /= Math::sqrt(2);
+		X_Change /= std::sqrt(2);
+		Y_Change /= std::sqrt(2);
 	}
 	//Här kör vi koden som gör att spelaren kan skjuta
 	if(Key_Z)
@@ -230,7 +230,7 @@ void Player::Update()
 	}
 	if (Invincible_Timer > 0)
 	{
-		this->Renderer.ColorKoef.A = std::abs(Math::Sin(Invincible_Timer * 6)) * 0.5 + 0.3;
+		this->Renderer.ColorKoef.A = std::abs(std::sin(MBMath::DegreeToRadian(Invincible_Timer * 6))) * 0.5 + 0.3;
 	}
 	else
 	{
@@ -396,8 +396,8 @@ void Enemy_Bullet::Update()
 	float X_Change = 0;
 	float Y_Change = 0;
 	//beronde på vinkel så ändrar vi nudessa värden
-	X_Change += Math::Cos(Direction) * Speed;
-	Y_Change += Math::Sin(Direction) * Speed;
+	X_Change += std::cos(MBMath::DegreeToRadian(Direction)) * Speed;
+	Y_Change += std::sin(MBMath::DegreeToRadian(Direction)) * Speed;
 
 	//std::cout << Position.x << " " << Position.y << " " << Math::Sin(270);
 	//std::cout << "Kula existerar" << std::endl;
@@ -520,7 +520,7 @@ void Level1::Update()
 			Texture::DrawTexture("Backgrund3.png", Vector2D(0, (-4.5 + 18) - Level_1_BGPosition), 16, 36, Layer2);
 			//test
 			Level_1_BGPosition += Level_1_BGSpeed;
-			Level_1_BGPosition = Math::FMod(Level_1_BGPosition, 27);
+			Level_1_BGPosition = std::fmod(Level_1_BGPosition, 27);
 			if (Level1_Timer == 1)
 			{
 				//vi vill testa den nya fienden

@@ -192,24 +192,24 @@ void TouhouEngine::UpdateSoundSystem()
 }
 void TouhouEngine::CleanupFinishedSounds()
 {
-	int SizeOfSoundObjects = SoundObjects.size();
-	std::vector<int> IndexOfSoundsToRemove = std::vector<int>(0);
-	for (size_t i = 0; i < SizeOfSoundObjects; i++)
-	{
-		if (SoundObjects[i]->DynamicallyAllocatedAndTemporary)
-		{
-			if (!SoundObjects[i]->IsPlaying())
-			{
-				IndexOfSoundsToRemove.push_back(i);
-			}
-		}
-	}
-	int SizeOfSoundToRemove = IndexOfSoundsToRemove.size();
-	for (size_t i = 0; i < SizeOfSoundToRemove; i++)
-	{
-		delete SoundObjects[i];
-		SoundObjects.erase(SoundObjects.begin() + IndexOfSoundsToRemove[i] - i);
-	}
+	//int SizeOfSoundObjects = SoundObjects.size();
+	//std::vector<int> IndexOfSoundsToRemove = std::vector<int>(0);
+	//for (size_t i = 0; i < SizeOfSoundObjects; i++)
+	//{
+	//	if (SoundObjects[i]->DynamicallyAllocatedAndTemporary)
+	//	{
+	//		if (!SoundObjects[i]->IsPlaying())
+	//		{
+	//			IndexOfSoundsToRemove.push_back(i);
+	//		}
+	//	}
+	//}
+	//int SizeOfSoundToRemove = IndexOfSoundsToRemove.size();
+	//for (size_t i = 0; i < SizeOfSoundToRemove; i++)
+	//{
+	//	delete SoundObjects[i];
+	//	SoundObjects.erase(SoundObjects.begin() + IndexOfSoundsToRemove[i] - i);
+	//}
 }
 void TouhouEngine::Mainloop()
 {
