@@ -5,5 +5,5 @@
 	"OutputConfigurations":["StaticDebug","StaticRelease"],
 	"OutputTargetNames":{"StaticRelease":"MBTouhou_SR","StaticDebug":"MBTouhou_SD"},
 	"ExportedExecutableTargets":["MBTouhou"],
-	"Dependancies":["MBUtility"],
+	"Dependancies":["MBUtility","MrBoboGraphicsEngine"]
 }

@@ -2,6 +2,14 @@ project(MBTouhou)
 set(PROJECT_NAME "MBTouhou")
 ##BEGIN MBPM_VARIABLES
 set(MBPM_DEPENDENCIES 
+	MrBoboGraphicsEngine
+	stb
+	assimp
+	irrxml
+	zlib
+	glfw
+	gl3w
+	MBUtility
 )
 set(MBPM_TARGET_EXTPACKET_LIBRARIES )
 set(MBPM_TARGET_COMPILE_OPTIONS )
@@ -11,6 +19,9 @@ set(MBPM_TARGET_LINK_OPTIONS )
 #MBPM_TARGET_COMPILE_OPTIONS
 #MBPM_TARGET_LINK_OPTIONS
 #Environment variables MBPM_PACKETS_INSTALL_DIRECTORY
+set(MBPM_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+set(MBPM_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+set(MBPM_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 macro(MBPM_UpdateLibraries TargetToUpdate LinkType BuildType)
 	set(MBPM_TARGET_EXTPACKET_LIBRARIES "")
 	foreach(PACKET IN LISTS MBPM_DEPENDENCIES)
@@ -62,18 +73,21 @@ macro(MBPM_UpdateOutput TargetToUpdate)
 endmacro()
 
 macro(MBPM_SetTargetCompileOptions TargetToUpdate LinkType BuildType)
+	set(CMAKE_CXX_FLAGS " ")
+	set(CMAKE_CXX_FLAGS_DEBUG " ")
+	set(CMAKE_CXX_FLAGS_RELEASE " ")
+	set(CMAKE_C_FLAGS " ")
+	set(CMAKE_C_FLAGS_DEBUG " ")
+	set(CMAKE_C_FLAGS_RELEASE " ")
+
 	if(${BuildType} STREQUAL "DEBUG" AND ${LinkType} STREQUAL "STATIC")
-		set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
-		if(WIN32)
-			set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-		endif()
+		set(NEW_TARGET_COMPILE_OPTIONS "${MBPM_CXX_FLAGS} ${MBPM_CXX_FLAGS_DEBUG}")
 	else()
-		set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
-		if(WIN32)
-			set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-		endif()
+		set(NEW_TARGET_COMPILE_OPTIONS "${MBPM_CXX_FLAGS} ${MBPM_CXX_FLAGS_RELEASE}")
 	endif()
-	message("Used build flags: " ${CMAKE_CXX_FLAGS})
+	string(REPLACE " " ";" NEW_TARGET_COMPILE_OPTIONS_LIST ${NEW_TARGET_COMPILE_OPTIONS})
+	target_compile_options(${TargetToUpdate} PRIVATE ${NEW_TARGET_COMPILE_OPTIONS_LIST})
+	message(${TargetToUpdate} " Compiled with follwing flags: ""${NEW_TARGET_COMPILE_OPTIONS_LIST}")
 endmacro()
 
 macro(MBPM_LinkTargetPacketLibraries Target)
@@ -84,12 +98,7 @@ macro(MBPM_SetTargetIncludeDirectories Target)
 	target_include_directories(${Target} PUBLIC 
 	"${CMAKE_CURRENT_SOURCE_DIR}/"
 	"$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/SpelObjekt/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Source/Engine/SoundEngine/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Source/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Source/SpelObjektcpp/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/Includes/"
+	"$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/MBUtility/"
 	)
 endmacro()
 
@@ -172,21 +181,34 @@ set(COMMON_STATIC_LIBRARIES
 	"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/glfw3.lib"
 	"opengl32.lib"
 )
+
+set(COMMON_INCLUDE_DIRECTORIES
+	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/SpelObjekt/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Source/Engine/SoundEngine/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Source/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Source/SpelObjektcpp/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/Includes/"
+)
+
 set(COMMON_LIBRARIES ${COMMON_STATIC_LIBRARIES} ${COMMON_DYNAMIC_LIBRARIES})
 
 add_library(MBTouhou_SD STATIC ${COMMON_FILES})
 MBPM_ApplyTargetConfiguration("MBTouhou_SD" "STATIC" "DEBUG")
 target_compile_features("MBTouhou_SD" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou_SD" ${COMMON_LIBRARIES})
+target_include_directories("MBTouhou_SD" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
 
 add_library(MBTouhou_SR STATIC ${COMMON_FILES})
 MBPM_ApplyTargetConfiguration("MBTouhou_SR" "STATIC" "RELEASE")
 target_compile_features("MBTouhou_SR" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou_SR" ${COMMON_LIBRARIES})
+target_include_directories("MBTouhou_SR" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
 
 add_executable(MBTouhou ${COMMON_FILES})
 MBPM_ApplyTargetConfiguration("MBTouhou" "STATIC" "RELEASE")
 target_compile_features("MBTouhou" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou" ${COMMON_LIBRARIES})
+target_include_directories("MBTouhou" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
 message(${COMMON_LIBRARIES})
 

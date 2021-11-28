@@ -1,4 +1,4 @@
-#include<EgenUtility\MinaStringOperations.h>
+#include<EgenUtility/MinaStringOperations.h>
 std::vector<std::string> Split(std::string UrsprungsStringen, std::string SplitStringen)
 {
 	std::vector<std::string> Result = std::vector<std::string>(0);

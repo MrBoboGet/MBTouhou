@@ -18,11 +18,10 @@
 #include <Hitbox.h>
 #include <Engine.h>
 #include<MainMenu.h>
-#include <fmod.hpp>
 #include <filesystem>
 //vet itne varför denna behövs
 //TODO Ha johan som boss för banan
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+//pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 int qwerty = glfwInit();
 int main(void)
 {
