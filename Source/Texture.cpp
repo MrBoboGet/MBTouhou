@@ -242,7 +242,7 @@ void Texture::DrawCall(DrawObject* Objectet)
 		TouhouEngine::LoadedTextures[Texturen]->Bind();
 
 		//ny grej, vi specificerar vilken shader vi använder
-		Shader* ShaderToUse = TouhouEngine::LoadedShaders["SpriteShader"];
+		Shader* ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
 		ShaderToUse->Bind();
 		ShaderToUse->SetUniform1i("u_Texture", 0);
 		ShaderToUse->SetUniform4f("ColorKoef",1,1,1, 1);
@@ -307,7 +307,7 @@ void Texture::DrawCall(DrawObject* Objectet)
 			GLCall(glBindBuffer(GL_ARRAY_BUFFER, DrawLineVbo));
 		}
 
-		GLCall(Shader * ShaderToUse = TouhouEngine::LoadedShaders["MonochromeShader"]);
+		Shader * ShaderToUse = TouhouEngine::GetNamedShader("MonochromeShader");
 		GLCall(ShaderToUse->Bind());
 		GLCall(ShaderToUse->SetUniform4f("u_Color", 1, 0, 0, 1));
 

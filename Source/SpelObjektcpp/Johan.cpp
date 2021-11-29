@@ -332,13 +332,23 @@ void Johan::Update()
 					CurrentAttackIndex = (CurrentAttackIndex + 1) % Attacker.size();
 					//vad händer när´ett spellcard är finished
 					std::vector<GameObject*> BulletsToDestroy = {};
-					for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+					ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+					while (ObjectIterator.HasEnded() == false)
 					{
-						if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+						if (ObjectIterator->GetTag() == "Enemy_Bullet")
 						{
-							BulletsToDestroy.push_back(TouhouEngine::ActiveGameObjects[i]);
+							BulletsToDestroy.push_back(*ObjectIterator);
 						}
+						ObjectIterator++;
 					}
+					
+					//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+					//{
+					//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+					//	{
+					//		BulletsToDestroy.push_back(TouhouEngine::ActiveGameObjects[i]);
+					//	}
+					//}
 					for (size_t i = 0; i < BulletsToDestroy.size(); i++)
 					{
 						TouhouEngine::Destroy(BulletsToDestroy[i]);
@@ -353,13 +363,22 @@ void Johan::Update()
 		{
 			//försör alla kulor
 			std::vector<GameObject*> BulletsToDestroy = {};
-			for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+			while (ObjectIterator.HasEnded() == false)
 			{
-				if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+				if (ObjectIterator->GetTag() == "Enemy_Bullet")
 				{
-					BulletsToDestroy.push_back(TouhouEngine::ActiveGameObjects[i]);
+					BulletsToDestroy.push_back(*ObjectIterator);
 				}
+				ObjectIterator++;
 			}
+			//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//{
+			//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+			//	{
+			//		BulletsToDestroy.push_back(TouhouEngine::ActiveGameObjects[i]);
+			//	}
+			//}
 			for (size_t i = 0; i < BulletsToDestroy.size(); i++)
 			{
 				TouhouEngine::Destroy(BulletsToDestroy[i]);

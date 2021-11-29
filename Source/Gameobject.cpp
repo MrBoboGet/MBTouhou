@@ -93,7 +93,7 @@ void GameObject::Render()
 	Renderer.ObjectTexture.Bind();
 
 	//rendern att använda
-	auto ShaderToUse = TouhouEngine::LoadedShaders["SpriteShader"];
+	auto ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
 	ShaderToUse->Bind();
 	ShaderToUse->SetUniform1i("u_Texture", 0);
 	ShaderToUse->SetUniform4f("ColorKoef", this->Renderer.ColorKoef.R, this->Renderer.ColorKoef.G, this->Renderer.ColorKoef.B, this->Renderer.ColorKoef.A);

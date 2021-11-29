@@ -77,10 +77,10 @@ private:
 	static GLFWwindow* CurrentWindow;
 
 	static std::vector<GameObject*> DeletedGameObjects;
-
-public:
 	static std::vector<GameObject*> ActiveGameObjects;
 	static std::unordered_map<std::string, Shader*> LoadedShaders;
+
+public:
 	static std::unordered_map<std::string, Texture*> LoadedTextures;
 
 	static std::vector<DrawObject*> DrawCalls;
@@ -104,7 +104,9 @@ public:
 	static void _GetWindowSize(int* Width,int* Height);
 	static ActiveObjectIterator GetActiveObjectsIterator();
 	static void ClearObjects();
-	
+	static Shader* GetNamedShader(std::string const& ShaderName);
+
+
 	static void DebugLog(std::string TextToLog);
 
 	static Shader* LoadShader(std::string ShaderName,std::string VertexFilepath,std::string FragmentFilepath);

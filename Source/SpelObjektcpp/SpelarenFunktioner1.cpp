@@ -38,17 +38,30 @@ void Player::Player_Teleport()
 				Position = Vector2D(Position.x + Direction.x * TeleportDistance, Position.y + Direction.y * TeleportDistance);
 				//nu förstör vi kulor i en viss radie
 				//detta är verkligen inte självklart, men det vi gör nu är att vi loopar igenom alla objekt, kollar om dem är av en enemy kula, och är den nära nog förstör vi den
-				for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+				while (ObjectIterator.HasEnded() == false)
 				{
-					if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+					if (ObjectIterator->GetTag() == "Enemy_Bullet")
 					{
-						if (Position.DistanceToPoint(TouhouEngine::ActiveGameObjects[i]->Position) <= TeleportBulletDestructionRadius)
+						if (Position.DistanceToPoint(ObjectIterator->Position) <= TeleportBulletDestructionRadius)
 						{
 							//nu ska vi förstöra föremålet
-							TouhouEngine::Destroy(TouhouEngine::ActiveGameObjects[i]);
+							TouhouEngine::Destroy(*ObjectIterator);
 						}
 					}
+					ObjectIterator++;
 				}
+				//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//{
+				//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+				//	{
+				//		if (Position.DistanceToPoint(TouhouEngine::ActiveGameObjects[i]->Position) <= TeleportBulletDestructionRadius)
+				//		{
+				//			//nu ska vi förstöra föremålet
+				//			TouhouEngine::Destroy(TouhouEngine::ActiveGameObjects[i]);
+				//		}
+				//	}
+				//}
 			}
 		}
 		KlickadeSpaceInnan = true;

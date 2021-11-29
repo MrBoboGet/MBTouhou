@@ -446,12 +446,16 @@ ActiveObjectIterator TouhouEngine::GetActiveObjectsIterator()
 }
 void TouhouEngine::ClearObjects()
 {
-	for (GameObject* ObjectToDelete : TouhouEngine::ActiveGameObjects)
+	std::vector<GameObject*> ObjectsToDelete = TouhouEngine::ActiveGameObjects;
+	for (GameObject* ObjectToDelete : ObjectsToDelete)
 	{
 		TouhouEngine::Destroy(ObjectToDelete);
 	}
 }
-
+Shader* TouhouEngine::GetNamedShader(std::string const& ShaderName)
+{
+	return(TouhouEngine::LoadedShaders[ShaderName]);
+}
 void DebugLogWrite(std::string TextToLog)
 {
 

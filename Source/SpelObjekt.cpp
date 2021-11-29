@@ -48,32 +48,58 @@ void Player_Bullet::Update()
 	Position.x += X_Change;
 	Position.y += Y_Change;
 
-	int PositionIListan = 0;
+
 	int Collision = 0;
-	for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+	while (ObjectIterator.HasEnded() == false)
 	{
-		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
+		if (ObjectIterator->GetTag() == "Enemy")
 		{
-			if (CollisionClass::Rectangle_Collision(Position,Hitbox,Rotation,TouhouEngine::ActiveGameObjects[i]->Position, TouhouEngine::ActiveGameObjects[i]->Hitbox, TouhouEngine::ActiveGameObjects[i]->Rotation))
+			if (CollisionClass::Rectangle_Collision(Position, Hitbox, Rotation, ObjectIterator->Position, ObjectIterator->Hitbox, ObjectIterator->Rotation))
 			{
 				//nu vet vi att vi har kolliderat med ett föremål med tagen fiende
 				//det finns 2 sätt att göra det här, 1, låta koden som skadar fienden vara i den eller låta den vara här
 				//jag låter den vara här eftersom det blir enklare att hålla koll på och mindre copy paste
-				TouhouEngine::ActiveGameObjects[i]->HP -= Damage;
+				ObjectIterator->HP -= Damage;
 				//borde vara baserat på en damage variabel
 				Collision = 1;
-				for (int i = 0;i < TouhouEngine::ActiveGameObjects.size(); i++)
-				{
-					if (TouhouEngine::ActiveGameObjects[i] == this)
-					{
-						PositionIListan = i;
-						break;
-					}
-				}
+				//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//{
+				//	if (TouhouEngine::ActiveGameObjects[i] == this)
+				//	{
+				//		PositionIListan = i;
+				//		break;
+				//	}
+				//}
 				break;
 			}
 		}
+		ObjectIterator++;
 	}
+	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//{
+	//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
+	//	{
+	//		if (CollisionClass::Rectangle_Collision(Position,Hitbox,Rotation,TouhouEngine::ActiveGameObjects[i]->Position, TouhouEngine::ActiveGameObjects[i]->Hitbox, TouhouEngine::ActiveGameObjects/[i]-/>Rotation))
+	//		{
+	//			//nu vet vi att vi har kolliderat med ett föremål med tagen fiende
+	//			//det finns 2 sätt att göra det här, 1, låta koden som skadar fienden vara i den eller låta den vara här
+	//			//jag låter den vara här eftersom det blir enklare att hålla koll på och mindre copy paste
+	//			TouhouEngine::ActiveGameObjects[i]->HP -= Damage;
+	//			//borde vara baserat på en damage variabel
+	//			Collision = 1;
+	//			for (int i = 0;i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//			{
+	//				if (TouhouEngine::ActiveGameObjects[i] == this)
+	//				{
+	//					PositionIListan = i;
+	//					break;
+	//				}
+	//			}
+	//			break;
+	//		}
+	//	}
+	//}
 	if (Collision == 1)
 	{
 		TouhouEngine::Destroy(this);
@@ -262,14 +288,23 @@ void Player::Update()
 		Bombs -= 1;
 		//spela ljudet
 		BombSound.PlaySound(0.1);
-		for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+		ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+		while (ObjectIterator.HasEnded() == false)
 		{
-			//std::cout << ActiveGameObjects[i]->GetTag() << std::endl;
-			if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+			if (ObjectIterator->GetTag() == "Enemy_Bullet")
 			{
-				KulorAttDeleta.push_back(TouhouEngine::ActiveGameObjects[i]);
+				KulorAttDeleta.push_back(*ObjectIterator);
 			}
+			ObjectIterator++;
 		}
+		//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+		//{
+		//	//std::cout << ActiveGameObjects[i]->GetTag() << std::endl;
+		//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+		//	{
+		//		KulorAttDeleta.push_back(TouhouEngine::ActiveGameObjects[i]);
+		//	}
+		//}
 	}
 	for (int i = 0; i < KulorAttDeleta.size(); i++)
 	{
@@ -297,17 +332,28 @@ void Player::Update()
 		Position.y = -4.5;
 	}
 	//nu behöver vi hitta banan variabeln
-	int Level_Position;
-	for (int i = 0; i < TouhouEngine::ActiveGameObjects.size();i++)
+	//int Level_Position;
+	GameObject* LevelPointer = nullptr;
+	ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+	while (ObjectIterator.HasEnded() == false)
 	{
-		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Level")
+		if (ObjectIterator->GetTag() == "Level")
 		{
-			Level_Position = i;
+			LevelPointer = *ObjectIterator;
 			break;
 		}
+		ObjectIterator++;
 	}
-	ASSERT(Level_Position >= 0);
-	void* Leveln = TouhouEngine::ActiveGameObjects[Level_Position];
+	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size();i++)
+	//{
+	//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Level")
+	//	{
+	//		Level_Position = i;
+	//		break;
+	//	}
+	//}
+	ASSERT(LevelPointer != nullptr);
+	void* Leveln = LevelPointer;
 	Level* Leveln_Object{ static_cast<Level*>(Leveln)};
 	if (Position.x > (8-Leveln_Object->X_Limit))
 	{
@@ -602,13 +648,22 @@ void Level1::Update()
 			if (EndBossSpawned == false)
 			{
 				int NumberOfActiveEnemies = 0;
-				for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+				while(ObjectIterator.HasEnded() == false)
 				{
-					if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
+					if (ObjectIterator->GetTag() == "Enemy")
 					{
 						NumberOfActiveEnemies += 1;
 					}
+					ObjectIterator++;
 				}
+				//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//{
+				//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
+				//	{
+				//		NumberOfActiveEnemies += 1;
+				//	}
+				//}
 				if (NumberOfActiveEnemies == 0)
 				{
 					//ska åka till han kommer till 3
@@ -632,14 +687,24 @@ void Level1::Update()
 			else
 			{
 				bool JohanExists = false;
-				for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+				while (ObjectIterator.HasEnded() == false)
 				{
-					if (TouhouEngine::ActiveGameObjects[i]->GetName() == "Johan")
+					if (ObjectIterator->GetName() == "Johan")
 					{
 						JohanExists = true;
 						break;
 					}
+					ObjectIterator++;
 				}
+				//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//{
+				//	if (TouhouEngine::ActiveGameObjects[i]->GetName() == "Johan")
+				//	{
+				//		JohanExists = true;
+				//		break;
+				//	}
+				//}
 				if (!JohanExists)
 				{
 					//kör endgame kod
@@ -649,13 +714,21 @@ void Level1::Update()
 						LevelISFinised = true;
 						//förstör alla object utom level
 						std::vector<GameObject*> ObjectAttDelete = {};
-						for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+						while (ObjectIterator.HasEnded() == false)
 						{
-							if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "Level")
+							if (ObjectIterator->GetTag() != "Level")
 							{
-								ObjectAttDelete.push_back(TouhouEngine::ActiveGameObjects[i]);
+								ObjectAttDelete.push_back(*ObjectIterator);
 							}
+							ObjectIterator++;
 						}
+						//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+						//{
+						//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "Level")
+						//	{
+						//		ObjectAttDelete.push_back(TouhouEngine::ActiveGameObjects[i]);
+						//	}
+						//}
 						for (int i = 0; i < ObjectAttDelete.size(); i++)
 						{
 							TouhouEngine::Destroy(ObjectAttDelete[i]);
@@ -682,13 +755,23 @@ void Level1::Update()
 		if (PlayerWasAlive == true)
 		{
 			std::vector<GameObject*> ObjectAttDelete = {};
-			for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+			
+			while (ObjectIterator.HasEnded() == false)
 			{
-				if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "Level")
+				if (ObjectIterator->GetTag() != "Level")
 				{
-					ObjectAttDelete.push_back(TouhouEngine::ActiveGameObjects[i]);
+					ObjectAttDelete.push_back(*ObjectIterator);
 				}
+				ObjectIterator++;
 			}
+			//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//{
+			//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "Level")
+			//	{
+			//		ObjectAttDelete.push_back(TouhouEngine::ActiveGameObjects[i]);
+			//	}
+			//}
 			for (int i = 0; i < ObjectAttDelete.size(); i++)
 			{
 				TouhouEngine::Destroy(ObjectAttDelete[i]);
