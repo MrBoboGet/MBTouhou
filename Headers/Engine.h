@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <TouhouSoundEngine.h>
 #include <MBUtility/MBMath.h>
+#include <memory>
 class ActiveObjectIterator
 {
 private:
@@ -78,8 +79,8 @@ private:
 
 	static std::vector<GameObject*> DeletedGameObjects;
 	static std::vector<GameObject*> ActiveGameObjects;
-	static std::unordered_map<std::string, Shader*> LoadedShaders;
-	static std::unordered_map<std::string, Texture*> LoadedTextures;
+	static std::unordered_map<std::string, std::shared_ptr<Shader>> LoadedShaders;
+	static std::unordered_map<std::string, std::shared_ptr<Texture>> LoadedTextures;
 
 public:
 
@@ -104,14 +105,14 @@ public:
 	static void _GetWindowSize(int* Width,int* Height);
 	static ActiveObjectIterator GetActiveObjectsIterator();
 	static void ClearObjects();
-	static Shader* GetNamedShader(std::string const& ShaderName);
-	static Texture* GetNamedTexture(std::string const& TextureName);
-	static Texture* LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
+	static std::shared_ptr<Shader> GetNamedShader(std::string const& ShaderName);
+	static std::shared_ptr<Texture> GetNamedTexture(std::string const& TextureName);
+	static std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
 	static bool NamedTextureLoaded(std::string const& TextureName);
 
 	static void DebugLog(std::string TextToLog);
 
-	static Shader* LoadShader(std::string ShaderName,std::string VertexFilepath,std::string FragmentFilepath);
+	static std::shared_ptr<Shader> LoadShader(std::string ShaderName,std::string VertexFilepath,std::string FragmentFilepath);
 	
 	static void PlaySound(std::string Path,float Volume);
 	static void PlaySound(std::string, float RelativeVolume, std::string Tag);

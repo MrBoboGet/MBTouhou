@@ -1,8 +1,8 @@
 #include <Engine.h>
 #include <ctime>
 #include <iostream>
-std::unordered_map<std::string, Shader*> TouhouEngine::LoadedShaders = {};
-std::unordered_map<std::string, Texture*> TouhouEngine::LoadedTextures = {};
+std::unordered_map<std::string, std::shared_ptr<Shader>> TouhouEngine::LoadedShaders = {};
+std::unordered_map<std::string, std::shared_ptr<Texture>> TouhouEngine::LoadedTextures = {};
 GLFWwindow* TouhouEngine::CurrentWindow = nullptr;
 
 std::vector<GameObject*> TouhouEngine::ActiveGameObjects = {};
@@ -73,9 +73,9 @@ GameObject* TouhouEngine::FindObjectWithTag(std::string const& Tag)
 	//nu har alltså inget namn hittats, detta borde egentligen krascha programmet
 	return(nullptr);
 }
-Shader* TouhouEngine::LoadShader(std::string ShaderName, std::string VertexFilepath, std::string FragmentFilepath)
+std::shared_ptr<Shader> TouhouEngine::LoadShader(std::string ShaderName, std::string VertexFilepath, std::string FragmentFilepath)
 {
-	Shader* NyaShadern = new Shader("Resources/Shaders/"+VertexFilepath, "Resources/Shaders/"+FragmentFilepath);
+	std::shared_ptr<Shader> NyaShadern = std::shared_ptr<Shader>(new Shader("Resources/Shaders/"+VertexFilepath, "Resources/Shaders/"+FragmentFilepath));
 	LoadedShaders[ShaderName] = NyaShadern;
 	return(NyaShadern);
 }
@@ -275,8 +275,8 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		{
 			//i objektet så låter vi förhållandet vara dynamiskt, men jag orkar inte fixa det så jag hardcodar det
 			//borde också vara enkelt att se om det blir fel, objekt försvinner från skärmen innan dem borde
-			auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture.GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture.GetWidth()) / 8;
-			auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture.GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture.GetWidth()) / 8;
+			auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetWidth()) / 8;
+			auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetWidth()) / 8;
 			//TODO faktiskt ta sig tiden att kolla och se till att denna kod funkar
 			auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size / 8;
 			auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Size / 8;
@@ -289,7 +289,7 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		}
 		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
 		{
-			if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture.GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture.GetWidth()) / 8 < -1)
+			if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetWidth()) / 8 < -1)
 			{
 				ObjectOutside.push_back(i);
 				TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
@@ -298,7 +298,7 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player_Bullet")
 		{
 			auto Objektet = TouhouEngine::ActiveGameObjects[i];
-			if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Size * ((float)16 / (float)9) * (Objektet->Renderer.ObjectTexture.GetHeight() / (float)Objektet->Renderer.ObjectTexture.GetWidth()) / 8 > 1)
+			if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Size * ((float)16 / (float)9) * (Objektet->Renderer.ObjectTexture->GetHeight() / (float)Objektet->Renderer.ObjectTexture->GetWidth()) / 8 > 1)
 			{
 				//spelar kulorna är över skärmen
 				ObjectOutside.push_back(i);
@@ -452,13 +452,13 @@ void TouhouEngine::ClearObjects()
 		TouhouEngine::Destroy(ObjectToDelete);
 	}
 }
-Shader* TouhouEngine::GetNamedShader(std::string const& ShaderName)
+std::shared_ptr<Shader> TouhouEngine::GetNamedShader(std::string const& ShaderName)
 {
 	return(TouhouEngine::LoadedShaders[ShaderName]);
 }
-Texture* TouhouEngine::GetNamedTexture(std::string const& TextureName)
+std::shared_ptr<Texture> TouhouEngine::GetNamedTexture(std::string const& TextureName)
 {
-	Texture* ReturnValue = nullptr;
+	std::shared_ptr<Texture> ReturnValue = nullptr;
 	if (LoadedTextures.find(TextureName) != LoadedTextures.end() )
 	{
 		ReturnValue = LoadedTextures[TextureName];
@@ -469,9 +469,9 @@ bool TouhouEngine::NamedTextureLoaded(std::string const& TextureName)
 {
 	return(LoadedTextures.find(TextureName) != LoadedTextures.end());
 }
-Texture* TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
+std::shared_ptr<Texture> TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
 {
-	Texture* NewTexture = new Texture(ResourcePath, TextureName);
+	std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath, TextureName));
 	LoadedTextures[TextureName] = NewTexture;
 	return(NewTexture);
 }

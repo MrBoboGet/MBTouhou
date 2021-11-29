@@ -34,7 +34,7 @@ private:
 public:
 	static void DrawTexture(std::string Texture, Vector2D Position, float Width, float Height,int Layer[]);
 	static void DrawCall(DrawObject* a);
-	static Texture* LoadTextureFrom(std::string Path, std::string TextureName);
+	//static Texture* LoadTextureFrom(std::string Path, std::string TextureName);
 	static void DrawLine(Vector2D Start, Vector2D End,std::vector<int> Layern);
 	Texture(const std::string& path);
 	Texture(const std::string& path,std::string Mode);

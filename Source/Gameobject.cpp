@@ -46,6 +46,10 @@ void GameObject::Update()
 }
 void GameObject::Render()
 {
+	if (Renderer.ObjectTexture == nullptr)
+	{
+		return;
+	}
 	int Window_Height;
 	int Window_Width;
 	//TODO Ha koordinater i vår engine som vi kan få fram, utan att behöva calla denn funktion varje gång, vem vet hur många cycles den tar
@@ -54,7 +58,7 @@ void GameObject::Render()
 	float CameraCoordinates_X = Position.x/8;
 	float CameraCoordinates_Y = Position.y/4.5;
 	float Sprite_Width = Renderer.Size/8;
-	float Sprite_Height = Renderer.Size*((float)Renderer.ObjectTexture.GetHeight() / (float)Renderer.ObjectTexture.GetWidth())/8;
+	float Sprite_Height = Renderer.Size*((float)Renderer.ObjectTexture->GetHeight() / (float)Renderer.ObjectTexture->GetWidth())/8;
 
 	Vector2D Vertex1( - Sprite_Width / 2, - Sprite_Height / 2);
 	Vector2D Vertex2( + Sprite_Width / 2, - Sprite_Height / 2);
@@ -90,7 +94,7 @@ void GameObject::Render()
 	IndexBuffer ib(indices, 6);
 	ib.Bind();
 
-	Renderer.ObjectTexture.Bind();
+	Renderer.ObjectTexture->Bind();
 
 	//rendern att använda
 	auto ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
@@ -151,11 +155,11 @@ GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) :Image(N
 		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
 		//ObjectTexture = *NyTexture;
 		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
-		ObjectTexture = *TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
+		ObjectTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
 	}
 	else
 	{
-		ObjectTexture = *TouhouEngine::GetNamedTexture(Namn);
+		ObjectTexture = TouhouEngine::GetNamedTexture(Namn);
 	}
 }
 /*constructorn innan jag lade in caching systemet

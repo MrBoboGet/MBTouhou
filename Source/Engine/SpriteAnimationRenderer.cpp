@@ -2,6 +2,7 @@
 #include <MBUtility/MBStrings.h>
 #include <fstream>
 #include <iostream>
+#include <Engine.h>
 SpriteAnimationRenderer::SpriteAnimationRenderer(GameObject* ObjectAttachedTo,std::string FilePath)
 {
 	ComponentName = "SpriteAnimationRenderer";
@@ -32,7 +33,8 @@ SpriteAnimationRenderer::SpriteAnimationRenderer(GameObject* ObjectAttachedTo,st
     {
         NumberOfFrames += DurationOfTextures[i];
         //vi passar på att ladda in alla textures
-        Texture::LoadTextureFrom("Resources/SpelResurser/Sprites/",TexturesInAnimation[i]);
+        //Texture::LoadTextureFrom("Resources/SpelResurser/Sprites/",TexturesInAnimation[i]);
+        TouhouEngine::LoadNamedTexture(TexturesInAnimation[i], "Resources/SpelResurser/Sprites/" + TexturesInAnimation[i]);
     }
 }
 
@@ -53,7 +55,8 @@ void SpriteAnimationRenderer::Update()
         AntalFramesInIAnimationen += DurationOfTextures[i];
         if (AnimationTimer < AntalFramesInIAnimationen)
         {
-            SpelObjectet->Renderer.ObjectTexture =/* Egentligen är detta fett farligt, har ingen anninge vad detta gör egentligen TODO tänk igenom om dett fugnerar*/ *(Texture::LoadTextureFrom("SpelResurser/Sprites/", TexturesInAnimation[i]));
+            //SpelObjectet->Renderer.ObjectTexture =/* Egentligen är detta fett farligt, har ingen anninge vad detta gör egentligen TODO tänk igenom om dett fugnerar*/ *(Texture::LoadTextureFrom("SpelResurser/Sprites/", TexturesInAnimation[i]));
+            SpelObjectet->Renderer.ObjectTexture = TouhouEngine::LoadNamedTexture(TexturesInAnimation[i], "SpelResurser/Sprites/" + TexturesInAnimation[i]);
             break;
         }
     }

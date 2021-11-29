@@ -30,8 +30,8 @@ int main(void)
 	TouhouEngine::InitializeWindow(1920, 1080, "OMyGodNej", glfwGetPrimaryMonitor(), NULL);
 	//TouhouEngine::Create(new Level1());
 	TouhouEngine::Create(new MainMenu());
-	Shader* Shadern = TouhouEngine::LoadShader("SpriteShader","vertexshader.txt", "fragmentshader.txt");
-	Shader* MonochromeShader = TouhouEngine::LoadShader("MonochromeShader", "MonochromeShaderVertex.txt", "MonochromeShaderFragment.txt");
+	std::shared_ptr<Shader> Shadern = TouhouEngine::LoadShader("SpriteShader","vertexshader.txt", "fragmentshader.txt");
+	std::shared_ptr<Shader> MonochromeShader = TouhouEngine::LoadShader("MonochromeShader", "MonochromeShaderVertex.txt", "MonochromeShaderFragment.txt");
 	Shadern->Bind();
 	Shadern->SetUniform1i("u_Texture", 0);
 

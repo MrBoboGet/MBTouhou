@@ -243,7 +243,7 @@ void Texture::DrawCall(DrawObject* Objectet)
 		TouhouEngine::GetNamedTexture(Texturen)->Bind();
 
 		//ny grej, vi specificerar vilken shader vi använder
-		Shader* ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
+		std::shared_ptr<Shader> ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
 		ShaderToUse->Bind();
 		ShaderToUse->SetUniform1i("u_Texture", 0);
 		ShaderToUse->SetUniform4f("ColorKoef",1,1,1, 1);
@@ -308,7 +308,7 @@ void Texture::DrawCall(DrawObject* Objectet)
 			GLCall(glBindBuffer(GL_ARRAY_BUFFER, DrawLineVbo));
 		}
 
-		Shader * ShaderToUse = TouhouEngine::GetNamedShader("MonochromeShader");
+		std::shared_ptr<Shader> ShaderToUse = TouhouEngine::GetNamedShader("MonochromeShader");
 		GLCall(ShaderToUse->Bind());
 		GLCall(ShaderToUse->SetUniform4f("u_Color", 1, 0, 0, 1));
 
@@ -319,19 +319,19 @@ void Texture::DrawCall(DrawObject* Objectet)
 		GLCall(glBindVertexArray(0));
 	}
 }
-Texture* Texture::LoadTextureFrom(std::string Path, std::string TextureName)
-{
-	if (TouhouEngine::NamedTextureLoaded(TextureName))
-	{
-		return(TouhouEngine::GetNamedTexture(TextureName));
-	}
-	else
-	{
-		//Texture* NyTexture = new Texture(Path + TextureName);
-		//TouhouEngine::LoadedTextures[TextureName] = NyTexture;
-		return(TouhouEngine::LoadNamedTexture(TextureName, Path));
-	}
-}
+//Texture* Texture::LoadTextureFrom(std::string Path, std::string TextureName)
+//{
+//	if (TouhouEngine::NamedTextureLoaded(TextureName))
+//	{
+//		return(TouhouEngine::GetNamedTexture(TextureName));
+//	}
+//	else
+//	{
+//		//Texture* NyTexture = new Texture(Path + TextureName);
+//		//TouhouEngine::LoadedTextures[TextureName] = NyTexture;
+//		return(TouhouEngine::LoadNamedTexture(TextureName, Path));
+//	}
+//}
 void Texture::DrawLine(Vector2D Start, Vector2D End,std::vector<int> Layern)
 {
 	DrawObject* DrawPointern = new DrawObject(Start,End,Layern);
