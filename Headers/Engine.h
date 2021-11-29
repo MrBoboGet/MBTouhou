@@ -79,9 +79,9 @@ private:
 	static std::vector<GameObject*> DeletedGameObjects;
 	static std::vector<GameObject*> ActiveGameObjects;
 	static std::unordered_map<std::string, Shader*> LoadedShaders;
+	static std::unordered_map<std::string, Texture*> LoadedTextures;
 
 public:
-	static std::unordered_map<std::string, Texture*> LoadedTextures;
 
 	static std::vector<DrawObject*> DrawCalls;
 
@@ -105,7 +105,9 @@ public:
 	static ActiveObjectIterator GetActiveObjectsIterator();
 	static void ClearObjects();
 	static Shader* GetNamedShader(std::string const& ShaderName);
-
+	static Texture* GetNamedTexture(std::string const& TextureName);
+	static Texture* LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
+	static bool NamedTextureLoaded(std::string const& TextureName);
 
 	static void DebugLog(std::string TextToLog);
 

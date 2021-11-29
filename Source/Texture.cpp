@@ -154,7 +154,7 @@ Texture::Texture(const std::string& path)
 void Texture::DrawTexture(std::string Texturen, Vector2D Position, float Width, float Height, int Layer[])
 {
 	//vi tillåter bara att man ritar loaded textures, eftersom annars blir prestandan whack om man ska läsa in varje frame
-	if (TouhouEngine::LoadedTextures.find(Texturen) != TouhouEngine::LoadedTextures.end())
+	if (TouhouEngine::NamedTextureLoaded(Texturen))
 	{
 		//Ett problem vi får här är att man inte riktigt kan rita grejer på den layern man vill
 		//Det finns ett antal sätt vi skulle kunna fixa det här på
@@ -201,8 +201,9 @@ void Texture::DrawTexture(std::string Texturen, Vector2D Position, float Width, 
 	{
 		//std::cout << "Texturen är inte loadad" << std::endl;
 		//lite av en ass lösning då man måste ha loadat in saker, varför gjorde jag inte bara såatt jag laddade in den här, the fuck
-		Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Texturen);
-		TouhouEngine::LoadedTextures[Texturen] = NyTexture;
+		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Texturen);
+		//TouhouEngine::LoadedTextures[Texturen] = NyTexture;
+		TouhouEngine::LoadNamedTexture(Texturen, "Resources/SpelResurser/Sprites/" + Texturen);
 
 		DrawObject* DrawPointern = new DrawObject(Texturen, Position, Width, Height, Layer);
 		TouhouEngine::DrawCalls.push_back(DrawPointern);
@@ -239,7 +240,7 @@ void Texture::DrawCall(DrawObject* Objectet)
 		va.AddBuffer(vb, layout);
 		IndexBuffer ib(indices, 6);
 		ib.Bind();
-		TouhouEngine::LoadedTextures[Texturen]->Bind();
+		TouhouEngine::GetNamedTexture(Texturen)->Bind();
 
 		//ny grej, vi specificerar vilken shader vi använder
 		Shader* ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
@@ -320,14 +321,15 @@ void Texture::DrawCall(DrawObject* Objectet)
 }
 Texture* Texture::LoadTextureFrom(std::string Path, std::string TextureName)
 {
-	if (TouhouEngine::LoadedTextures.find(TextureName) != TouhouEngine::LoadedTextures.end())
+	if (TouhouEngine::NamedTextureLoaded(TextureName))
 	{
-		return(TouhouEngine::LoadedTextures[TextureName]);
+		return(TouhouEngine::GetNamedTexture(TextureName));
 	}
 	else
 	{
-		Texture* NyTexture = new Texture(Path + TextureName);
-		TouhouEngine::LoadedTextures[TextureName] = NyTexture;
+		//Texture* NyTexture = new Texture(Path + TextureName);
+		//TouhouEngine::LoadedTextures[TextureName] = NyTexture;
+		return(TouhouEngine::LoadNamedTexture(TextureName, Path));
 	}
 }
 void Texture::DrawLine(Vector2D Start, Vector2D End,std::vector<int> Layern)

@@ -146,15 +146,16 @@ GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) :Image(N
 	ColorKoef.R = 1;
 	ColorKoef.B = 1;
 	ColorKoef.G = 1;
-	if (TouhouEngine::LoadedTextures.find(Namn) == TouhouEngine::LoadedTextures.end())
+	if (!TouhouEngine::NamedTextureLoaded(Namn))
 	{
-		Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
-		ObjectTexture = *NyTexture;
-		TouhouEngine::LoadedTextures[Namn] = NyTexture;
+		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
+		//ObjectTexture = *NyTexture;
+		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
+		ObjectTexture = *TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
 	}
 	else
 	{
-		ObjectTexture = *TouhouEngine::LoadedTextures[Namn];
+		ObjectTexture = *TouhouEngine::GetNamedTexture(Namn);
 	}
 }
 /*constructorn innan jag lade in caching systemet

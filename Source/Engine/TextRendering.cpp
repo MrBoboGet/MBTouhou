@@ -35,19 +35,21 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 			}
 			continue;
 		}
-		if (TouhouEngine::LoadedTextures.find(CharacterToDraw) == TouhouEngine::LoadedTextures.end())
+		if (!TouhouEngine::NamedTextureLoaded(CharacterToDraw))
 		{
 			//ej loaded, vi möste först ladda in den innan vi kan dra den
 			if (CharacterToDraw[0] == '.')
 			{
-				std::cout << "." << std::endl;
-				Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
-				TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				//std::cout << "." << std::endl;
+				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
+				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
 			}
 			else
 			{
-				Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
-				TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
+				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
 			}
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita
@@ -92,19 +94,21 @@ void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::vector<int> La
 			PositionToDraw.x += TextWidth;
 			continue;
 		}
-		if (TouhouEngine::LoadedTextures.find(CharacterToDraw) == TouhouEngine::LoadedTextures.end())
+		if (!TouhouEngine::NamedTextureLoaded(CharacterToDraw))
 		{
 			//ej loaded, vi möste först ladda in den innan vi kan dra den
 			if (CharacterToDraw[0] == '.')
 			{
-				std::cout << "." << std::endl;
-				Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
-				TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				//std::cout << "." << std::endl;
+				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
+				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
 			}
 			else
 			{
-				Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
-				TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
+				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
+				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
 			}
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita

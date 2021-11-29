@@ -456,6 +456,30 @@ Shader* TouhouEngine::GetNamedShader(std::string const& ShaderName)
 {
 	return(TouhouEngine::LoadedShaders[ShaderName]);
 }
+Texture* TouhouEngine::GetNamedTexture(std::string const& TextureName)
+{
+	Texture* ReturnValue = nullptr;
+	if (LoadedTextures.find(TextureName) != LoadedTextures.end() )
+	{
+		ReturnValue = LoadedTextures[TextureName];
+	}
+	return(ReturnValue);
+}
+bool TouhouEngine::NamedTextureLoaded(std::string const& TextureName)
+{
+	return(LoadedTextures.find(TextureName) != LoadedTextures.end());
+}
+Texture* TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
+{
+	Texture* NewTexture = new Texture(ResourcePath, TextureName);
+	LoadedTextures[TextureName] = NewTexture;
+	return(NewTexture);
+}
+//Texture* TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
+//{
+//
+//
+//}
 void DebugLogWrite(std::string TextToLog)
 {
 
