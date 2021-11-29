@@ -1,5 +1,5 @@
-#include <Engine\SpriteAnimationRenderer.h>
-#include <EgenUtility\MinaStringOperations.h>
+#include <Engine/SpriteAnimationRenderer.h>
+#include <MBUtility/MBStrings.h>
 #include <fstream>
 #include <iostream>
 SpriteAnimationRenderer::SpriteAnimationRenderer(GameObject* ObjectAttachedTo,std::string FilePath)
@@ -12,7 +12,7 @@ SpriteAnimationRenderer::SpriteAnimationRenderer(GameObject* ObjectAttachedTo,st
         std::string line;
         while (std::getline(DataSource, line))
         {
-            auto SplittadString = Split(line, " ");
+            auto SplittadString = MBUtility::Split(line, " ");
             //första värdet innan mellanslag är texturenamnet, andra är antalet frames den ska spela
             TexturesInAnimation.push_back(SplittadString[0]);
             DurationOfTextures.push_back(std::stoi(SplittadString[1]));
@@ -82,7 +82,7 @@ void SpriteAnimationRenderer::PlayAnimation(std::string ConfigName)
             std::string line;
             while (std::getline(DataSource, line))
             {
-                auto SplittadString = Split(line, " ");
+                auto SplittadString = MBUtility::Split(line, " ");
                 //första värdet innan mellanslag är texturenamnet, andra är antalet frames den ska spela
                 NyData.AnimationName.push_back(SplittadString[0]);
                 NyData.AnimationDuration.push_back(std::stoi(SplittadString[1]));

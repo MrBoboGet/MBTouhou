@@ -1,14 +1,14 @@
 #include "MBGameEngine.h"
 
-namespace MBGE
+namespace MBGameEngine
 {
 
 	//BEGIN GameObject
 	void GameObject::p_DefaultUpdate()
 	{
-		for(Component& Components : m_Components)
+		for(std::unique_ptr<Component>& Components : m_Components)
 		{
-			Components.Update();
+			Components->Update();
 		}
 	}
 	void GameObject::Update()
@@ -41,14 +41,14 @@ namespace MBGE
 	}
 	void MBGameEngine::p_Update_LoadedGameObjects()
 	{
-		for(GameObject& Object : m_LoadedGameObjects)
+		for(std::unique_ptr<GameObject>& Object : m_LoadedGameObjects)
 		{
-			if (Object.m_Active == false)
+			if (Object->m_Active == false)
 			{
 				continue;
 			}
-			Object.p_DefaultUpdate();
-			Object.Update();
+			Object->p_DefaultUpdate();
+			Object->Update();
 		}
 	}
 	void MBGameEngine::p_Update()
@@ -57,15 +57,15 @@ namespace MBGE
 	}
 	bool MBGameEngine::GetKeyDown(KeyCode KeyToCheck)
 	{
-
+		return(false);
 	}
 	bool MBGameEngine::GetKeyPressed(KeyCode KeyToCheck)
 	{
-
+		return(false);
 	}
 	bool MBGameEngine::GetKeyReleased(KeyCode KeyToCheck)
 	{
-
+		return(false);
 	}
 	void MBGameEngine::DestroyGameObject(GameObjectReference ObjectToDelete)
 	{
@@ -87,11 +87,11 @@ namespace MBGE
 	GameObjectReference MBGameEngine::FindGameObjectWithName(std::string const& Name)
 	{
 		GameObjectReference ReturnValue;
-		for (GameObject& Objects : m_LoadedGameObjects)
+		for (std::unique_ptr<GameObject>& Objects : m_LoadedGameObjects)
 		{
-			if (Objects.GetName() == Name && Objects.m_Active)
+			if (Objects->GetName() == Name && Objects->m_Active)
 			{
-				ReturnValue = GameObjectReference(Objects.m_ObjectReferencePointer);
+				ReturnValue = GameObjectReference(Objects->m_ObjectReferencePointer);
 				break;
 			}
 		}
@@ -100,11 +100,11 @@ namespace MBGE
 	GameObjectReference MBGameEngine::FindGameObjectWithTag(std::string const& Name)
 	{
 		GameObjectReference ReturnValue;
-		for (GameObject& Objects : m_LoadedGameObjects)
+		for (std::unique_ptr<GameObject>& Objects : m_LoadedGameObjects)
 		{
-			if (Objects.GetTag() == Name && Objects.m_Active)
+			if (Objects->GetTag() == Name && Objects->m_Active)
 			{
-				ReturnValue = GameObjectReference(Objects.m_ObjectReferencePointer);
+				ReturnValue = GameObjectReference(Objects->m_ObjectReferencePointer);
 				break;
 			}
 		}

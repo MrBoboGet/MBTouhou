@@ -38,7 +38,8 @@ void Level_1_Enemy_2::Update()
 			KulanRiktiga->Direction = 0 + 60 * i;
 			KulanRiktiga->Speed = 0.02;
 			KulanRiktiga->Rotation = KulanRiktiga->Direction - 90;
-			TouhouEngine::ActiveGameObjects.push_back(kula);
+			TouhouEngine::Create(kula);
+			//TouhouEngine::ActiveGameObjects.push_back(kula);
 		}
 
 		Level_1_Enemy_2_Timer = 0;
@@ -74,20 +75,24 @@ void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 
 
 	//kollision kod
-	int PlayerObjectPosition = 0;
-	for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//int PlayerObjectPosition = 0;
+	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//{
+	//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player")
+	//	{
+	//		PlayerObjectPosition = i;
+	//		break;
+	//	}
+	//}
+	auto PlayerObject = TouhouEngine::FindObjectWithTag("Player");
+	if (PlayerObject == nullptr)
 	{
-		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player")
-		{
-			PlayerObjectPosition = i;
-			break;
-		}
+		return;
 	}
-	auto PlayerObject = TouhouEngine::ActiveGameObjects[PlayerObjectPosition];
 	//uppdaterar med bra kolliksion kod
 	if (CollisionClass::Rectangle_Collision(PlayerObject->Position,PlayerObject->Hitbox,PlayerObject->Rotation,Pointern->Position,Pointern->Hitbox,Pointern->Rotation))
 	{
-		void* Player_Pointer_Void = TouhouEngine::ActiveGameObjects[PlayerObjectPosition];
+		void* Player_Pointer_Void = PlayerObject;
 		Player* Player_Pointer{ static_cast<Player*>(Player_Pointer_Void) };
 		Player_Pointer->GotHit = 1;
 		

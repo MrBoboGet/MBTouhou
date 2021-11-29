@@ -60,6 +60,19 @@ GameObject* TouhouEngine::FindObjectWithName(std::string Namn)
 	//nu har alltså inget namn hittats, detta borde egentligen krascha programmet
 	return(nullptr);
 }
+GameObject* TouhouEngine::FindObjectWithTag(std::string const& Tag)
+{
+	//just nu har vi inte ett bättre system än att vi går igenom objekten i tur och ordning till vi hittar ett föremål med det namnet. Vi kanske vill ha en hashlista i framtiden
+	for (int i = 0; i < ActiveGameObjects.size(); i++)
+	{
+		if (ActiveGameObjects[i]->GetTag() == Tag)
+		{
+			return(ActiveGameObjects[i]);
+		}
+	}
+	//nu har alltså inget namn hittats, detta borde egentligen krascha programmet
+	return(nullptr);
+}
 Shader* TouhouEngine::LoadShader(std::string ShaderName, std::string VertexFilepath, std::string FragmentFilepath)
 {
 	Shader* NyaShadern = new Shader("Resources/Shaders/"+VertexFilepath, "Resources/Shaders/"+FragmentFilepath);
@@ -417,6 +430,25 @@ bool TouhouEngine::GetKeyReleased(std::string Key)
 	else
 	{
 		return(false);
+	}
+}
+void TouhouEngine::_GetWindowSize(int* Width, int* Height)
+{
+	glfwGetWindowSize(TouhouEngine::CurrentWindow, Width, Height);
+
+}
+ActiveObjectIterator TouhouEngine::GetActiveObjectsIterator()
+{
+	ActiveObjectIterator ReturnValue;
+	ReturnValue.m_InternalIterator = TouhouEngine::ActiveGameObjects.begin();
+	ReturnValue.m_EndIterator = TouhouEngine::ActiveGameObjects.end();
+	return(ReturnValue);
+}
+void TouhouEngine::ClearObjects()
+{
+	for (GameObject* ObjectToDelete : TouhouEngine::ActiveGameObjects)
+	{
+		TouhouEngine::Destroy(ObjectToDelete);
 	}
 }
 

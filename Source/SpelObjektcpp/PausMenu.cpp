@@ -14,13 +14,22 @@ void PausMenu::Update()
 		if (TouhouEngine::GetKeyPressed("esc"))
 		{
 			Paused = true;
-			for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			ActiveObjectIterator ObjectsIterator = TouhouEngine::GetActiveObjectsIterator();
+			while (ObjectsIterator.HasEnded() == false)
 			{
-				if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "PausMenu")
+				if (ObjectsIterator->GetTag() != "PausMenu")
 				{
-					TouhouEngine::ActiveGameObjects[i]->Active = false;
+					ObjectsIterator->Active = false;
 				}
+				ObjectsIterator++;
 			}
+			//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//{
+			//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "PausMenu")
+			//	{
+			//		TouhouEngine::ActiveGameObjects[i]->Active = false;
+			//	}
+			//}
 		}
 	}
 	else
@@ -28,10 +37,16 @@ void PausMenu::Update()
 		if (TouhouEngine::GetKeyPressed("esc"))
 		{
 			Paused = false;
-			for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			ActiveObjectIterator ObjectsIterator = TouhouEngine::GetActiveObjectsIterator();
+			while (ObjectsIterator.HasEnded() == false)
 			{
-				TouhouEngine::ActiveGameObjects[i]->Active = true;
+				ObjectsIterator->Active = true;
+				ObjectsIterator++;
 			}
+			//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//{
+			//	TouhouEngine::ActiveGameObjects[i]->Active = true;
+			//}
 		}
 		else
 		{
@@ -60,27 +75,25 @@ void PausMenu::Update()
 				if (CurrentOption == 0)
 				{
 					Paused = false;
-					for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+					ActiveObjectIterator ObjectsIterator = TouhouEngine::GetActiveObjectsIterator();
+					while (ObjectsIterator.HasEnded() == false)
 					{
-						TouhouEngine::ActiveGameObjects[i]->Active = true;
+						ObjectsIterator->Active = true;
+						ObjectsIterator++;
 					}
+					//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+					//{
+					//	TouhouEngine::ActiveGameObjects[i]->Active = true;
+					//}
 				}
 				if (CurrentOption == 1)
 				{
-					std::vector<GameObject*> ObjectAttDelete = TouhouEngine::ActiveGameObjects;
-					for (int i = 0; i < ObjectAttDelete.size(); i++)
-					{
-						TouhouEngine::Destroy(ObjectAttDelete[i]);
-					}
+					TouhouEngine::ClearObjects();
 					TouhouEngine::Create(new Level1());
 				}
 				if(CurrentOption == 2)
 				{
-					std::vector<GameObject*> ObjectAttDelete = TouhouEngine::ActiveGameObjects;
-					for (int i = 0; i < ObjectAttDelete.size(); i++)
-					{
-						TouhouEngine::Destroy(ObjectAttDelete[i]);
-					}
+					TouhouEngine::ClearObjects();
 					TouhouEngine::Create(new MainMenu());
 				}
 			}

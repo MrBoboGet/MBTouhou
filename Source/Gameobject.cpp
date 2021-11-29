@@ -49,7 +49,8 @@ void GameObject::Render()
 	int Window_Height;
 	int Window_Width;
 	//TODO Ha koordinater i vår engine som vi kan få fram, utan att behöva calla denn funktion varje gång, vem vet hur många cycles den tar
-	glfwGetWindowSize(TouhouEngine::CurrentWindow, &Window_Width, &Window_Height);
+	//glfwGetWindowSize(TouhouEngine::CurrentWindow, &Window_Width, &Window_Height);
+	TouhouEngine::_GetWindowSize(&Window_Width, &Window_Height);
 	float CameraCoordinates_X = Position.x/8;
 	float CameraCoordinates_Y = Position.y/4.5;
 	float Sprite_Width = Renderer.Size/8;

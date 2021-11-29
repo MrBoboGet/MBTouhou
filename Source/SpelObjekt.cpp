@@ -409,16 +409,20 @@ void Enemy_Bullet::Update()
 	//kollision kod
 
 
-	int PlayerObjectPosition = 0;
-	for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//int PlayerObjectPosition = 0;
+	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//{
+	//	if(TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player")
+	//	{
+	//		PlayerObjectPosition = i;
+	//		break;
+	//	}
+	//}
+	auto PlayerObject = TouhouEngine::FindObjectWithTag("Player");
+	if (PlayerObject == nullptr)
 	{
-		if(TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player")
-		{
-			PlayerObjectPosition = i;
-			break;
-		}
+		return;
 	}
-	auto PlayerObject = TouhouEngine::ActiveGameObjects[PlayerObjectPosition];
 	//Eftersom vi antagit att kvadratens sidor är parallella med skärmens sidor behöver vi bara jämföra om i två omgångar om
 	//dem två olikheterna för x och y led var för sig kan ha gemensamma element, kan dem det så är det en kollision
 	//Vi kollar om spelarens vänstraste position är mindre än kulans högraste och om spelarens högrasta är större om kulans vänstraste,
@@ -440,7 +444,7 @@ void Enemy_Bullet::Update()
 		//nu kommer vi till "spelaren är träffad flaggen"
 		//Vi vill helst inte behöva ha massa variablar i Gameobject koden, så frågan är hur vi får det 
 		//den metod jag testar nu, är att jag givet en pointer till en gameobject assignar en ny Player pointer så jag kommer åt allt
-		void* Player_Pointer_Void = TouhouEngine::ActiveGameObjects[PlayerObjectPosition];
+		void* Player_Pointer_Void = PlayerObject;
 		Player* Player_Pointer{static_cast<Player*>(Player_Pointer_Void)};
 		Player_Pointer->GotHit = 1;
 		TouhouEngine::Destroy(this);

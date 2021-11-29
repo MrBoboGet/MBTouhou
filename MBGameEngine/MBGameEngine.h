@@ -4,25 +4,13 @@
 #include <string>
 #include <vector>
 #include <stack>
-namespace MBGE
+#include <MBGraphicsEngine/MBGE.h>
+namespace MBGameEngine
 {
 	enum class KeyCode
 	{
 		A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,
 		Shift,Left,Right,Up,Down,
-	};
-
-
-	class Component
-	{
-	private:
-
-		GameObjectReference m_AssociatedGameObject;
-		std::shared_ptr<Component*> m_ComponentReference = nullptr;
-
-	public:
-		virtual void Update();
-		virtual ~Component();
 	};
 
 	class Texture
@@ -50,12 +38,20 @@ namespace MBGE
 		{
 			m_ObjectPointer = PointerToUse;
 		}
+		SharedDeletableObjectReference()
+		{
+
+		}
 		operator bool()
 		{
-			return(*m_ObjectPointer != nullptr);
+			return(m_ObjectPointer.get() != nullptr && *m_ObjectPointer != nullptr);
 		}
 		bool operator==(T* OtherPointer)
 		{
+			if (m_ObjectPointer.get() == nullptr)
+			{
+				return(false);
+			}
 			return(*m_ObjectPointer == OtherPointer);
 		}
 		T* operator->()
@@ -78,9 +74,25 @@ namespace MBGE
 			p_Validate();
 			return **m_ObjectPointer;
 		}
-	}
+	};
+	// template <typename T>
+	// using SharedDeletableObjectReference<GameObject> = GameObjectReference;
+	class GameObject;
+	class Component;
+	typedef SharedDeletableObjectReference<GameObject> GameObjectReference;
+	typedef SharedDeletableObjectReference<Component> ComponentReference;
 
+	class Component
+	{
+	private:
 
+		GameObjectReference m_AssociatedGameObject;
+		std::shared_ptr<Component*> m_ComponentReference = nullptr;
+
+	public:
+		virtual void Update();
+		virtual ~Component();
+	};
 
 	class MBGameEngine;
 	class GameObject
@@ -97,35 +109,54 @@ namespace MBGE
 		std::vector<std::unique_ptr<Component>> m_Components = {};
 		void p_DefaultUpdate();
 		//GameObject(MBGameEngine* AssociatedEngine);
+	protected:
+		MBGameEngine& GetEngine() {return(*m_AssociatedEngine);};
 	public:
 		GameObject() 
 		{
-			m_ObjectReferencePointer = std::make_shared(this);
+			GameObject** NewPointerReference = new GameObject * (this);
+			m_ObjectReferencePointer = std::shared_ptr<GameObject*>(NewPointerReference);
 		};
 		virtual void Update();
 		virtual void OnCreate();
-		virtual MBGameEngine& GetEngine()
-		{
-			return(m_AssociatedEngine);
-		}
+		//virtual MBGameEngine& GetEngine()
+		//{
+		//	return(m_AssociatedEngine);
+		//}
 
-		std::string GetName() const { return(m_Name) };
-		std::string GetTag() const { return(m_Tag) };
+		std::string GetName() const { return(m_Name); };
+		std::string GetTag() const { return(m_Tag); };
 		virtual ~GameObject()
 		{
 			*m_ObjectReferencePointer = nullptr;
 		}
 	};
 
-	typedef SharedDeletableObjectReference<GameObject> GameObjectReference;
-	typedef SharedDeletableObjectReference<Component> ComponentReference;
+	class ActiveObjectIterator
+	{
+		friend MBGameEngine;
+	private:
 
+
+	public:
+		bool HasEnded();
+
+
+
+		ActiveObjectIterator& operator++();
+		ActiveObjectIterator& operator++(int);
+		
+		GameObjectReference& operator*();
+		GameObjectReference& operator->();
+		
+		ActiveObjectIterator& Increment();
+	};
 	class MBGameEngine
 	{
 	private:
 		std::vector<std::unique_ptr<GameObject>> m_LoadedGameObjects = {};
 		std::stack<GameObjectReference> m_ObjectsToDelete = {};
-
+		MBGE::MBGraphicsEngine m_InternalGraphicsEngine;
 		void p_Update_CleanUpObjects();
 		void p_Update_LoadedGameObjects();
 		void p_Update();

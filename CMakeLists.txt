@@ -112,8 +112,6 @@ endmacro()
 set(PROJECT_SOURCES 
 
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/bildhantering/stb_image.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Classes.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/EgenUtility/MinaStringOperations.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/Engine_GenericComponent.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SoundEngine/TouhouSoundEngine.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SpriteAnimationRenderer.cpp"
@@ -122,7 +120,6 @@ set(PROJECT_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Gameobject.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Hitbox.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/IndexBuffer.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Math.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Renderer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Shader.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Source.cpp"
@@ -136,17 +133,16 @@ set(PROJECT_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/SpelObjektcpp/Player_Attack_BigShot.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/SpelObjektcpp/SpelarenFunktioner1.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Texture.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Update.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Vector2D.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/VertexArray.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/VertexBuffer.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/MBGameEngine/MBGameEngine.cpp"
 )
 set(PROJECT_HEADERS 
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Engine.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Gameobject.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Hitbox.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/IndexBuffer.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/MinMath.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Renderer.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Shader.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/SpelObjekt/Enemy_Bullet_Template.h"
@@ -160,8 +156,6 @@ set(PROJECT_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/VertexBuffer.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/VertexBufferLayout.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/bildhantering/BildHantering.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/EgenUtility/MinaStringOperations.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/EngineExternals.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/Engine_GenericComponent.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SoundEngine/TouhouSoundEngine.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SpriteAnimationRenderer.h"
@@ -206,7 +200,7 @@ target_link_libraries("MBTouhou_SR" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou_SR" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
 
 add_executable(MBTouhou ${COMMON_FILES})
-MBPM_ApplyTargetConfiguration("MBTouhou" "STATIC" "RELEASE")
+MBPM_ApplyTargetConfiguration("MBTouhou" "STATIC" "DEBUG")
 target_compile_features("MBTouhou" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
