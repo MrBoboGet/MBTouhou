@@ -59,7 +59,7 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 			break;
 		}
 		int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3]};
-		Texture::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layern);
+		TouhouEngine::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layern);
 		//förflyttar positionenen som om det vore helt uniform storlek på texten
 		PositionToDraw.x += TextWidth;
 		if (PositionToDraw.x+TextWidth/2 > LowerRightCoordinate.x)
@@ -114,7 +114,7 @@ void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::vector<int> La
 		//nu har vi en character texture som vi nu kan använda för att rita
 		//Som det är nu så kommer vi bara att rita dem som om dem hade samma storlek
 		int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3] };
-		Texture::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layern);
+		TouhouEngine::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layern);
 		//förflyttar positionenen som om det vore helt uniform storlek på texten
 		PositionToDraw.x += TextWidth;
 	}

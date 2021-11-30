@@ -1,5 +1,7 @@
 /.vs/
-/Resources/
+/Resources/Sounds/
+/Resources/SpelResurser/
+/Resources/TextImages/
 /_Libs/
 /*/*.dll
 /out/

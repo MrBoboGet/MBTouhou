@@ -7,7 +7,7 @@ GLFWwindow* TouhouEngine::CurrentWindow = nullptr;
 
 std::vector<GameObject*> TouhouEngine::ActiveGameObjects = {};
 std::vector<GameObject*> TouhouEngine::DeletedGameObjects = {};
-std::vector<DrawObject*> TouhouEngine::DrawCalls = {};
+std::vector<DrawObject> TouhouEngine::DrawCalls = {};
 float TouhouEngine::Framerate = 0.0166666f;
 bool TouhouEngine::UpdatePause = false;
 
@@ -135,7 +135,7 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 			for (int j = 0; j < TouhouEngine::DrawCalls.size() - 1 - i; j++)
 			{
 				//själva jämförelsen, bygger på hur Layer systemet fungerar
-				if (LayerIsBigger(TouhouEngine::DrawCalls[j]->Layer, TouhouEngine::DrawCalls[j + 1]->Layer) == true)
+				if (LayerIsBigger(TouhouEngine::DrawCalls[j].Layer, TouhouEngine::DrawCalls[j + 1].Layer) == true)
 				{
 					//Då byter vi plats på dem
 					auto Temp = TouhouEngine::DrawCalls[j];
@@ -151,16 +151,16 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 	{
 		if (DrawObjectIterator != TouhouEngine::DrawCalls.size())
 		{
-			if (LayerIsBigger(Lista[GameObjectIterator]->Renderer.Layer, TouhouEngine::DrawCalls[DrawObjectIterator]->Layer) == false)
+			if (LayerIsBigger(Lista[GameObjectIterator]->Renderer.Layer, TouhouEngine::DrawCalls[DrawObjectIterator].Layer) == false)
 			{
 				Lista[GameObjectIterator]->Render();
 				GameObjectIterator += 1;
 			}
 			else
 			{
-				while (LayerIsBigger(Lista[GameObjectIterator]->Renderer.Layer, TouhouEngine::DrawCalls[DrawObjectIterator]->Layer) == true)
+				while (LayerIsBigger(Lista[GameObjectIterator]->Renderer.Layer, TouhouEngine::DrawCalls[DrawObjectIterator].Layer) == true)
 				{
-					Texture::DrawCall(TouhouEngine::DrawCalls[DrawObjectIterator]);
+					p_DrawDrawObject(TouhouEngine::DrawCalls[DrawObjectIterator]);
 					DrawObjectIterator += 1;
 				}
 			}
@@ -176,17 +176,17 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 			{
 				while (DrawObjectIterator != TouhouEngine::DrawCalls.size())
 				{
-					Texture::DrawCall(TouhouEngine::DrawCalls[DrawObjectIterator]);
+					p_DrawDrawObject(TouhouEngine::DrawCalls[DrawObjectIterator]);
 					DrawObjectIterator += 1;
 				}
 			}
 		}
 	}
 	//efter den hät sinnessjukt långa koden för något mycket enkelt, får kolla över om jag kan göra den bättre, så vill vi deleta alla draw calls
-	for (int i = 0; i < TouhouEngine::DrawCalls.size();i++)
-	{
-		delete TouhouEngine::DrawCalls[i];
-	}
+	//for (int i = 0; i < TouhouEngine::DrawCalls.size();i++)
+	//{
+	//	delete TouhouEngine::DrawCalls[i];
+	//}
 	TouhouEngine::DrawCalls = {};
 	/*
 	for (int i = 0; i < Lista.size();i++)
@@ -198,6 +198,7 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 void TouhouEngine::InitializeEngineCompononets()
 {
 	SoundEngine.Initialize();
+	TouhouEngine::__Camera.SetOrtographicProjection(16, 10);
 }
 void TouhouEngine::UpdateSoundSystem()
 {
@@ -339,6 +340,9 @@ void TouhouEngine::InitializeWindow(int Width, int Height, std::string WindowNam
 	GLCall(glEnable(GL_BLEND));
 	//den här koden gör så att v-sync är på
 	glfwSwapInterval(1);
+
+	//för att göra grejer
+	TouhouEngine::__SpriteModel = std::unique_ptr<MBGE::SpriteModel>(new MBGE::SpriteModel(nullptr));
 }
 
 //keyPresses
@@ -434,8 +438,8 @@ bool TouhouEngine::GetKeyReleased(std::string Key)
 }
 void TouhouEngine::_GetWindowSize(int* Width, int* Height)
 {
+	//TouhouEngine::__GraphicsEngine.GetWindowSize(Width,Height);
 	glfwGetWindowSize(TouhouEngine::CurrentWindow, Width, Height);
-
 }
 ActiveObjectIterator TouhouEngine::GetActiveObjectsIterator()
 {
@@ -471,9 +475,39 @@ bool TouhouEngine::NamedTextureLoaded(std::string const& TextureName)
 }
 std::shared_ptr<Texture> TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
 {
-	std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath, TextureName));
+	std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath));
 	LoadedTextures[TextureName] = NewTexture;
 	return(NewTexture);
+}
+void TouhouEngine::DrawTexture(std::string NamedTexture, Vector2D Position, float Width, float Height, int Layer[])
+{
+	DrawTexture(TouhouEngine::GetNamedTexture(NamedTexture), Position, Width, Height, Layer);
+}
+void TouhouEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, int Layer[])
+{
+	DrawObject NewObjectToDraw;
+	NewObjectToDraw.Texturen = TextureToDraw;
+	NewObjectToDraw.Position = Position;
+	NewObjectToDraw.Width = Width;
+	NewObjectToDraw.Height = Height;
+	for (size_t i = 0; i < 4; i++)
+	{
+		NewObjectToDraw.Layer[i] = Layer[i];
+	}
+	TouhouEngine::DrawCalls.push_back(std::move(NewObjectToDraw));
+}
+void TouhouEngine::p_DrawDrawObject(DrawObject& ObjectToDraw)
+{
+	ObjectToDraw.Texturen->Bind(0);
+	MBGE::UniformValue ValuesToUse;
+	TouhouEngine::__Camera.Update(ValuesToUse);
+	auto ShaderToUse = GetNamedShader("SpriteShader");
+	ShaderToUse->SetUniformMat4f("View", ValuesToUse.GetValue("View").GetMat4().GetContinousData());
+	ShaderToUse->SetUniformMat4f("Projection", ValuesToUse.GetValue("Projection").GetMat4().GetContinousData());
+	TouhouEngine::__SpriteModel->ModelTransform.SetScaling(MBMath::MBVector3<float>(ObjectToDraw.Width,ObjectToDraw.Height,0));
+	TouhouEngine::__SpriteModel->ModelTransform.SetPosition(MBMath::MBVector3<float>(ObjectToDraw.Position.x,ObjectToDraw.Position.y,0));
+	ShaderToUse->SetUniformMat4f("Model",TouhouEngine::__SpriteModel->ModelTransform.GetModelMatrix().GetContinousData());
+	TouhouEngine::__SpriteModel->Draw();
 }
 //Texture* TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
 //{

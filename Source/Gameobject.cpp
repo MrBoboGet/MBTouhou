@@ -94,7 +94,7 @@ void GameObject::Render()
 	IndexBuffer ib(indices, 6);
 	ib.Bind();
 
-	Renderer.ObjectTexture->Bind();
+	Renderer.ObjectTexture->Bind(0);
 
 	//rendern att använda
 	auto ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
@@ -122,10 +122,11 @@ void GameObject::Render()
 		HitboxVertex3 =HitboxVertex3+ Position;
 		HitboxVertex4 =HitboxVertex4+ Position;
 		
-		Texture::DrawLine(HitboxVertex1, HitboxVertex2, Layern);
-		Texture::DrawLine(HitboxVertex1, HitboxVertex4, Layern);
-		Texture::DrawLine(HitboxVertex3, HitboxVertex2, Layern);
-		Texture::DrawLine(HitboxVertex3, HitboxVertex4, Layern);
+		ASSERT(false);
+		//Texture::DrawLine(HitboxVertex1, HitboxVertex2, Layern);
+		//Texture::DrawLine(HitboxVertex1, HitboxVertex4, Layern);
+		//Texture::DrawLine(HitboxVertex3, HitboxVertex2, Layern);
+		//Texture::DrawLine(HitboxVertex3, HitboxVertex4, Layern);
 	}
 }
 GameObjectRenderer::~GameObjectRenderer()

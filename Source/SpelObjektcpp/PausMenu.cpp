@@ -52,7 +52,7 @@ void PausMenu::Update()
 		{
 			int Layer3[] = { 1000000,0,0,0 };
 			std::vector<int> Layer4545 = { 1000001,0,0,0 };
-			Texture::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
+			TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
 			DrawTextRectangle("Continue", Vector2D(0, 1.5), Layer4545, 0.4);
 			DrawTextRectangle("Quit", Vector2D(0, -1.5), Layer4545, 0.4);
 			DrawTextRectangle("Retry", Vector2D(0, 0), Layer4545, 0.4);
@@ -69,7 +69,7 @@ void PausMenu::Update()
 					CurrentOption = NumberOfOptions - 1;
 				}
 			}
-			Texture::DrawTexture("Jakob.png", Vector2D(-3, 1.5 - 1.5*CurrentOption), 1, 1, Layer3);
+			TouhouEngine::DrawTexture("Jakob.png", Vector2D(-3, 1.5 - 1.5*CurrentOption), 1, 1, Layer3);
 			if (TouhouEngine::GetKeyPressed("enter"))
 			{
 				if (CurrentOption == 0)

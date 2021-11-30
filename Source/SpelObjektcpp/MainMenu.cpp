@@ -30,7 +30,7 @@ void MainMenu::Update()
 				CurrentOption = NumberOfOptions - 1;
 			}
 		}
-		Texture::DrawTexture("Jakob.png", Vector2D(-3, 2 - CurrentOption * VerticalPadding), 1, 1, Layer2);
+		TouhouEngine::DrawTexture("Jakob.png", Vector2D(-3, 2 - CurrentOption * VerticalPadding), 1, 1, Layer2);
 		if (TouhouEngine::GetKeyPressed("enter"))
 		{
 			if (CurrentOption == 0)
@@ -63,7 +63,7 @@ void MainMenu::Update()
 		}
 	}
 	int Layer3[] = { 0,0,0,0 };
-	Texture::DrawTexture("Backgrund1.png", Vector2D(0,0), 16, 9, Layer3);
+	TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0,0), 16, 9, Layer3);
 
 }
 MainMenu::~MainMenu()

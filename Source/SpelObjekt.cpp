@@ -234,12 +234,12 @@ void Player::Update()
 	for (int i = 0; i < HP; i++)
 	{
 		int Layer[] = { 100,1,0,0 };
-		Texture::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1,Layer);
+		TouhouEngine::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1,Layer);
 	}
 	for (int i = 0; i < Bombs; i++)
 	{
 		int Layer[] = { 100,1,0,0 };
-		Texture::DrawTexture("Bomb.png", Vector2D(5 + i * 1.2f, -1.5), 1, 1, Layer);
+		TouhouEngine::DrawTexture("Bomb.png", Vector2D(5 + i * 1.2f, -1.5), 1, 1, Layer);
 	}
 	//här kör vi koden som styr vad som händer när spelaren blir träffad
 	if (Invincible_Timer == 0 && GotHit == 1)
@@ -279,7 +279,7 @@ void Player::Update()
 	int VisualLayerEnergy[] = { 100,1,0,0 };
 	float FullLength = 4;
 	Vector2D EnergybarPosition = Vector2D(-6, 0 -(FullLength - FullLength * (CurrentEnergy / MaxEnergy)/2));
-	Texture::DrawTexture("Bluesquare.png", EnergybarPosition, 1, FullLength* (CurrentEnergy / MaxEnergy), VisualLayerEnergy);
+	TouhouEngine::DrawTexture("Bluesquare.png", EnergybarPosition, 1, FullLength* (CurrentEnergy / MaxEnergy), VisualLayerEnergy);
 
 	//Bomb koden
 	std::vector<GameObject*> KulorAttDeleta = {};
@@ -369,7 +369,7 @@ void Player::Update()
 	if (Key_Shift)
 	{
 		int VisualLayer[] = { 0,1,0,0 };
-		Texture::DrawTexture("RedSquare.png", Position, Hitbox.x, Hitbox.y, VisualLayer);
+		TouhouEngine::DrawTexture("RedSquare.png", Position, Hitbox.x, Hitbox.y, VisualLayer);
 	}
 	//kod för att skrigva spelarens namn, bara för att testa
 	std::vector<int> LayerFörNamnet = { 10000000,1,1,1 };
@@ -564,10 +564,10 @@ void Level1::Update()
 			PlayerWasAlive = true;
 			int Layer[] = { 100,0,0,0 };
 			int Layer2[] = { -100,0,0,0 };
-			Texture::DrawTexture("RedSquare.png", Vector2D(6, 0), 4, 9, Layer);
-			Texture::DrawTexture("RedSquare.png", Vector2D(-6, 0), 4, 9, Layer);
+			TouhouEngine::DrawTexture("RedSquare.png", Vector2D(6, 0), 4, 9, Layer);
+			TouhouEngine::DrawTexture("RedSquare.png", Vector2D(-6, 0), 4, 9, Layer);
 			//vi drar ban texturen
-			Texture::DrawTexture("Backgrund3.png", Vector2D(0, (-4.5 + 18) - Level_1_BGPosition), 16, 36, Layer2);
+			TouhouEngine::DrawTexture("Backgrund3.png", Vector2D(0, (-4.5 + 18) - Level_1_BGPosition), 16, 36, Layer2);
 			//test
 			Level_1_BGPosition += Level_1_BGSpeed;
 			Level_1_BGPosition = std::fmod(Level_1_BGPosition, 27);
@@ -672,8 +672,8 @@ void Level1::Update()
 					if ((EndBossSpawnTimer / 20) % 2 == 1)
 					{
 						int Layern[] = { 10000,0,0,0 };
-						Texture::DrawTexture("Ossian.png", Vector2D(-3, 2.7), 1, 1, Layern);
-						Texture::DrawTexture("Ossian.png", Vector2D(3, 2.7), 1, 1, Layern);
+						TouhouEngine::DrawTexture("Ossian.png", Vector2D(-3, 2.7), 1, 1, Layern);
+						TouhouEngine::DrawTexture("Ossian.png", Vector2D(3, 2.7), 1, 1, Layern);
 						std::vector<int> Layer3 = { 10000,0,0,0 };
 						DrawTextRectangle("Varning", Vector2D(0, 2.7),Layer3, 0.4);
 					}
@@ -738,7 +738,7 @@ void Level1::Update()
 						DrawTextRectangle("Your time is "+std::to_string(Level1_Timer/60), Vector2D(0, 0), Layer123,0.4);
 						DrawTextRectangle("Press Esc to return to main menu", Vector2D(0, -2), Layer123,0.25);
 						int Layer3[] = { 0,0,0,0 };
-						Texture::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
+						TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
 						if (TouhouEngine::GetKeyDown("esc"))
 						{
 							TouhouEngine::Destroy(this);
@@ -780,7 +780,7 @@ void Level1::Update()
 		//vi ritar game over, och sedan "klicka enter för att fortsätta
 		std::vector<int> Layern = { 1,1,1,1 };
 		int Layern2[4] = { 0,1,1,1 };
-		Texture::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layern2);
+		TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layern2);
 		DrawTextRectangle("GAME OVER", Vector2D(0, 2.75), Layern,0.6);
 		DrawTextRectangle("Press enter to retry", Vector2D(0, -0.75), Layern);
 		PlayerWasAlive = false;
@@ -815,8 +815,8 @@ void Enemy::DrawHealthbar()
 	}
 	LifeLayer[1] += 1;
 	float HealtbarPercentage = HP / MaxHp;
-	Texture::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-	Texture::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
+	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
 }
 void Enemy::DrawHealthbar(float Offset)
 {
@@ -832,7 +832,7 @@ void Enemy::DrawHealthbar(float Offset)
 	LifeLayer[1] += 1;
 
 	float HealtbarPercentage = HP / MaxHp;
-	Texture::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f+Offset), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-	Texture::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f+Offset), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
+	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f+Offset), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f+Offset), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
 	//std::cout << MaxHp << std::endl;
 }

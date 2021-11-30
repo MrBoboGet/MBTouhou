@@ -8,6 +8,7 @@
 #include <TouhouSoundEngine.h>
 #include <MBUtility/MBMath.h>
 #include <memory>
+#include <MBGraphicsEngine/MBGE.h>
 class ActiveObjectIterator
 {
 private:
@@ -54,6 +55,7 @@ public:
 		return(*this);
 	}
 };
+typedef MBGE::ShaderProgram Shader;
 class TouhouEngine
 {
 	friend class TouhouSoundEngineSoundObject;
@@ -82,9 +84,16 @@ private:
 	static std::unordered_map<std::string, std::shared_ptr<Shader>> LoadedShaders;
 	static std::unordered_map<std::string, std::shared_ptr<Texture>> LoadedTextures;
 
+	static std::vector<DrawObject> DrawCalls;
+	static MBGE::Camera __Camera;
+	static std::unique_ptr<MBGE::SpriteModel> __SpriteModel;
+
+	//static MBGE::MBGraphicsEngine __GraphicsEngine;
+
+	static void p_DrawDrawObject(DrawObject& ObjectToDraw);
 public:
 
-	static std::vector<DrawObject*> DrawCalls;
+
 
 	static float Framerate;
 	TouhouEngine();
@@ -109,6 +118,9 @@ public:
 	static std::shared_ptr<Texture> GetNamedTexture(std::string const& TextureName);
 	static std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
 	static bool NamedTextureLoaded(std::string const& TextureName);
+	
+	static void DrawTexture(std::string NamedTexture, Vector2D Position, float Width, float Height, int Layer[]);
+	static void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, int Layer[]);
 
 	static void DebugLog(std::string TextToLog);
 

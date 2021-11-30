@@ -2,7 +2,7 @@ project(MBTouhou)
 set(PROJECT_NAME "MBTouhou")
 ##BEGIN MBPM_VARIABLES
 set(MBPM_DEPENDENCIES 
-	MrBoboGraphicsEngine
+	MBGraphicsEngine
 	stb
 	assimp
 	irrxml
