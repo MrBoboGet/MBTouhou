@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <filesystem>
+#include <assert.h>
 std::unordered_map<std::string, std::shared_ptr<Shader>> TouhouEngine::LoadedShaders = {};
 std::unordered_map<std::string, std::shared_ptr<Texture>> TouhouEngine::LoadedTextures = {};
 GLFWwindow* TouhouEngine::CurrentWindow = nullptr;
@@ -23,7 +24,7 @@ std::vector<TouhouSoundEngineSoundObject*> TouhouEngine::SoundObjects = std::vec
 MBGE::Camera TouhouEngine::__Camera = MBGE::Camera();
 std::unique_ptr<MBGE::SpriteModel> TouhouEngine::__SpriteModel = std::unique_ptr<MBGE::SpriteModel>(nullptr);
 //std::vector<void(*)()> TouhouEngine::CustomUpdateProcedures = std::vector<void(*)()>(0);
-
+#define GLCall(x) x
 TouhouEngine::TouhouEngine()
 {
 }
@@ -340,7 +341,7 @@ void TouhouEngine::InitializeWindow(int Width, int Height, std::string WindowNam
 	if (!TouhouEngine::CurrentWindow)
 	{
 		glfwTerminate();
-		ASSERT(false);
+		assert(false);
 	}
 	/* Make the window's context current */
 	glfwMakeContextCurrent(TouhouEngine::CurrentWindow);

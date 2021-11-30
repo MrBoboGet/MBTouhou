@@ -4,17 +4,10 @@
 #include <fstream>
 #include <string>
 #include <ctime>
-#include <Renderer.h> 
-#include <VertexBuffer.h>
-#include <IndexBuffer.h>
-#include <VertexArray.h>
-#include <VertexBufferLayout.h>
-#include <Texture.h>
 //#include <gl3w/include/GL/gl3w.h>
 #include <vector>
 #include <Gameobject.h>
 #include <SpelObjekt.h>
-#include <MinMath.h>
 #include <unordered_map>
 #include <Hitbox.h>
 #include <Engine.h>

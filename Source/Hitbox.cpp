@@ -1,5 +1,4 @@
 #include <Hitbox.h>
-#include <MinMath.h>
 #include <MBUtility/MBMath.h>
 #include<iostream>
 /*

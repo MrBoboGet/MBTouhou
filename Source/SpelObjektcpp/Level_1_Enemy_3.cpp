@@ -1,7 +1,6 @@
 #include <Level_1_Enemy_3.h>
 #include <Enemy_Bullet_Template.h>
 #include <Engine.h>
-#include <MinMath.h>
 #include <Hitbox.h>
 #include <SpelObjekt.h>
 #include <iostream>

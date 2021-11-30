@@ -1,11 +1,6 @@
 #include <Gameobject.h>
-#include <VertexBuffer.h>
-#include <VertexBuffer.h>
-#include <VertexBufferLayout.h>
 #include <ctime>
 #include <iostream>
-#include <IndexBuffer.h>
-#include <Texture.h>
 #include <Engine.h>
 //extern GLFWwindow* window;
 //extern std::vector<GameObject*> ActiveGameObjects;

@@ -1,5 +1,4 @@
 #include <Johan.h>
-#include <MinMath.h>
 #include <Engine\TextRendering.h>
 #include <Enemy_Bullet_Template.h>
 #include <SpelObjekt.h>

@@ -1,5 +1,4 @@
 #include <SpelObjekt.h>
-#include <MinMath.h>
 #include <iostream>
 #include <Hitbox.h>
 #include <Player_Attack_BigShot.h>
@@ -10,6 +9,7 @@
 #include <Johan.h>
 #include <PausMenu.h>
 #include <MainMenu.h>
+#include <assert.h>
 Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("PlayerRegularBullet.png", 0.32)
 {
 	Position = Plats;
@@ -350,7 +350,7 @@ void Player::Update()
 	//		break;
 	//	}
 	//}
-	ASSERT(LevelPointer != nullptr);
+	assert(LevelPointer != nullptr);
 	void* Leveln = LevelPointer;
 	Level* Leveln_Object{ static_cast<Level*>(Leveln)};
 	if (Position.x > (8-Leveln_Object->X_Limit))

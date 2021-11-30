@@ -1,5 +1,4 @@
 #include <math.h>
-#include <MinMath.h>
 #include <iostream>
 #include <Vector2D.h>
 #include <MBUtility/MBMath.h>

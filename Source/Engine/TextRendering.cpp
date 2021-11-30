@@ -1,6 +1,5 @@
-#include <Engine\TextRendering.h>
+#include <Engine/TextRendering.h>
 #include<unordered_map>
-#include <Texture.h>
 #include <cctype>
 #include<Engine.h> 
 #include <iostream>
