@@ -6,7 +6,6 @@
 #include <iostream>
 #include <IndexBuffer.h>
 #include <Texture.h>
-#include <GLFW/glfw3.h>
 #include <Engine.h>
 //extern GLFWwindow* window;
 //extern std::vector<GameObject*> ActiveGameObjects;
@@ -55,79 +54,15 @@ void GameObject::Render()
 	//TODO Ha koordinater i vår engine som vi kan få fram, utan att behöva calla denn funktion varje gång, vem vet hur många cycles den tar
 	//glfwGetWindowSize(TouhouEngine::CurrentWindow, &Window_Width, &Window_Height);
 	TouhouEngine::_GetWindowSize(&Window_Width, &Window_Height);
-	float CameraCoordinates_X = Position.x/8;
-	float CameraCoordinates_Y = Position.y/4.5;
-	float Sprite_Width = Renderer.Size/8;
-	float Sprite_Height = Renderer.Size*((float)Renderer.ObjectTexture->GetHeight() / (float)Renderer.ObjectTexture->GetWidth())/8;
+	float Sprite_Width = Renderer.Size;
+	float Sprite_Height = Sprite_Width *((float)Renderer.ObjectTexture->GetHeight() / (float)Renderer.ObjectTexture->GetWidth());
+	int Layer[4];
+	Layer[0] = Renderer.Layer[0];
+	Layer[1] = Renderer.Layer[1];
+	Layer[2] = Renderer.Layer[2];
+	Layer[3] = Renderer.Layer[3];
+	TouhouEngine::DrawTexture(Renderer.ObjectTexture, Position, Sprite_Width, Sprite_Height, Layer);
 
-	Vector2D Vertex1( - Sprite_Width / 2, - Sprite_Height / 2);
-	Vector2D Vertex2( + Sprite_Width / 2, - Sprite_Height / 2);
-	Vector2D Vertex3( + Sprite_Width / 2, + Sprite_Height / 2);
-	Vector2D Vertex4( - Sprite_Width / 2, + Sprite_Height / 2);
-
-	Vertex1.Rotate(Rotation);
-	Vertex2.Rotate(Rotation);
-	Vertex3.Rotate(Rotation);
-	Vertex4.Rotate(Rotation);
-
-	float ScreenRelation = ((float)Window_Width / (float)Window_Height);
-	float positions[]
-	{
-		CameraCoordinates_X + Vertex1.x,CameraCoordinates_Y + Vertex1.y*ScreenRelation, 0.0f,0.0f,
-		CameraCoordinates_X + Vertex2.x,CameraCoordinates_Y + Vertex2.y*ScreenRelation, 1.0f,0.0f,
-		CameraCoordinates_X + Vertex3.x,CameraCoordinates_Y + Vertex3.y*ScreenRelation,1.0f,1.0f,
-		CameraCoordinates_X + Vertex4.x,CameraCoordinates_Y + Vertex4.y*ScreenRelation,0.0f,1.0f
-	};
-	unsigned int indices[] =
-	{
-		0,1,2,
-		2,3,0
-	};	
-
-	//TODO Fixa render koden i fienderna så att vi kan ha en gemensam vertex array och buffer istället för att skapa nya varje gång
-	VertexArray va;
-	VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-	VertexBufferLayout layout;
-	layout.push<float>(2);
-	layout.push<float>(2);
-	va.AddBuffer(vb, layout);
-	IndexBuffer ib(indices, 6);
-	ib.Bind();
-
-	Renderer.ObjectTexture->Bind(0);
-
-	//rendern att använda
-	auto ShaderToUse = TouhouEngine::GetNamedShader("SpriteShader");
-	ShaderToUse->Bind();
-	ShaderToUse->SetUniform1i("u_Texture", 0);
-	ShaderToUse->SetUniform4f("ColorKoef", this->Renderer.ColorKoef.R, this->Renderer.ColorKoef.G, this->Renderer.ColorKoef.B, this->Renderer.ColorKoef.A);
-
-	GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-
-	//*/
-	//debug grej som gör att vi ritar själva strecken som utgör hitboxen
-	if (Debug)
-	{
-		std::vector<int> Layern = { 1000,0,0,0 };
-		Vector2D HitboxVertex1 = Vector2D(-Hitbox.x / 2, -Hitbox.y / 2);
-		Vector2D HitboxVertex2 = Vector2D(-Hitbox.x / 2, +Hitbox.y / 2);
-		Vector2D HitboxVertex3 = Vector2D(+Hitbox.x / 2, +Hitbox.y / 2);
-		Vector2D HitboxVertex4 = Vector2D(+Hitbox.x / 2, -Hitbox.y / 2);
-		HitboxVertex1.Rotate(Rotation);
-		HitboxVertex2.Rotate(Rotation);
-		HitboxVertex3.Rotate(Rotation);
-		HitboxVertex4.Rotate(Rotation);
-		HitboxVertex1 =HitboxVertex1+ Position;
-		HitboxVertex2 =HitboxVertex2+ Position;
-		HitboxVertex3 =HitboxVertex3+ Position;
-		HitboxVertex4 =HitboxVertex4+ Position;
-		
-		ASSERT(false);
-		//Texture::DrawLine(HitboxVertex1, HitboxVertex2, Layern);
-		//Texture::DrawLine(HitboxVertex1, HitboxVertex4, Layern);
-		//Texture::DrawLine(HitboxVertex3, HitboxVertex2, Layern);
-		//Texture::DrawLine(HitboxVertex3, HitboxVertex4, Layern);
-	}
 }
 GameObjectRenderer::~GameObjectRenderer()
 {

@@ -122,7 +122,6 @@ set(PROJECT_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/IndexBuffer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Renderer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Shader.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Source.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/SpelObjekt.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/SpelObjektcpp/Enemy_Bullet_Template.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/SpelObjektcpp/Johan.cpp"
@@ -171,9 +170,9 @@ set(COMMON_DYNAMIC_LIBRARIES
 )
 set(COMMON_STATIC_LIBRARIES 
 	#"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/glew32s.lib"
-	"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/glew32.lib"
-	"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/glfw3.lib"
-	"opengl32.lib"
+	#"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/glew32.lib"
+	#"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/glfw3.lib"
+	#"opengl32.lib"
 )
 
 set(COMMON_INCLUDE_DIRECTORIES
@@ -184,6 +183,9 @@ set(COMMON_INCLUDE_DIRECTORIES
 	"${CMAKE_CURRENT_SOURCE_DIR}/Source/SpelObjektcpp/"
 	"${CMAKE_CURRENT_SOURCE_DIR}/_Libs/Includes/"
 )
+set(EXECUTABLE_FILES
+	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Source.cpp"
+)
 
 set(COMMON_LIBRARIES ${COMMON_STATIC_LIBRARIES} ${COMMON_DYNAMIC_LIBRARIES})
 
@@ -192,17 +194,21 @@ MBPM_ApplyTargetConfiguration("MBTouhou_SD" "STATIC" "DEBUG")
 target_compile_features("MBTouhou_SD" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou_SD" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou_SD" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
+target_include_directories("MBTouhou_SD" PRIVATE "$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/gl3w/include/")
 
 add_library(MBTouhou_SR STATIC ${COMMON_FILES})
 MBPM_ApplyTargetConfiguration("MBTouhou_SR" "STATIC" "RELEASE")
 target_compile_features("MBTouhou_SR" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou_SR" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou_SR" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
+target_include_directories("MBTouhou_SR" PRIVATE "$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/gl3w/include/")
 
-add_executable(MBTouhou ${COMMON_FILES})
+add_executable(MBTouhou ${COMMON_FILES}  ${EXECUTABLE_FILES})
 MBPM_ApplyTargetConfiguration("MBTouhou" "STATIC" "DEBUG")
 target_compile_features("MBTouhou" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
-message(${COMMON_LIBRARIES})
+target_include_directories("MBTouhou" PRIVATE "$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/gl3w/include/")
+MBPM_LinkTargetPacketLibraries("MBTouhou")
+#message(${COMMON_LIBRARIES})
 

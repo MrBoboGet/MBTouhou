@@ -1,6 +1,4 @@
 #include <SpelObjekt.h>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <MinMath.h>
 #include <iostream>
 #include <Hitbox.h>

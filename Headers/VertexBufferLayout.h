@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <Renderer.h>
-#include <GL/glew.h>
+#include <gl3w/include/GL/gl3w.h>
 template<typename T>
 struct identity { typedef T type; };
 struct VertexBufferElement

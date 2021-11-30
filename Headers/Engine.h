@@ -3,8 +3,8 @@
 #include <Shader.h>
 #include <Texture.h>
 #include <string>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <gl3w/include/GL/gl3w.h>
+#include <glfw/include/GLFW/glfw3.h>
 #include <TouhouSoundEngine.h>
 #include <MBUtility/MBMath.h>
 #include <memory>
@@ -56,6 +56,8 @@ public:
 	}
 };
 typedef MBGE::ShaderProgram Shader;
+//struct GLFWwindow;
+//struct GLFWmonitor;
 class TouhouEngine
 {
 	friend class TouhouSoundEngineSoundObject;

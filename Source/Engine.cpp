@@ -1,6 +1,9 @@
 #include <Engine.h>
 #include <ctime>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <filesystem>
 std::unordered_map<std::string, std::shared_ptr<Shader>> TouhouEngine::LoadedShaders = {};
 std::unordered_map<std::string, std::shared_ptr<Texture>> TouhouEngine::LoadedTextures = {};
 GLFWwindow* TouhouEngine::CurrentWindow = nullptr;
@@ -17,6 +20,8 @@ std::unordered_map<std::string, bool> TouhouEngine::PreviouslyPressedKeys = std:
 
 TouhouSoundEngine TouhouEngine::SoundEngine = TouhouSoundEngine();
 std::vector<TouhouSoundEngineSoundObject*> TouhouEngine::SoundObjects = std::vector<TouhouSoundEngineSoundObject*>(0);
+MBGE::Camera TouhouEngine::__Camera = MBGE::Camera();
+std::unique_ptr<MBGE::SpriteModel> TouhouEngine::__SpriteModel = std::unique_ptr<MBGE::SpriteModel>(nullptr);
 //std::vector<void(*)()> TouhouEngine::CustomUpdateProcedures = std::vector<void(*)()>(0);
 
 TouhouEngine::TouhouEngine()
@@ -138,9 +143,9 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 				if (LayerIsBigger(TouhouEngine::DrawCalls[j].Layer, TouhouEngine::DrawCalls[j + 1].Layer) == true)
 				{
 					//Då byter vi plats på dem
-					auto Temp = TouhouEngine::DrawCalls[j];
-					TouhouEngine::DrawCalls[j] = TouhouEngine::DrawCalls[j + 1];
-					TouhouEngine::DrawCalls[j + 1] = Temp;
+					auto Temp = std::move(TouhouEngine::DrawCalls[j]);
+					TouhouEngine::DrawCalls[j] = std::move(TouhouEngine::DrawCalls[j + 1]);
+					TouhouEngine::DrawCalls[j + 1] = std::move(Temp);
 				}
 			}
 		}
@@ -198,7 +203,7 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 void TouhouEngine::InitializeEngineCompononets()
 {
 	SoundEngine.Initialize();
-	TouhouEngine::__Camera.SetOrtographicProjection(16, 10);
+	TouhouEngine::__Camera.SetOrtographicProjection(16, 9);
 }
 void TouhouEngine::UpdateSoundSystem()
 {
@@ -331,7 +336,7 @@ void TouhouEngine::InitializeWindow(int Width, int Height, std::string WindowNam
 	}
 	/* Make the window's context current */
 	glfwMakeContextCurrent(TouhouEngine::CurrentWindow);
-	if (glewInit() == GLEW_OK)
+	if (gl3wInit() == GL3W_OK)
 	{
 		std::cout << "det funkar" << std::endl;
 	}
@@ -467,6 +472,14 @@ std::shared_ptr<Texture> TouhouEngine::GetNamedTexture(std::string const& Textur
 	{
 		ReturnValue = LoadedTextures[TextureName];
 	}
+	else
+	{
+		//LEGACY KOD, ska bort
+		if (std::filesystem::exists("./Resources/SpelResurser/Sprites/" + TextureName))
+		{
+			ReturnValue = TouhouEngine::LoadNamedTexture(TextureName, "./Resources/SpelResurser/Sprites/" + TextureName);
+		}
+	}
 	return(ReturnValue);
 }
 bool TouhouEngine::NamedTextureLoaded(std::string const& TextureName)
@@ -481,10 +494,18 @@ std::shared_ptr<Texture> TouhouEngine::LoadNamedTexture(std::string const& Textu
 }
 void TouhouEngine::DrawTexture(std::string NamedTexture, Vector2D Position, float Width, float Height, int Layer[])
 {
+	if (NamedTexture.find("Back") != NamedTexture.npos)
+	{
+		std::cout << "";
+	}
 	DrawTexture(TouhouEngine::GetNamedTexture(NamedTexture), Position, Width, Height, Layer);
 }
 void TouhouEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, int Layer[])
 {
+	if (TextureToDraw == nullptr)
+	{
+		std::cout << "";
+	}
 	DrawObject NewObjectToDraw;
 	NewObjectToDraw.Texturen = TextureToDraw;
 	NewObjectToDraw.Position = Position;
@@ -498,15 +519,61 @@ void TouhouEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D 
 }
 void TouhouEngine::p_DrawDrawObject(DrawObject& ObjectToDraw)
 {
+	if (ObjectToDraw.Texturen == nullptr)
+	{
+		return;
+	}
+	//ObjectToDraw.Position = Vector2D(0, 0);
+	//ObjectToDraw.Width = 8;
+	//ObjectToDraw.Height = 5;
 	ObjectToDraw.Texturen->Bind(0);
 	MBGE::UniformValue ValuesToUse;
+	TouhouEngine::__Camera.WorldSpaceCoordinates = MBMath::MBVector3<float>(0, 0, -20);
 	TouhouEngine::__Camera.Update(ValuesToUse);
 	auto ShaderToUse = GetNamedShader("SpriteShader");
+	TouhouEngine::__SpriteModel->SetShader(ShaderToUse);
+	TouhouEngine::__SpriteModel->SetTexture(ObjectToDraw.Texturen);
 	ShaderToUse->SetUniformMat4f("View", ValuesToUse.GetValue("View").GetMat4().GetContinousData());
 	ShaderToUse->SetUniformMat4f("Projection", ValuesToUse.GetValue("Projection").GetMat4().GetContinousData());
-	TouhouEngine::__SpriteModel->ModelTransform.SetScaling(MBMath::MBVector3<float>(ObjectToDraw.Width,ObjectToDraw.Height,0));
+	TouhouEngine::__SpriteModel->ModelTransform.SetScaling(MBMath::MBVector3<float>(ObjectToDraw.Width,ObjectToDraw.Height,1));
 	TouhouEngine::__SpriteModel->ModelTransform.SetPosition(MBMath::MBVector3<float>(ObjectToDraw.Position.x,ObjectToDraw.Position.y,0));
 	ShaderToUse->SetUniformMat4f("Model",TouhouEngine::__SpriteModel->ModelTransform.GetModelMatrix().GetContinousData());
+	if (ObjectToDraw.Height == 36)
+	{
+		std::cout << "";
+		MBMath::MBMatrix4<float> View = ValuesToUse.GetValue("View").GetMat4();
+		MBMath::MBMatrix4<float> Projection = ValuesToUse.GetValue("Projection").GetMat4();
+		MBMath::MBMatrix4<float> Model = TouhouEngine::__SpriteModel->ModelTransform.GetModelMatrix();
+		std::cout << "View:" << std::endl << View<<std::endl;
+		std::cout << "Projection:" << std::endl << Projection <<std::endl;
+		std::cout << "Model:" << std::endl << Model <<std::endl;
+		MBMath::MBStaticVector<float,4> TestVector1;
+		TestVector1[0] = -0.5;
+		TestVector1[1] = -0.5;
+		TestVector1[2] = 0;
+		TestVector1[3] = 1;
+		std::cout << Projection * View * Model * TestVector1 <<std::endl;
+		MBMath::MBStaticVector<float, 4> TestVector2;
+		TestVector2[0] = -0.5;
+		TestVector2[1] = 0.5;
+		TestVector2[2] = 0;
+		TestVector2[3] = 1;
+		std::cout << Projection * View * Model * TestVector2 << std::endl;
+		MBMath::MBStaticVector<float, 4> TestVector3;
+		TestVector3[0] = 0.5;
+		TestVector3[1] = 0.5;
+		TestVector3[2] = 0;
+		TestVector3[3] = 1;
+		std::cout << Projection * View * Model * TestVector3 << std::endl;
+		MBMath::MBStaticVector<float, 4> TestVector4;
+		TestVector4[0] = 0.5;
+		TestVector4[1] = -0.5;
+		TestVector4[2] = 0;
+		TestVector4[3] = 1;
+		std::cout << Projection * View * Model * TestVector4 << std::endl;
+		std::cout << "Position: x=" << ObjectToDraw.Position.x << " y=" << ObjectToDraw.Position.y << std::endl;
+		ShaderToUse->PrintActiveAttributesAndUniforms();
+	}
 	TouhouEngine::__SpriteModel->Draw();
 }
 //Texture* TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
