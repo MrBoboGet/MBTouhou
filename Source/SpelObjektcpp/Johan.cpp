@@ -307,10 +307,10 @@ void Johan::Update()
 		//rita Johans liv
 		if (HP > 0)
 		{
-			int LivLayern[] = { 100,0,0,0 };
+			std::array<int,4> LivLayern = { 100,0,0,0 };
 			float HealthBarWidth = 6;
 			float HealthBarHeight = 1;
-			std::vector<int> Layer2 = { 1001,0,0,0 };
+			std::array<int,4> Layer2 = { 1001,0,0,0 };
 			DrawTextRectangle("Johan", Vector2D(0, 4.2), Layer2, 0.4);
 			TouhouEngine::DrawTexture("Green.png", Vector2D((1 - HP / (float)MaxHp) * HealthBarWidth * -0.5f, 3.8), 6 * (HP / (float)MaxHp), 0.1, LivLayern);
 			TouhouEngine::DrawTexture("RedSquare.png", Vector2D((HealthBarWidth / 2) - (1 - HP / (float)MaxHp) * 0.5f * HealthBarWidth, 3.8), 6 * (1 - HP / (float)MaxHp), 0.1, LivLayern);

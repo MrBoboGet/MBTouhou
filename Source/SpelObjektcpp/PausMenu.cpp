@@ -50,8 +50,8 @@ void PausMenu::Update()
 		}
 		else
 		{
-			int Layer3[] = { 1000000,0,0,0 };
-			std::vector<int> Layer4545 = { 1000001,0,0,0 };
+			std::array<int,4> Layer3 = { 1000000,0,0,0 };
+			std::array<int,4> Layer4545 = { 1000001,0,0,0 };
 			TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
 			DrawTextRectangle("Continue", Vector2D(0, 1.5), Layer4545, 0.4);
 			DrawTextRectangle("Quit", Vector2D(0, -1.5), Layer4545, 0.4);

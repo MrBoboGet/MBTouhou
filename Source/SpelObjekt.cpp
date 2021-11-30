@@ -231,12 +231,12 @@ void Player::Update()
 	//här ritar vi hur mycket HP man har
 	for (int i = 0; i < HP; i++)
 	{
-		int Layer[] = { 100,1,0,0 };
+		std::array<int,4> Layer = { 100,1,0,0 };
 		TouhouEngine::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1,Layer);
 	}
 	for (int i = 0; i < Bombs; i++)
 	{
-		int Layer[] = { 100,1,0,0 };
+		std::array<int,4> Layer = { 100,1,0,0 };
 		TouhouEngine::DrawTexture("Bomb.png", Vector2D(5 + i * 1.2f, -1.5), 1, 1, Layer);
 	}
 	//här kör vi koden som styr vad som händer när spelaren blir träffad
@@ -274,7 +274,7 @@ void Player::Update()
 		}
 	}
 	//nu ska vi även rita vår fina energi mätare
-	int VisualLayerEnergy[] = { 100,1,0,0 };
+	std::array<int,4> VisualLayerEnergy = { 100,1,0,0 };
 	float FullLength = 4;
 	Vector2D EnergybarPosition = Vector2D(-6, 0 -(FullLength - FullLength * (CurrentEnergy / MaxEnergy)/2));
 	TouhouEngine::DrawTexture("Bluesquare.png", EnergybarPosition, 1, FullLength* (CurrentEnergy / MaxEnergy), VisualLayerEnergy);
@@ -366,7 +366,7 @@ void Player::Update()
 	//vi kör koden för att rita grejewn efter all movmenet är avklarad
 	if (Key_Shift)
 	{
-		int VisualLayer[] = { 0,1,0,0 };
+		std::array<int,4> VisualLayer = { 0,1,0,0 };
 		TouhouEngine::DrawTexture("RedSquare.png", Position, Hitbox.x, Hitbox.y, VisualLayer);
 	}
 	//kod för att skrigva spelarens namn, bara för att testa
@@ -555,13 +555,13 @@ void Level1::Update()
 {
 	if ((TouhouEngine::FindObjectWithName("Spelaren") != nullptr || Level1_Timer == 0) || LevelISFinised == true)
 	{
-		std::vector<int> Layer123 = { 1000000,0,0,0 };
+		std::array<int,4> Layer123 = { 1000000,0,0,0 };
 		if (LevelISFinised == false)
 		{
 			Level1_Timer += 1;
 			PlayerWasAlive = true;
-			int Layer[] = { 100,0,0,0 };
-			int Layer2[] = { -100,0,0,0 };
+			std::array<int,4> Layer = { 100,0,0,0 };
+			std::array<int,4> Layer2 = { -100,0,0,0 };
 			TouhouEngine::DrawTexture("RedSquare.png", Vector2D(6, 0), 4, 9, Layer);
 			TouhouEngine::DrawTexture("RedSquare.png", Vector2D(-6, 0), 4, 9, Layer);
 			//vi drar ban texturen
@@ -669,10 +669,10 @@ void Level1::Update()
 					//spawna ossian bilden med varning
 					if ((EndBossSpawnTimer / 20) % 2 == 1)
 					{
-						int Layern[] = { 10000,0,0,0 };
+						std::array<int,4> Layern = { 10000,0,0,0 };
 						TouhouEngine::DrawTexture("Ossian.png", Vector2D(-3, 2.7), 1, 1, Layern);
 						TouhouEngine::DrawTexture("Ossian.png", Vector2D(3, 2.7), 1, 1, Layern);
-						std::vector<int> Layer3 = { 10000,0,0,0 };
+						std::array<int,4> Layer3 = { 10000,0,0,0 };
 						DrawTextRectangle("Varning", Vector2D(0, 2.7),Layer3, 0.4);
 					}
 				}
@@ -735,7 +735,7 @@ void Level1::Update()
 						DrawTextRectangle("Congratulations", Vector2D(0, 2.75), Layer123,0.6);
 						DrawTextRectangle("Your time is "+std::to_string(Level1_Timer/60), Vector2D(0, 0), Layer123,0.4);
 						DrawTextRectangle("Press Esc to return to main menu", Vector2D(0, -2), Layer123,0.25);
-						int Layer3[] = { 0,0,0,0 };
+						std::array<int,4> Layer3 = { 0,0,0,0 };
 						TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
 						if (TouhouEngine::GetKeyDown("esc"))
 						{
@@ -776,8 +776,8 @@ void Level1::Update()
 			}
 		}
 		//vi ritar game over, och sedan "klicka enter för att fortsätta
-		std::vector<int> Layern = { 1,1,1,1 };
-		int Layern2[4] = { 0,1,1,1 };
+		std::array<int,4> Layern = { 1,1,1,1 };
+		std::array<int,4> Layern2 = { 0,1,1,1 };
 		TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layern2);
 		DrawTextRectangle("GAME OVER", Vector2D(0, 2.75), Layern,0.6);
 		DrawTextRectangle("Press enter to retry", Vector2D(0, -0.75), Layern);
@@ -806,7 +806,7 @@ void Enemy::DrawHealthbar()
 	//dra liv kod
 	float LifeWidth = 0.5;
 	float LifeHeight = 0.125f;
-	int LifeLayer[] = { 0,0,0,0 };
+	std::array<int,4> LifeLayer = { 0,0,0,0 };
 	for (int i = 0; i < 4;i++)
 	{
 		LifeLayer[i] = this->Renderer.Layer[i];
@@ -822,7 +822,7 @@ void Enemy::DrawHealthbar(float Offset)
 	//dra liv kod
 	float LifeWidth = 0.5;
 	float LifeHeight = 0.125f;
-	int LifeLayer[] = { 0,0,0,0 };
+	std::array<int,4> LifeLayer = { 0,0,0,0 };
 	for (int i = 0; i < 4;i++)
 	{
 		LifeLayer[i] = this->Renderer.Layer[i];

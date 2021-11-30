@@ -12,7 +12,7 @@
 
 float TextHeight = 0.2;
 float TextWidth = 0.2;
-void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D LowerRightCoordinate, std::vector<int> Layer,float Size)
+void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D LowerRightCoordinate, std::array<int,4> Layer,float Size)
 {
 	TextHeight = Size;
 	TextWidth = Size;
@@ -58,8 +58,8 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 		{
 			break;
 		}
-		int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3]};
-		TouhouEngine::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layern);
+		//int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3]};
+		TouhouEngine::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layer);
 		//förflyttar positionenen som om det vore helt uniform storlek på texten
 		PositionToDraw.x += TextWidth;
 		if (PositionToDraw.x+TextWidth/2 > LowerRightCoordinate.x)
@@ -69,7 +69,7 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 		}
 	}
 }
-void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::vector<int> Layer,float Size, float R, float G, float B , float A)
+void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::array<int,4> Layer,float Size, float R, float G, float B , float A)
 {
 	//vi börjar med att räkna ut var någonstans vi ska börja, genom att ta bredden av all vår text och räkna ut hur långt åt vänster vi ska börja
 	float WidthOfTextToDraw = 0;
@@ -113,8 +113,8 @@ void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::vector<int> La
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita
 		//Som det är nu så kommer vi bara att rita dem som om dem hade samma storlek
-		int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3] };
-		TouhouEngine::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layern);
+		//int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3] };
+		TouhouEngine::DrawTexture(CharacterToDraw, PositionToDraw, TextWidth, TextHeight, Layer);
 		//förflyttar positionenen som om det vore helt uniform storlek på texten
 		PositionToDraw.x += TextWidth;
 	}

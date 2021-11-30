@@ -10,8 +10,8 @@ void MainMenu::Update()
 {
 	//ritar dem 3 optionsen vi har
 	float VerticalPadding = 2;
-	std::vector<int> Layer = { 1,1,1,1 };
-	int Layer2[] = { 1,1,1,1 };
+	std::array<int,4> Layer = { 1,1,1,1 };
+	std::array<int,4> Layer2 = { 1,1,1,1 };
 	if (!InSubMenu)
 	{
 		DrawTextRectangle("Start Game", Vector2D(0, 2), Layer, 0.4);
@@ -62,7 +62,7 @@ void MainMenu::Update()
 			InSubMenu = false;
 		}
 	}
-	int Layer3[] = { 0,0,0,0 };
+	std::array<int,4> Layer3 = { 0,0,0,0 };
 	TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0,0), 16, 9, Layer3);
 
 }

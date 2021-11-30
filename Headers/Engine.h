@@ -9,6 +9,7 @@
 #include <MBUtility/MBMath.h>
 #include <memory>
 #include <MBGraphicsEngine/MBGE.h>
+#include <array>
 class ActiveObjectIterator
 {
 private:
@@ -121,8 +122,8 @@ public:
 	static std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
 	static bool NamedTextureLoaded(std::string const& TextureName);
 	
-	static void DrawTexture(std::string NamedTexture, Vector2D Position, float Width, float Height, int Layer[]);
-	static void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, int Layer[]);
+	static void DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int,4> Layer);
+	static void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
 
 	static void DebugLog(std::string TextToLog);
 

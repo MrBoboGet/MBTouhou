@@ -56,7 +56,7 @@ void GameObject::Render()
 	TouhouEngine::_GetWindowSize(&Window_Width, &Window_Height);
 	float Sprite_Width = Renderer.Size;
 	float Sprite_Height = Sprite_Width *((float)Renderer.ObjectTexture->GetHeight() / (float)Renderer.ObjectTexture->GetWidth());
-	int Layer[4];
+	std::array<int,4> Layer;
 	Layer[0] = Renderer.Layer[0];
 	Layer[1] = Renderer.Layer[1];
 	Layer[2] = Renderer.Layer[2];
@@ -104,15 +104,6 @@ GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) : Object
 
 }
 */
-void GameObject::Collision()
-{
-	//nu kommer vi till problemet av att ha en kollision för spelet. Ett sätt vore att varje föremål checkar kollision mot alla andra föremål i rummet
-	//men då vår vi problemet att antalet jämförelser växer med n^2 eller i bästa fall (n^2-n)/2. om det är säg 100 kulor blir det 100 jämförelser.
-	//frågan om det ens går att göra på ett bättre sätt. En grej man skulle kunna göra är att innan man kör någon mer logic så kollar man att avståndet
-	//mellan dem 2 föremålen är ett minsta värde, om det inte är det kan vi ju direkt avgöra att det inte kan vara en kollision.
-	//En annan metod vore att kolla Kollision för enbart specifika grejer. I vårt fall kan ju alla fiende kulor bara kolla om dem kommer träffa en spelare
-	//och om dem gör det så händer saker. Våra kulor har ju fortfarande problemet. Vi börjar kollision med fiend kulor och oss
-}
 
 //component grejer
 void GameObject::UpdateComponents()

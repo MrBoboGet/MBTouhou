@@ -40,19 +40,21 @@ protected:
 	std::unordered_map<std::string, Component*> ComponentDictionary = std::unordered_map<std::string,Component*>(0);
 public:
 	Vector2D Position;
-	int HP;
 	float Rotation = 0;
-	Vector2D Hitbox;
+	
+	int HP;
 	GameObjectRenderer Renderer;
+	
+	
 	bool Active = true;
-
+	Vector2D Hitbox;
 	//komponent grejer
 	void UpdateComponents();
 	void AddComponent(Component* ComponentName);
 	Component* GetComponent(std::string ComponentName);
 
 	virtual void Update();
-	virtual void Collision();
+	//virtual void Collision();
 	void Render();
 	GameObject();
 	GameObject(Vector2D Plats, std::string Namn, std::string Tagg);
