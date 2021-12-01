@@ -39,27 +39,26 @@ class GameObjectRenderer
 public:
 	struct ColorRGBA
 	{
-		float R;
-		float G;
-		float B;
-		float A;
+		float R = 1;
+		float G = 1;
+		float B = 1;
+		float A = 1;
 	};
 	ColorRGBA ColorKoef;
-	std::string Image;
-	float Size;
+	float Width = 1;
 	std::vector<int> Layer = { 0,0,0,0 };
 	//ett problem vi får med den här koden är att varje gameobject gör sin egen kopia av samma texture, vilket tar minne och eventuellt prestanda
 	//tanken är att jag gör en dictionary så att om en texture redans finns så säger vi att render idn är den texturen
-	std::shared_ptr<Texture> ObjectTexture = nullptr;
+	std::shared_ptr<Texture> SpriteTexture = nullptr;
 	//Shader ObjectShader;
-	GameObjectRenderer(std::string Bild);
-	GameObjectRenderer(std::string Namn, float Storlek);
+	//GameObjectRenderer(std::string Bild);
+	//GameObjectRenderer(std::string Namn, float Storlek);
 	GameObjectRenderer();
 	~GameObjectRenderer();
 };
 class GameObject
 {
-protected:
+private:
 	std::string Name;
 	std::string Tag;
 	std::vector<Component*> Components = std::vector<Component*>(0);
@@ -80,6 +79,7 @@ public:
 	Component* GetComponent(std::string ComponentName);
 
 	virtual void Update();
+	virtual void OnCreate();
 	//virtual void Collision();
 	void Render();
 	GameObject();
@@ -93,6 +93,14 @@ public:
 	inline std::string GetName()
 	{
 		return(Name);
+	}
+	void SetName(std::string NameToSet)
+	{
+		Name = std::move(NameToSet);
+	}
+	void SetTag(std::string TagToSet)
+	{
+		Tag = std::move(TagToSet);
 	}
 	//någon form av rendering funktion, eller är det något vi kan lägga till efter? 
 	//man skulle kunna göra update och liknande virtual, och ha grundläggande grejer i dem så att man alltid vet att dem har en

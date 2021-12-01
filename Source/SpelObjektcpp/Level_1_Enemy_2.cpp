@@ -11,8 +11,8 @@
 Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg) : Enemy("Fiende2.png", 1.6)
 {
 	Position = Plats;
-	Name = Namn;
-	Tag = Tagg;
+	SetName(Namn);
+	SetTag(Tagg);
 	Hitbox = Vector2D(1.6, 1.6);
 	speed = -0.005;
 	HP = 10;

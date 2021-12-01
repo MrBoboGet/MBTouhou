@@ -290,11 +290,11 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		{
 			//i objektet så låter vi förhållandet vara dynamiskt, men jag orkar inte fixa det så jag hardcodar det
 			//borde också vara enkelt att se om det blir fel, objekt försvinner från skärmen innan dem borde
-			auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetWidth()) / 8;
-			auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetWidth()) / 8;
+			auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
+			auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
 			//TODO faktiskt ta sig tiden att kolla och se till att denna kod funkar
-			auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size / 8;
-			auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Size / 8;
+			auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
+			auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
 			if (YPositionGlTop < -1 || YPositionGlBottom>1 || XPositionLeft < -1 || XPositionRight > 1)
 			{
 				//om den är utanför skärmen, spriten inte syns, deletar vi den helt enkelt
@@ -304,7 +304,7 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		}
 		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
 		{
-			if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Size * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.ObjectTexture->GetWidth()) / 8 < -1)
+			if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8 < -1)
 			{
 				ObjectOutside.push_back(i);
 				TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
@@ -313,7 +313,7 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player_Bullet")
 		{
 			auto Objektet = TouhouEngine::ActiveGameObjects[i];
-			if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Size * ((float)16 / (float)9) * (Objektet->Renderer.ObjectTexture->GetHeight() / (float)Objektet->Renderer.ObjectTexture->GetWidth()) / 8 > 1)
+			if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Width * ((float)16 / (float)9) * (Objektet->Renderer.SpriteTexture->GetHeight() / (float)Objektet->Renderer.SpriteTexture->GetWidth()) / 8 > 1)
 			{
 				//spelar kulorna är över skärmen
 				ObjectOutside.push_back(i);

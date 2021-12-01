@@ -13,13 +13,13 @@ GameObjectRenderer::GameObjectRenderer()
 	ColorKoef.B = 1;
 	ColorKoef.G = 1;
 }
-GameObjectRenderer::GameObjectRenderer(std::string Bild)
-{
-	ColorKoef.A = 1;
-	ColorKoef.R = 1;
-	ColorKoef.B = 1;
-	ColorKoef.G = 1;
-}
+//GameObjectRenderer::GameObjectRenderer(std::string Bild)
+//{
+//	ColorKoef.A = 1;
+//	ColorKoef.R = 1;
+//	ColorKoef.B = 1;
+//	ColorKoef.G = 1;
+//}
 GameObject::GameObject()
 {	/*
 	Shader Shadern("Source/vertexshader.txt", "Source/fragmentshader.txt");
@@ -32,15 +32,30 @@ GameObject::GameObject()
 GameObject::GameObject(Vector2D Plats, std::string Namn, std::string Tagg)
 	:Position(Plats),Name(Namn),Tag(Tagg),Renderer(GameObjectRenderer())
 {
-
+	if (!TouhouEngine::NamedTextureLoaded(Namn))
+	{
+		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
+		//ObjectTexture = *NyTexture;
+		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
+		Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
+	}
+	else
+	{
+		Renderer.SpriteTexture = TouhouEngine::GetNamedTexture(Namn);
+	}
+	//Renderer.Width = Storlek;
 }
 void GameObject::Update()
 {
 
 }
+void GameObject::OnCreate()
+{
+
+}
 void GameObject::Render()
 {
-	if (Renderer.ObjectTexture == nullptr)
+	if (Renderer.SpriteTexture == nullptr)
 	{
 		return;
 	}
@@ -49,14 +64,14 @@ void GameObject::Render()
 	//TODO Ha koordinater i vår engine som vi kan få fram, utan att behöva calla denn funktion varje gång, vem vet hur många cycles den tar
 	//glfwGetWindowSize(TouhouEngine::CurrentWindow, &Window_Width, &Window_Height);
 	TouhouEngine::_GetWindowSize(&Window_Width, &Window_Height);
-	float Sprite_Width = Renderer.Size;
-	float Sprite_Height = Sprite_Width *((float)Renderer.ObjectTexture->GetHeight() / (float)Renderer.ObjectTexture->GetWidth());
+	float Sprite_Width = Renderer.Width;
+	float Sprite_Height = Sprite_Width *((float)Renderer.SpriteTexture->GetHeight() / (float)Renderer.SpriteTexture->GetWidth());
 	std::array<int,4> Layer;
 	Layer[0] = Renderer.Layer[0];
 	Layer[1] = Renderer.Layer[1];
 	Layer[2] = Renderer.Layer[2];
 	Layer[3] = Renderer.Layer[3];
-	TouhouEngine::DrawTexture(Renderer.ObjectTexture, Position, Sprite_Width, Sprite_Height, Layer);
+	TouhouEngine::DrawTexture(Renderer.SpriteTexture, Position, Sprite_Width, Sprite_Height, Layer);
 
 }
 GameObjectRenderer::~GameObjectRenderer()
@@ -72,27 +87,39 @@ GameObject::~GameObject()
 		delete(Components[i]);
 	}
 }
-GameObject::GameObject(std::string Namn,float Storlek) : Renderer(Namn,Storlek)
+GameObject::GameObject(std::string Namn,float Storlek)
 {
-}
-GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) :Image(Namn),Size(Storlek)
-{
-	ColorKoef.A = 1;
-	ColorKoef.R = 1;
-	ColorKoef.B = 1;
-	ColorKoef.G = 1;
 	if (!TouhouEngine::NamedTextureLoaded(Namn))
 	{
 		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
 		//ObjectTexture = *NyTexture;
 		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
-		ObjectTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
+		Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
 	}
 	else
 	{
-		ObjectTexture = TouhouEngine::GetNamedTexture(Namn);
+		Renderer.SpriteTexture = TouhouEngine::GetNamedTexture(Namn);
 	}
+	Renderer.Width = Storlek;
 }
+//GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) :Image(Namn),Width(Storlek)
+//{
+//	ColorKoef.A = 1;
+//	ColorKoef.R = 1;
+//	ColorKoef.B = 1;
+//	ColorKoef.G = 1;
+//	if (!TouhouEngine::NamedTextureLoaded(Namn))
+//	{
+//		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
+//		//ObjectTexture = *NyTexture;
+//		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
+//		ObjectTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
+//	}
+//	else
+//	{
+//		ObjectTexture = TouhouEngine::GetNamedTexture(Namn);
+//	}
+//}
 /*constructorn innan jag lade in caching systemet
 GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) : ObjectTexture("SpelResurser/Sprites/" + Namn),Image(Namn),Size(Storlek)
 {

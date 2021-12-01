@@ -13,8 +13,8 @@
 Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("PlayerRegularBullet.png", 0.32)
 {
 	Position = Plats;
-	Name = Namn;
-	Tag = Tagg;
+	SetName(Namn);
+	SetTag(Tagg);
 	//väldigt provosoriska siffror
 	//vi gör hitboxen större än spriten
 	Hitbox = Vector2D(0.2, 0.2);
@@ -24,8 +24,8 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)
 Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size) : GameObject(Texture,Size)
 {
 	 //namn och tag tar vi som standard, man borde aktivt ändra istället
-	Tag = "Player_Bullet";
-	Name = "Player_Bullet";
+	SetTag("Player_Bullet");
+	SetName("Player_Bullet");
 	Position = Plats;
 	//saker vi behöver faktiskt initializa	
 	//Hitbox
@@ -389,11 +389,11 @@ void Player::Update()
 Player::Player(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("Jakob.png",0.4)
 {
 	Position = Plats;
-	Name = Namn;
+	SetName(Namn);
 	Rotation = 0;
 	HP = 3;
 	Bombs = 3;
-	Tag = Tagg;
+	SetTag(Tagg);
 	//väldigt provosiriska siffror
 	Hitbox = Vector2D(0.15f, 0.15f);
 	speed = 0.1f;
@@ -418,8 +418,8 @@ Player::~Player()
 Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("fiendeattack1.png", 0.16)
 {
 	Position = Plats;
-	Name = Namn;
-	Tag = Tagg;
+	SetName(Namn);
+	SetTag(Tagg);
 	//väldigt provosoriska siffror
 	Hitbox = Vector2D(0.16, .16);
 	Speed = 0.08f;
@@ -501,8 +501,8 @@ Level1_Enemy_1::Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tag
 	Position = Plats;
 	HP = 10;
 	Hitbox = Vector2D(0.8, 0.8);
-	Name = Namn;
-	Tag = Tagg;
+	SetName(Namn);
+	SetTag(Tagg);
 	speed = 0.01f;
 	MaxHp = 10;
 }
@@ -545,7 +545,7 @@ void Level1_Enemy_1::Update()
 //Level1
 Level1::Level1()
 {
-	Tag = "Level";
+	SetTag("Level");
 }
 Level1::~Level1()
 {

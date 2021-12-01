@@ -8,8 +8,8 @@ Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, s
 {
 	Position = Plats;
 	UpdateFunction = Funktion;
-	Name = Namn;
-	Tag = Tagg;
+	SetName(Namn);
+	SetTag(Tagg);
 	Hitbox = Hitplox;
 	//
 }

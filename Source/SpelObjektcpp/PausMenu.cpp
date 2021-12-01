@@ -4,8 +4,8 @@
 #include <SpelObjekt.h>
 PausMenu::PausMenu()
 {
-	Name = "";
-	Tag = "PausMenu";
+	SetName("");
+	SetTag("PausMenu");
 }
 void PausMenu::Update()
 {

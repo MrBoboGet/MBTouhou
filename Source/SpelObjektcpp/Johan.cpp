@@ -269,8 +269,8 @@ JohanCirclingBulletAttack::~JohanCirclingBulletAttack()
 
 Johan::Johan(Vector2D Position) : GameObject("Johan.png", 1.5)
 {
-	Tag = "Enemy";
-	Name = "Johan";
+	SetTag("Enemy");
+	SetName("Johan");
 	HP = MaxHp;
 	this->Position = Position;
 	Hitbox = Vector2D(1.5, 1.5);

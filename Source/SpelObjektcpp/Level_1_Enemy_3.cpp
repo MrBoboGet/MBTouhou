@@ -10,8 +10,8 @@ Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position) : Enemy("Fiende3.png", 0.8)
 	//fäörutom psoitioon doe
 	this->Position = Position;
 	Hitbox = Vector2D(0.8, 0.8);
-	Name = "Level_1_Enemy_3";
-	Tag = "Enemy";
+	SetName("Level_1_Enemy_3");
+	SetTag("Enemy");
 	HP = 10;
 	MaxHp = HP;
 }

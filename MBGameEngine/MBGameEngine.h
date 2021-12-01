@@ -123,7 +123,8 @@ namespace MBGameEngine
 		//{
 		//	return(m_AssociatedEngine);
 		//}
-
+		template<typename T>
+		SharedDeletableObjectReference<T> GetComponent();
 		std::string GetName() const { return(m_Name); };
 		std::string GetTag() const { return(m_Tag); };
 		virtual ~GameObject()
