@@ -140,14 +140,14 @@ void GameObject::AddComponent(Component* Komponenten)
 	Components.push_back(Komponenten);
 	ComponentDictionary[Komponenten->ComponentName] = Komponenten;
 }
-Component* GameObject::GetComponent(std::string ComponentName)
-{
-	if(ComponentDictionary.find(ComponentName) != ComponentDictionary.end())
-	{
-		return(ComponentDictionary[ComponentName]);
-	}
-	else
-	{
-		return(nullptr);
-	}
-}
+//Component* GameObject::GetComponent(std::string ComponentName)
+//{
+//	if(ComponentDictionary.find(ComponentName) != ComponentDictionary.end())
+//	{
+//		return(ComponentDictionary[ComponentName]);
+//	}
+//	else
+//	{
+//		return(nullptr);
+//	}
+//}

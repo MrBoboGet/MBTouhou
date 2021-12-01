@@ -91,6 +91,7 @@ void TouhouEngine::UpdateGameobjects(std::vector<GameObject*> GameobjectsToUpdat
 	{
 		if (GameobjectsToUpdate[i]->Active)
 		{
+			GameobjectsToUpdate[i]->UpdateComponents();
 			GameobjectsToUpdate[i]->Update();
 		}
 	}

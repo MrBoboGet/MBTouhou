@@ -59,10 +59,12 @@ public:
 class GameObject
 {
 private:
+	friend class TouhouEngine;
 	std::string Name;
 	std::string Tag;
 	std::vector<Component*> Components = std::vector<Component*>(0);
 	std::unordered_map<std::string, Component*> ComponentDictionary = std::unordered_map<std::string, Component*>(0);
+	void UpdateComponents();
 public:
 	Vector2D Position;
 	float Rotation = 0;
@@ -74,10 +76,21 @@ public:
 	bool Active = true;
 	Vector2D Hitbox;
 	//komponent grejer
-	void UpdateComponents();
-	void AddComponent(Component* ComponentName);
-	Component* GetComponent(std::string ComponentName);
-
+	void AddComponent(Component* ComponentName); //ok inteface, kan stanna kvar
+	//Component* GetComponent(std::string ComponentName);
+	template<typename T> T* GetComponent()
+	{
+		T* ReturnValue = nullptr;
+		for (size_t i = 0; i < Components.size(); i++)
+		{
+			ReturnValue = dynamic_cast<T*>(Components[i]);
+			if (ReturnValue != nullptr)
+			{
+				break;
+			}
+		}
+		return(ReturnValue);
+	}
 	virtual void Update();
 	virtual void OnCreate();
 	//virtual void Collision();

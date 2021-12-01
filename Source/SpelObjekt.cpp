@@ -311,7 +311,11 @@ void Player::Update()
 	//teleport kod
 	Player_Teleport();
 	//nu kör vi våra komponent koder
-	UpdateComponents();
+	
+	
+	//UpdateComponents();
+	
+	
 	//om vi håller shift så ändrar vi speeden med en konstant koeffecient
 
 	if (Key_Shift)
