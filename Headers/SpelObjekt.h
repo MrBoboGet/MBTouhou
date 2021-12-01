@@ -56,6 +56,7 @@ public:
 	~Player();	
 	float speed;
 	virtual void Update();
+	virtual void OnCreate();
 };
 class Level : public GameObject
 {
@@ -91,6 +92,7 @@ public:
 	int Level1_Enemy_1_Timer = 0;
 	float speed;
 	virtual void Update();
+	virtual void OnCreate();
 };
 class Enemy_Bullet : public GameObject
 {
@@ -103,6 +105,7 @@ public:
 	//float Y_Direction;
 	float Direction;
 	virtual void Update();
+	virtual void OnCreate();
 	Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg);
 	~Enemy_Bullet();
 };
@@ -116,6 +119,7 @@ public:
 	float Damage = 1;
 
 	virtual void Update();
+	virtual void OnCreate();
 	Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg);
 	Player_Bullet(Vector2D Plats,std::string Texture, float Size);
 	~Player_Bullet();

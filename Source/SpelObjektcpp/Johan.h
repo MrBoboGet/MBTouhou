@@ -87,4 +87,5 @@ public:
 	bool StateStart = true;
 	float SpeedBeginning = 0.01;
 	virtual void Update() override;
+	virtual void OnCreate() override;
 };

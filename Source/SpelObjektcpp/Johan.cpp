@@ -30,7 +30,8 @@ void JohanCircleAroundBulletUpdate(Enemy_Bullet_Template* Bullet)
 	{
 		return;
 	}
-	if (CollisionClass::Rectangle_Collision(Spelaren->Position,Spelaren->Hitbox,Spelaren->Rotation,Bullet->Position,Bullet->Hitbox,Bullet->Rotation))
+	//if (Rectangle_Hitbox::Rectangle_Collision(Spelaren->Position,Spelaren->Hitbox,Spelaren->Rotation,Bullet->Position,Bullet->Hitbox,Bullet->Rotation))
+	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(),Bullet->GetComponent<Rectangle_Hitbox>()))
 	{
 		Spelaren->GotHit = true;
 		TouhouEngine::Destroy(Bullet);
@@ -203,7 +204,7 @@ void MovingCircleBullet(Enemy_Bullet_Template* Bullet)
 	Vector2D CircleCenter = Bullet->Position + DirectionToCenter * CirleRadius;
 	Bullet->Rotation = Bullet->Rotation + RotationSpeed;
 	Bullet->Position = CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(Bullet->Rotation + 90 - 90 * RotationDirection)), std::sin(MBMath::DegreeToRadian(Bullet->Rotation + 90 - 90 * RotationDirection)))*CirleRadius;
-	if (CollisionClass::Rectangle_Collision(Spelaren->Position, Spelaren->Hitbox, Spelaren->Rotation, Bullet->Position, Bullet->Hitbox, Bullet->Rotation))
+	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(), Bullet->GetComponent<Rectangle_Hitbox>()))
 	{
 		Spelaren->GotHit = true;
 		TouhouEngine::Destroy(Bullet);
@@ -273,10 +274,15 @@ Johan::Johan(Vector2D Position) : GameObject("Johan.png", 1.5)
 	SetName("Johan");
 	HP = MaxHp;
 	this->Position = Position;
-	Hitbox = Vector2D(1.5, 1.5);
+	//Hitbox = Vector2D(1.5, 1.5);
 	Attacker.push_back(new JohanCirclingBulletAttack(this));
 	Attacker.push_back(new JohanCircelAroundAttack(this));
 	Attacker.push_back(new JohanRightToLeftAttack(this));
+}
+void Johan::OnCreate() 
+{
+	GetComponent<Rectangle_Hitbox>()->Width = 1.5;
+	GetComponent<Rectangle_Hitbox>()->Height = 1.5;
 }
 void Johan::Update()
 {

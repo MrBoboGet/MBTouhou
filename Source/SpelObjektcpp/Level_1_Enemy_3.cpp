@@ -9,13 +9,17 @@ Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position) : Enemy("Fiende3.png", 0.8)
 	//inget behöver hända, vi gör alla grejer i själva class beskrivningen
 	//fäörutom psoitioon doe
 	this->Position = Position;
-	Hitbox = Vector2D(0.8, 0.8);
+	//Hitbox = Vector2D(0.8, 0.8);
 	SetName("Level_1_Enemy_3");
 	SetTag("Enemy");
 	HP = 10;
 	MaxHp = HP;
 }
-
+void Level_1_Enemy_3::OnCreate()
+{
+	GetComponent<Rectangle_Hitbox>()->Height = 0.8;
+	GetComponent<Rectangle_Hitbox>()->Width = 0.8;
+}
 Level_1_Enemy_3::~Level_1_Enemy_3()
 {
 }
@@ -75,7 +79,7 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 	Kula->Position.y += std::sin(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
 
 	//uppdaterar med bra kolliksion kod
-	if (CollisionClass::Rectangle_Collision(Spelaren->Position, Spelaren->Hitbox, Spelaren->Rotation, Kula->Position, Kula->Hitbox, Kula->Rotation))
+	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(), Kula->GetComponent<Rectangle_Hitbox>()))
 	{
 		void* Player_Pointer_Void = Spelaren;
 		Player* Player_Pointer = { static_cast<Player*>(Player_Pointer_Void) };

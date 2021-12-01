@@ -10,10 +10,11 @@
 //extern std::vector<GameObject*> DeletedGameObjects;
 Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg) : Enemy("Fiende2.png", 1.6)
 {
+	//AddComponent(new Rectangle_Hitbox());
 	Position = Plats;
 	SetName(Namn);
 	SetTag(Tagg);
-	Hitbox = Vector2D(1.6, 1.6);
+	//Hitbox = Vector2D(1.6, 1.6);
 	speed = -0.005;
 	HP = 10;
 	MaxHp = HP;
@@ -21,7 +22,12 @@ Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string T
 }
 Level_1_Enemy_2::~Level_1_Enemy_2()
 {
-
+	
+}
+void Level_1_Enemy_2::OnCreate()
+{
+	GetComponent<Rectangle_Hitbox>()->Height = 1.6;
+	GetComponent<Rectangle_Hitbox>()->Width = 1.6;
 }
 void Level_1_Enemy_2::Update()
 {
@@ -83,16 +89,17 @@ void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 	//		break;
 	//	}
 	//}
-	auto PlayerObject = TouhouEngine::FindObjectWithTag("Player");
+	GameObject* PlayerObject = TouhouEngine::FindObjectWithTag("Player");
 	if (PlayerObject == nullptr)
 	{
 		return;
 	}
 	//uppdaterar med bra kolliksion kod
-	if (CollisionClass::Rectangle_Collision(PlayerObject->Position,PlayerObject->Hitbox,PlayerObject->Rotation,Pointern->Position,Pointern->Hitbox,Pointern->Rotation))
+	//if (CollisionClass::Rectangle_Collision(PlayerObject->Position,PlayerObject->Hitbox,PlayerObject->Rotation,Pointern->Position,Pointern->Hitbox,Pointern->Rotation))
+	if (Rectangle_Hitbox::Collides(PlayerObject->GetComponent<Rectangle_Hitbox>(),Pointern->GetComponent<Rectangle_Hitbox>()))
 	{
-		void* Player_Pointer_Void = PlayerObject;
-		Player* Player_Pointer{ static_cast<Player*>(Player_Pointer_Void) };
+		//void* Player_Pointer_Void = PlayerObject;
+		Player* Player_Pointer = dynamic_cast<Player*>(PlayerObject); //fixa det här, väldigt jank
 		Player_Pointer->GotHit = 1;
 		
 		TouhouEngine::Destroy(Pointern);

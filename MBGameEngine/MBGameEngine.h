@@ -21,6 +21,13 @@ namespace MBGameEngine
 
 	};
 
+	//class Transform
+	//{
+	//
+	//public:
+	//	MBMath::MBVector3<float> Position;
+	//};
+	typedef MBGE::Transform Transform;
 	template<typename T>
 	class SharedDeletableObjectReference
 	{

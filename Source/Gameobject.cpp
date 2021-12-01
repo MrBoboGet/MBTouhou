@@ -138,7 +138,7 @@ void GameObject::UpdateComponents()
 void GameObject::AddComponent(Component* Komponenten)
 {
 	Components.push_back(Komponenten);
-	ComponentDictionary[Komponenten->ComponentName] = Komponenten;
+	//ComponentDictionary[Komponenten->ComponentName] = Komponenten;
 }
 //Component* GameObject::GetComponent(std::string ComponentName)
 //{

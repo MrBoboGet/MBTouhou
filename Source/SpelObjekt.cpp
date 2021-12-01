@@ -17,7 +17,7 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)
 	SetTag(Tagg);
 	//väldigt provosoriska siffror
 	//vi gör hitboxen större än spriten
-	Hitbox = Vector2D(0.2, 0.2);
+	//Hitbox = Vector2D(0.2, 0.2);
 	Speed = 0.16f;
 	Direction = 90;
 }
@@ -32,9 +32,14 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size) : 
 	//Speed 
 	//direction
 	//vi sätter dem till bullshit nu
-	Hitbox = Vector2D(0, 0);
+	//Hitbox = Vector2D(0, 0);
 	Speed = 0;
 	Direction = 90;
+}
+void Player_Bullet::OnCreate()
+{
+	GetComponent<Rectangle_Hitbox>()->Width = 0.2;
+	GetComponent<Rectangle_Hitbox>()->Height = 0.2;
 }
 void Player_Bullet::Update()
 {
@@ -53,7 +58,7 @@ void Player_Bullet::Update()
 	{
 		if (ObjectIterator->GetTag() == "Enemy")
 		{
-			if (CollisionClass::Rectangle_Collision(Position, Hitbox, Rotation, ObjectIterator->Position, ObjectIterator->Hitbox, ObjectIterator->Rotation))
+			if (Rectangle_Hitbox::Collides(GetComponent<Rectangle_Hitbox>(),ObjectIterator->GetComponent<Rectangle_Hitbox>()))
 			{
 				//nu vet vi att vi har kolliderat med ett föremål med tagen fiende
 				//det finns 2 sätt att göra det här, 1, låta koden som skadar fienden vara i den eller låta den vara här
@@ -371,7 +376,7 @@ void Player::Update()
 	if (Key_Shift)
 	{
 		std::array<int,4> VisualLayer = { 0,1,0,0 };
-		TouhouEngine::DrawTexture("RedSquare.png", Position, Hitbox.x, Hitbox.y, VisualLayer);
+		TouhouEngine::DrawTexture("RedSquare.png", Position, GetComponent<Rectangle_Hitbox>()->Width, GetComponent<Rectangle_Hitbox>()->Height, VisualLayer);
 	}
 	//kod för att skrigva spelarens namn, bara för att testa
 	std::vector<int> LayerFörNamnet = { 10000000,1,1,1 };
@@ -399,10 +404,15 @@ Player::Player(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject(
 	Bombs = 3;
 	SetTag(Tagg);
 	//väldigt provosiriska siffror
-	Hitbox = Vector2D(0.15f, 0.15f);
+	//Hitbox = Vector2D(0.15f, 0.15f);
 	speed = 0.1f;
 	AddComponent(new Player_Attack_BigShot(this));
 	//AddComponent(new SpriteAnimationRenderer(this, "PlayerAnimationConfig.txt"));
+}
+void Player::OnCreate()
+{
+	GetComponent<Rectangle_Hitbox>()->Width = 0.15;
+	GetComponent<Rectangle_Hitbox>()->Height = 0.15;
 }
 std::vector<std::string> Player::RequiredResources()
 {
@@ -425,9 +435,14 @@ Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) :
 	SetName(Namn);
 	SetTag(Tagg);
 	//väldigt provosoriska siffror
-	Hitbox = Vector2D(0.16, .16);
+	//Hitbox = Vector2D(0.16, .16);
 	Speed = 0.08f;
 	Direction = 270;
+}
+void Enemy_Bullet::OnCreate()
+{
+	GetComponent<Rectangle_Hitbox>()->Width = 0.16;
+	GetComponent<Rectangle_Hitbox>()->Height = 0.16;
 }
 Enemy_Bullet::~Enemy_Bullet()
 {
@@ -475,7 +490,7 @@ void Enemy_Bullet::Update()
 	//dem två olikheterna för x och y led var för sig kan ha gemensamma element, kan dem det så är det en kollision
 	//Vi kollar om spelarens vänstraste position är mindre än kulans högraste och om spelarens högrasta är större om kulans vänstraste,
 	//om det inte stämmer så kan det inte vara en kollision
-	if(CollisionClass::Rectangle_Collision(Position,Hitbox,Rotation,PlayerObject->Position,PlayerObject->Hitbox,PlayerObject->Rotation))
+	if(Rectangle_Hitbox::Collides(GetComponent<Rectangle_Hitbox>(),PlayerObject->GetComponent<Rectangle_Hitbox>()))
 	{
 		//nu vet vi att en kollision hänt
 		//i vårt fall just nu vill vi bara förstöra kulan
@@ -504,11 +519,16 @@ Level1_Enemy_1::Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tag
 {
 	Position = Plats;
 	HP = 10;
-	Hitbox = Vector2D(0.8, 0.8);
+	//Hitbox = Vector2D(0.8, 0.8);
 	SetName(Namn);
 	SetTag(Tagg);
 	speed = 0.01f;
 	MaxHp = 10;
+}
+void Level1_Enemy_1::OnCreate()
+{
+	GetComponent<Rectangle_Hitbox>()->Height = 0.8;
+	GetComponent<Rectangle_Hitbox>()->Width = 0.8;
 }
 Level1_Enemy_1::~Level1_Enemy_1()
 {

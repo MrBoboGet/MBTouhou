@@ -10,5 +10,6 @@ public:
 	int Level_1_Enemy_2_Timer = 0;
 	float speed;
 	void Update() override;
+	void OnCreate() override;
 };
 void Enemy_2_Kul_Logik(Enemy_Bullet_Template* a);

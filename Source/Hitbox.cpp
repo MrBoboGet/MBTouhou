@@ -302,7 +302,17 @@ public:
 		return(SkärVarandraIOmkretsen);
 	}
 };
-bool CollisionClass::Rectangle_Collision(Vector2D a_position,Vector2D a_Hitbox, float a_rotation, Vector2D b_position, Vector2D b_Hitbox, float b_rotation)
+bool Rectangle_Hitbox::Collides(const Rectangle_Hitbox* LeftPointer, const Rectangle_Hitbox* RightPointer)
+{
+	const Rectangle_Hitbox& LeftHitbox = *LeftPointer;
+	const Rectangle_Hitbox& RightHitbox = *RightPointer;
+	Vector2D LeftPosition = LeftHitbox.GetGameObject()->Position;
+	float LeftRotation = LeftHitbox.GetGameObject()->Rotation;
+	Vector2D RightPosition = RightHitbox.GetGameObject()->Position;
+	float RightRotation = RightHitbox.GetGameObject()->Rotation;
+	return(Rectangle_Collision(LeftPosition,Vector2D(LeftHitbox.Width,LeftHitbox.Height),LeftRotation,RightPosition,Vector2D(RightHitbox.Width,RightHitbox.Height),RightRotation));
+}
+bool Rectangle_Hitbox::Rectangle_Collision(Vector2D a_position,Vector2D a_Hitbox, float a_rotation, Vector2D b_position, Vector2D b_Hitbox, float b_rotation)
 {
 	/*
 		    1

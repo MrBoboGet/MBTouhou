@@ -5,7 +5,7 @@
 #include <Engine.h>
 SpriteAnimationRenderer::SpriteAnimationRenderer(GameObject* ObjectAttachedTo,std::string FilePath)
 {
-	ComponentName = "SpriteAnimationRenderer";
+	//ComponentName = "SpriteAnimationRenderer";
 	SpelObjectet = ObjectAttachedTo;
 	//nu kommer det faktiska läsandet av filen
     std::ifstream DataSource("Resources/SpelResurser/Sprites/AnimationConfigs/"+FilePath);

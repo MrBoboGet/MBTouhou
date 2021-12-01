@@ -13,6 +13,7 @@ public:
 	int Timer = 0;
 
 	void Update() override;
+	void OnCreate() override;
 	Level_1_Enemy_3(Vector2D Position);
 	~Level_1_Enemy_3();
 

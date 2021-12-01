@@ -8,6 +8,7 @@
 #include <memory>
 #include <MBGraphicsEngine/MBGE.h>
 #include <array>
+#include <MBGameEngine/MBGameEngine.h>
 
 typedef MBGE::ShaderProgram Shader;
 typedef MBGE::Texture Texture;
@@ -56,6 +57,30 @@ public:
 	GameObjectRenderer();
 	~GameObjectRenderer();
 };
+class GameObject;
+class GameObject;
+class Component
+{
+protected:
+	GameObject* SpelObjectet;
+public:
+	//std::string ComponentName;
+	//virtual std::vector<std::string> RequiredResources();
+	GameObject* GetGameObject()
+	{
+		return(SpelObjectet);
+	}
+	const GameObject* GetGameObject() const
+	{
+		return(SpelObjectet);
+	}
+	Component();
+	~Component();
+	virtual void Update();
+private:
+
+};
+
 class GameObject
 {
 private:
@@ -68,13 +93,14 @@ private:
 public:
 	Vector2D Position;
 	float Rotation = 0;
+	MBGameEngine::Transform Transform;
 
 	int HP;
 	GameObjectRenderer Renderer;
 
 
 	bool Active = true;
-	Vector2D Hitbox;
+	//Vector2D Hitbox;
 	//komponent grejer
 	void AddComponent(Component* ComponentName); //ok inteface, kan stanna kvar
 	//Component* GetComponent(std::string ComponentName);
