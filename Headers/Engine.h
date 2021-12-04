@@ -39,6 +39,7 @@ class GameObject;
 class Component
 {
 protected:
+	friend class GameObject;
 	GameObject* SpelObjectet;
 public:
 	//std::string ComponentName;

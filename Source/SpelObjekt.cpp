@@ -15,6 +15,7 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)
 	Position = Plats;
 	SetName(Namn);
 	SetTag(Tagg);
+	AddComponent(new Rectangle_Hitbox());
 	//väldigt provosoriska siffror
 	//vi gör hitboxen större än spriten
 	//Hitbox = Vector2D(0.2, 0.2);
@@ -408,6 +409,7 @@ Player::Player(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject(
 	//Hitbox = Vector2D(0.15f, 0.15f);
 	speed = 0.1f;
 	AddComponent(new Player_Attack_BigShot(this));
+	AddComponent(new Rectangle_Hitbox());
 	//AddComponent(new SpriteAnimationRenderer(this, "PlayerAnimationConfig.txt"));
 }
 void Player::OnCreate()
@@ -437,6 +439,7 @@ Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) :
 	SetTag(Tagg);
 	//väldigt provosoriska siffror
 	//Hitbox = Vector2D(0.16, .16);
+	AddComponent(new Rectangle_Hitbox());
 	Speed = 0.08f;
 	Direction = 270;
 }
@@ -463,6 +466,7 @@ void Enemy_Bullet::Update()
 	X_Change += std::cos(MBMath::DegreeToRadian(Direction)) * Speed;
 	Y_Change += std::sin(MBMath::DegreeToRadian(Direction)) * Speed;
 
+	AddComponent(new Rectangle_Hitbox());
 	//std::cout << Position.x << " " << Position.y << " " << Math::Sin(270);
 	//std::cout << "Kula existerar" << std::endl;
 	//Här ändrar vi positionen så att kulan faktiskt åker
@@ -823,7 +827,7 @@ void Level1::Update()
 //bass klassen för fiender
 Enemy::Enemy(std::string Texture, float size) : GameObject(Texture,size)
 {
-
+	AddComponent(new Rectangle_Hitbox());
 }
 void Enemy::DrawHealthbar()
 {

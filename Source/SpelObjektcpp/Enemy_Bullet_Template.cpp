@@ -6,7 +6,7 @@ Enemy_Bullet_Template::~Enemy_Bullet_Template()
 }
 Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, std::string Tagg, std::string Bild, float Storlek, Vector2D Hitplox, void(*Funktion)(Enemy_Bullet_Template*)) : GameObject(Bild,Storlek)
 {
-	//AddComponent(new Rectangle_Hitbox());
+	AddComponent(new Rectangle_Hitbox());
 	Position = Plats;
 	UpdateFunction = Funktion;
 	SetName(Namn);

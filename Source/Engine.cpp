@@ -35,6 +35,7 @@ TouhouEngine::~TouhouEngine()
 GameObject* TouhouEngine::Create(GameObject* a)
 {
 	ActiveGameObjects.push_back(a);
+	a->OnCreate();
 	return(a);
 }
 void TouhouEngine::Destroy(GameObject* a)
