@@ -91,8 +91,8 @@ private:
 	std::unordered_map<std::string, Component*> ComponentDictionary = std::unordered_map<std::string, Component*>(0);
 	void UpdateComponents();
 public:
-	Vector2D Position;
-	float Rotation = 0;
+	//Vector2D Position;
+	//float Rotation = 0;
 	MBGameEngine::Transform Transform;
 
 	//int HP;

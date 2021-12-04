@@ -8,7 +8,8 @@ Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, s
 {
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
-	Position = Plats;
+	//Position = Plats;
+	Transform.SetPosition(Plats);
 	UpdateFunction = Funktion;
 	SetName(Namn);
 	SetTag(Tagg);

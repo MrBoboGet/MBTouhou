@@ -12,7 +12,7 @@
 #include <assert.h>
 Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("PlayerRegularBullet.png", 0.32)
 {
-	Position = Plats;
+	Transform.SetPosition(Plats);
 	SetName(Namn);
 	SetTag(Tagg);
 	AddComponent(new Rectangle_Hitbox());
@@ -33,7 +33,7 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size)// 
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
 	GetComponent<SpriteRenderer>()->Width = Size;
-	Position = Plats;
+	Transform.SetPosition(Plats);
 	m_TextureName = Texture;
 	//saker vi behöver faktiskt initializa	
 	//Hitbox
@@ -59,9 +59,9 @@ void Player_Bullet::Update()
 	X_Change += std::cos(MBMath::DegreeToRadian(Direction)) * Speed;
 	Y_Change += std::sin(MBMath::DegreeToRadian(Direction)) * Speed;
 
-	Position.x += X_Change;
-	Position.y += Y_Change;
-
+	//Position.x += X_Change;
+	//Position.y += Y_Change;
+	Transform.SetPosition(Vector2D(Transform.GetPosition()) + Vector2D(X_Change, Y_Change));
 
 	int Collision = 0;
 	ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
@@ -71,49 +71,13 @@ void Player_Bullet::Update()
 		{
 			if (Rectangle_Hitbox::Collides(GetComponent<Rectangle_Hitbox>(),ObjectIterator->GetComponent<Rectangle_Hitbox>()))
 			{
-				//nu vet vi att vi har kolliderat med ett föremål med tagen fiende
-				//det finns 2 sätt att göra det här, 1, låta koden som skadar fienden vara i den eller låta den vara här
-				//jag låter den vara här eftersom det blir enklare att hålla koll på och mindre copy paste
 				ObjectIterator->GetComponent<MBTouhouEnemy_HP>()->HP -= Damage;
-				//borde vara baserat på en damage variabel
 				Collision = 1;
-				//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
-				//{
-				//	if (TouhouEngine::ActiveGameObjects[i] == this)
-				//	{
-				//		PositionIListan = i;
-				//		break;
-				//	}
-				//}
 				break;
 			}
 		}
 		ObjectIterator++;
 	}
-	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
-	//{
-	//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
-	//	{
-	//		if (CollisionClass::Rectangle_Collision(Position,Hitbox,Rotation,TouhouEngine::ActiveGameObjects[i]->Position, TouhouEngine::ActiveGameObjects[i]->Hitbox, TouhouEngine::ActiveGameObjects/[i]-/>Rotation))
-	//		{
-	//			//nu vet vi att vi har kolliderat med ett föremål med tagen fiende
-	//			//det finns 2 sätt att göra det här, 1, låta koden som skadar fienden vara i den eller låta den vara här
-	//			//jag låter den vara här eftersom det blir enklare att hålla koll på och mindre copy paste
-	//			TouhouEngine::ActiveGameObjects[i]->HP -= Damage;
-	//			//borde vara baserat på en damage variabel
-	//			Collision = 1;
-	//			for (int i = 0;i < TouhouEngine::ActiveGameObjects.size(); i++)
-	//			{
-	//				if (TouhouEngine::ActiveGameObjects[i] == this)
-	//				{
-	//					PositionIListan = i;
-	//					break;
-	//				}
-	//			}
-	//			break;
-	//		}
-	//	}
-	//}
 	if (Collision == 1)
 	{
 		TouhouEngine::Destroy(this);
@@ -190,6 +154,9 @@ void Player::Update()
 	Y_Change = 0;
 	X_Change = 0;
 	float Speed_Koeffecient = 1;
+
+
+	Vector2D Position = Transform.GetPosition();
 	//kollar alla keys
 	if (true)
 	{
@@ -415,13 +382,15 @@ void Player::Update()
 
 	//Här kör vi koden om vad som händer om HP är mindre än eller lika med 0
 	//borde vara längst ner för att vara säker på att det är det sista som händer
+	Transform.SetPosition(Position);
 }
 //vi hardcoadar vilken sprite och vilken storlek föremålet har här
 Player::Player(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("Jakob.png",0.4)
 {
-	Position = Plats;
+	//Position = Plats;
+	Transform.SetPosition(Plats);
 	SetName(Namn);
-	Rotation = 0;
+	//Rotation = 0;
 	//HP = 3;
 	Bombs = 3;
 	SetTag(Tagg);
@@ -459,7 +428,7 @@ Player::~Player()
 //Kul class
 Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("fiendeattack1.png", 0.16)
 {
-	Position = Plats;
+	Transform.SetPosition(Plats);
 	SetName(Namn);
 	SetTag(Tagg);
 	//väldigt provosoriska siffror
@@ -485,9 +454,9 @@ void Enemy_Bullet::Update()
 {
 	//den här koden gör så att kulan rör sig åt det håll som directionen säger.
 	//direction är en vinkel från 0-360 och man räknar utifrån den första kvadranten till den sista
-
+	Vector2D Position = Transform.GetPosition();
 	//vi sätter direction så att den är likt rotationen
-	Direction = Rotation + 270;
+	Direction = Transform.GetRotation()[0] + 270;
 
 	float X_Change = 0;
 	float Y_Change = 0;
@@ -547,12 +516,13 @@ void Enemy_Bullet::Update()
 		PlayerObject->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		TouhouEngine::Destroy(this);
 	}
+	Transform.SetPosition(Position);
 }
 //Kul klass
 //FIende 1 level 1
 Level1_Enemy_1::Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tagg)// : Enemy("Fiende1.png", 0.8)
 {
-	Position = Plats;
+	Transform.SetPosition(Plats);
 	//HP = 10;
 	GetComponent<MBTouhouEnemy_HP>()->HP = 10;
 	GetComponent<MBTouhouEnemy_HP>()->MaxHP = 10;
@@ -581,7 +551,7 @@ void Level1_Enemy_1::Update()
 	//skaps i constructorn och med det även vara en del av spelobjektet, vilket verkligen inte är optimalt
 	//problemt vi får här är ju hur vi ska göra en timer
 
-	Position.y -= speed;
+	Transform.SetPosition(Transform.GetPosition() - MBMath::MBVector3<float>(0,speed,0));
 
 	//nu vill jag testa att skapa ett gameobject inom denna fiende. Tanken är att vi dynamiskt tilldelar den minne med new, och sedan lägger in
 	//denna pointer i spelobjekt listan av föremäl. Tanken är att eftersom en dynamiskt tilldelad variabel alltid kommer att vara i minnet tills
@@ -592,9 +562,9 @@ void Level1_Enemy_1::Update()
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			GameObject* Kula = new Enemy_Bullet(Position, "Kula", "Enemy_Bullet");
+			GameObject* Kula = new Enemy_Bullet(Transform.GetPosition(), "Kula", "Enemy_Bullet");
 			TouhouEngine::Create(Kula);
-			Kula->Rotation = 45 * i;
+			Kula->Transform.SetRotation(MBMath::MBVector3<float>(45 * i,0,0));
 			Level1_Enemy_1_Timer = 0;
 		}
 	}

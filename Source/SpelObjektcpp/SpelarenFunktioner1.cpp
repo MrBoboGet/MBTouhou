@@ -35,6 +35,7 @@ void Player::Player_Teleport()
 				}
 				Direction = Direction.Normalized();
 				//vi teleporterar oss sträckan
+				Vector2D Position = Transform.GetPosition();
 				Position = Vector2D(Position.x + Direction.x * TeleportDistance, Position.y + Direction.y * TeleportDistance);
 				//nu förstör vi kulor i en viss radie
 				//detta är verkligen inte självklart, men det vi gör nu är att vi loopar igenom alla objekt, kollar om dem är av en enemy kula, och är den nära nog förstör vi den
@@ -43,7 +44,7 @@ void Player::Player_Teleport()
 				{
 					if (ObjectIterator->GetTag() == "Enemy_Bullet")
 					{
-						if (Position.DistanceToPoint(ObjectIterator->Position) <= TeleportBulletDestructionRadius)
+						if (Position.DistanceToPoint(ObjectIterator->Transform.GetPosition()) <= TeleportBulletDestructionRadius)
 						{
 							//nu ska vi förstöra föremålet
 							TouhouEngine::Destroy(*ObjectIterator);
@@ -62,6 +63,7 @@ void Player::Player_Teleport()
 				//		}
 				//	}
 				//}
+				Transform.SetPosition(Position);
 			}
 		}
 		KlickadeSpaceInnan = true;

@@ -9,7 +9,7 @@ Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position)// : Enemy("Fiende3.png", 0.8
 {
 	//inget behöver hända, vi gör alla grejer i själva class beskrivningen
 	//fäörutom psoitioon doe
-	this->Position = Position;
+	Transform.SetPosition(Position);
 	//Hitbox = Vector2D(0.8, 0.8);
 	SetName("Level_1_Enemy_3");
 	SetTag("Enemy");
@@ -33,6 +33,7 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula);
 //	Enemy_Bullet_Template(Vector2D Plats, std::string Namn, std::string Tagg,std::string Bild, float Storlek, Vector2D hitplox,void(*Update)(Enemy_Bullet_Template*));
 void Level_1_Enemy_3::Update()
 {
+	Vector2D Position = Transform.GetPosition();
 	//vi rör oss neråt tills vi kommer till en del av skärmen, där vi stannar och börjar sikta och charga mot spelaren
 	if (Position.y - Speed > /*Detta är toppen av skrämen i koordianter*/5 -DistanceFromTopToStop)
 	{
@@ -59,6 +60,7 @@ void Level_1_Enemy_3::Update()
 			Timer = 0;
 		}
 	}
+	Transform.SetPosition(Position);
 	//if (HP <= 0)
 	//{
 	//	TouhouEngine::Destroy(static_cast<GameObject*>(this));
@@ -77,12 +79,13 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 	if (Kula->Timer == 0)
 	{
 		//sätter dess riktning nu
-		Kula->Direction = Vector2D::AngleFromXAxis(Spelaren->Position- Kula->Position);
-		Kula->Rotation = Kula->Direction-90;
+		Kula->Direction = Vector2D::AngleFromXAxis(Spelaren->Transform.GetPosition()- Kula->Transform.GetPosition());
+		Kula->Transform.SetRotation(MBMath::MBVector3<float>(Kula->Direction-90,0,0));
 		Kula->Timer += 1;
 	}
-	Kula->Position.x += std::cos(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
-	Kula->Position.y += std::sin(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
+	Vector2D BulletPosition = Kula->Transform.GetPosition();
+	BulletPosition.x += std::cos(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
+	BulletPosition.y += std::sin(MBMath::DegreeToRadian(Kula->Direction)) * Kula->Speed;
 
 	//uppdaterar med bra kolliksion kod
 	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(), Kula->GetComponent<Rectangle_Hitbox>()))
@@ -90,7 +93,8 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 		//void* Player_Pointer_Void = Spelaren;
 		//Player* Player_Pointer = { static_cast<Player*>(Player_Pointer_Void) };
 		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
-		std::cout << Kula->Position.x << " " << Kula->Position.y << " " << Spelaren->Position.x << " " << Spelaren->Position.y << std::endl;
+		std::cout << BulletPosition.x << " " << BulletPosition.y << " " << Spelaren->Transform.GetPosition()[0] << " " << Spelaren->Transform.GetPosition()[1] << std::endl;
 		TouhouEngine::Destroy(Kula);
 	}
+	Kula->Transform.SetPosition(BulletPosition);
 }

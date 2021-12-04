@@ -21,7 +21,7 @@ void SpriteRenderer::Update()
 	}
 	float Sprite_Width = Width;
 	float Sprite_Height = Sprite_Width * ((float)SpriteTexture->GetHeight() / (float)SpriteTexture->GetWidth());
-	TouhouEngine::DrawTexture(SpriteTexture, GetGameObject()->Position, Sprite_Width, Sprite_Height, Layer);
+	TouhouEngine::DrawTexture(SpriteTexture, GetGameObject()->Transform.GetPosition(), Sprite_Width, Sprite_Height, Layer);
 }
 //GameObjectRenderer::GameObjectRenderer(std::string Bild)
 //{

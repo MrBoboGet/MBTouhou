@@ -26,7 +26,7 @@ void Player_Attack_BigShot::Update()
 				Timer = ShotDelay;
 
 				//nu skapar vi ju faktiskt big bad skottet, vilket egentligen är det viktiga
-				Player_Bullet* NyBullet = static_cast<Player_Bullet*>(TouhouEngine::Create(new Player_Bullet(Spelaren->Position, "BigShot.png", 0.32f)));
+				Player_Bullet* NyBullet = static_cast<Player_Bullet*>(TouhouEngine::Create(new Player_Bullet(Spelaren->Transform.GetPosition(), "BigShot.png", 0.32f)));
 				NyBullet->Speed = 0.24f;
 				NyBullet->Direction = 90;
 				NyBullet->Damage = 10;

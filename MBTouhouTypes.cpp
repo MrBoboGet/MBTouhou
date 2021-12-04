@@ -22,8 +22,8 @@ void MBTouhouEnemy_HP::DrawHealthbar()
 	LifeLayer[1] += 1;
 
 	float HealtbarPercentage = HP / double(MaxHP);
-	TouhouEngine::DrawTexture("Green.png", Vector2D(GetGameObject()->Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), GetGameObject()->Position.y + 0.5f + HealthBarOffset), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(GetGameObject()->Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), GetGameObject()->Position.y + 0.5f + HealthBarOffset), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
+	TouhouEngine::DrawTexture("Green.png", Vector2D(GetGameObject()->Transform.GetPosition()[0] - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(GetGameObject()->Transform.GetPosition()[0] + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
 }
 MBTouhouRegularEnemy::MBTouhouRegularEnemy()
 {

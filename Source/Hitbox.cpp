@@ -306,10 +306,10 @@ bool Rectangle_Hitbox::Collides(const Rectangle_Hitbox* LeftPointer, const Recta
 {
 	const Rectangle_Hitbox& LeftHitbox = *LeftPointer;
 	const Rectangle_Hitbox& RightHitbox = *RightPointer;
-	Vector2D LeftPosition = LeftHitbox.GetGameObject()->Position;
-	float LeftRotation = LeftHitbox.GetGameObject()->Rotation;
-	Vector2D RightPosition = RightHitbox.GetGameObject()->Position;
-	float RightRotation = RightHitbox.GetGameObject()->Rotation;
+	Vector2D LeftPosition = LeftHitbox.GetGameObject()->Transform.GetPosition();
+	float LeftRotation = LeftHitbox.GetGameObject()->Transform.GetRotation()[0];
+	Vector2D RightPosition = RightHitbox.GetGameObject()->Transform.GetPosition();
+	float RightRotation = RightHitbox.GetGameObject()->Transform.GetRotation()[0];
 	return(Rectangle_Collision(LeftPosition,Vector2D(LeftHitbox.Width,LeftHitbox.Height),LeftRotation,RightPosition,Vector2D(RightHitbox.Width,RightHitbox.Height),RightRotation));
 }
 bool Rectangle_Hitbox::Rectangle_Collision(Vector2D a_position,Vector2D a_Hitbox, float a_rotation, Vector2D b_position, Vector2D b_Hitbox, float b_rotation)
