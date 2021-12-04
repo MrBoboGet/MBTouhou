@@ -12,12 +12,15 @@ public:
 
 	void DrawHealthbar();
 	void DrawHealthbar(float Offset);
-	Enemy(std::string Texture, float Size);
+	Enemy();
+	//Enemy(std::string Texture, float Size);
+	
 };
 #include<Level_1_Enemy_2.h>
 class Player : public GameObject
 {
 private:
+	std::string m_TextureName = "";
 	void Player_Teleport();
 	//just nu med så få variablar så är det inte egentligen några problem, men i framtiden vill vi nog se till att varje funktion är ett objekt
 public:
@@ -86,6 +89,8 @@ public:
 };
 class Level1_Enemy_1 :public Enemy
 {
+private:
+	std::string m_TextureName = "";
 public:
 	Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tagg);
 	~Level1_Enemy_1();
@@ -113,6 +118,9 @@ public:
 //som det är nu är playerbullet tänkt att vara 1 kula, men ju mer jag tänker på det desto mer vill jag ha en klass som vi kan han för en all porpuse kula grej. Jag lägger till en constructor som låter oss ändra saker lite bättre
 class Player_Bullet : public GameObject
 {
+private:
+	std::string m_TextureName = "";
+	//float m_BulletSize = 0;
 public:
 	float Speed;
 	float Direction;

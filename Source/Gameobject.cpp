@@ -15,7 +15,13 @@ SpriteRenderer::SpriteRenderer()
 }
 void SpriteRenderer::Update()
 {
-
+	if (SpriteTexture == nullptr)
+	{
+		return;
+	}
+	float Sprite_Width = Width;
+	float Sprite_Height = Sprite_Width * ((float)SpriteTexture->GetHeight() / (float)SpriteTexture->GetWidth());
+	TouhouEngine::DrawTexture(SpriteTexture, GetGameObject()->Position, Sprite_Width, Sprite_Height, Layer);
 }
 //GameObjectRenderer::GameObjectRenderer(std::string Bild)
 //{
@@ -33,22 +39,22 @@ GameObject::GameObject()
 	Renderer.ObjectTexture = Texture("SpelResurser/Sprites/" + Renderer.Image);
 	*/
 }
-GameObject::GameObject(Vector2D Plats, std::string Namn, std::string Tagg)
-	:Position(Plats),Name(Namn),Tag(Tagg),Renderer(SpriteRenderer())
-{
-	if (!TouhouEngine::NamedTextureLoaded(Namn))
-	{
-		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
-		//ObjectTexture = *NyTexture;
-		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
-		Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
-	}
-	else
-	{
-		Renderer.SpriteTexture = TouhouEngine::GetNamedTexture(Namn);
-	}
-	//Renderer.Width = Storlek;
-}
+//GameObject::GameObject(Vector2D Plats, std::string Namn, std::string Tagg)
+//	:Position(Plats),Name(Namn),Tag(Tagg),Renderer(SpriteRenderer())
+//{
+//	if (!TouhouEngine::NamedTextureLoaded(Namn))
+//	{
+//		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
+//		//ObjectTexture = *NyTexture;
+//		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
+//		Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
+//	}
+//	else
+//	{
+//		Renderer.SpriteTexture = TouhouEngine::GetNamedTexture(Namn);
+//	}
+//	//Renderer.Width = Storlek;
+//}
 void GameObject::Update()
 {
 
@@ -57,27 +63,21 @@ void GameObject::OnCreate()
 {
 
 }
-void GameObject::Render()
-{
-	if (Renderer.SpriteTexture == nullptr)
-	{
-		return;
-	}
-	int Window_Height;
-	int Window_Width;
-	//TODO Ha koordinater i vår engine som vi kan få fram, utan att behöva calla denn funktion varje gång, vem vet hur många cycles den tar
-	//glfwGetWindowSize(TouhouEngine::CurrentWindow, &Window_Width, &Window_Height);
-	TouhouEngine::_GetWindowSize(&Window_Width, &Window_Height);
-	float Sprite_Width = Renderer.Width;
-	float Sprite_Height = Sprite_Width *((float)Renderer.SpriteTexture->GetHeight() / (float)Renderer.SpriteTexture->GetWidth());
-	std::array<int,4> Layer;
-	Layer[0] = Renderer.Layer[0];
-	Layer[1] = Renderer.Layer[1];
-	Layer[2] = Renderer.Layer[2];
-	Layer[3] = Renderer.Layer[3];
-	TouhouEngine::DrawTexture(Renderer.SpriteTexture, Position, Sprite_Width, Sprite_Height, Layer);
-
-}
+//void GameObject::Render()
+//{
+//	if (Renderer.SpriteTexture == nullptr)
+//	{
+//		return;
+//	}
+//	float Sprite_Width = Renderer.Width;
+//	float Sprite_Height = Sprite_Width *((float)Renderer.SpriteTexture->GetHeight() / (float)Renderer.SpriteTexture->GetWidth());
+//	std::array<int,4> Layer;
+//	Layer[0] = Renderer.Layer[0];
+//	Layer[1] = Renderer.Layer[1];
+//	Layer[2] = Renderer.Layer[2];
+//	Layer[3] = Renderer.Layer[3];
+//	TouhouEngine::DrawTexture(Renderer.SpriteTexture, Position, Sprite_Width, Sprite_Height, Layer);
+//}
 SpriteRenderer::~SpriteRenderer()
 {
 
@@ -91,21 +91,21 @@ GameObject::~GameObject()
 		delete(Components[i]);
 	}
 }
-GameObject::GameObject(std::string Namn,float Storlek)
-{
-	if (!TouhouEngine::NamedTextureLoaded(Namn))
-	{
-		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
-		//ObjectTexture = *NyTexture;
-		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
-		Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
-	}
-	else
-	{
-		Renderer.SpriteTexture = TouhouEngine::GetNamedTexture(Namn);
-	}
-	Renderer.Width = Storlek;
-}
+//GameObject::GameObject(std::string Namn,float Storlek)
+//{
+//	if (!TouhouEngine::NamedTextureLoaded(Namn))
+//	{
+//		//Texture* NyTexture = new Texture("Resources/SpelResurser/Sprites/" + Namn);
+//		//ObjectTexture = *NyTexture;
+//		//TouhouEngine::LoadedTextures[Namn] = NyTexture;
+//		Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(Namn, "Resources/SpelResurser/Sprites/" + Namn);
+//	}
+//	else
+//	{
+//		Renderer.SpriteTexture = TouhouEngine::GetNamedTexture(Namn);
+//	}
+//	Renderer.Width = Storlek;
+//}
 //GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) :Image(Namn),Width(Storlek)
 //{
 //	ColorKoef.A = 1;

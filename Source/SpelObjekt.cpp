@@ -10,31 +10,38 @@
 #include <PausMenu.h>
 #include <MainMenu.h>
 #include <assert.h>
-Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("PlayerRegularBullet.png", 0.32)
+Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("PlayerRegularBullet.png", 0.32)
 {
 	Position = Plats;
 	SetName(Namn);
 	SetTag(Tagg);
 	AddComponent(new Rectangle_Hitbox());
+	AddComponent(new SpriteRenderer());
 	//väldigt provosoriska siffror
 	//vi gör hitboxen större än spriten
 	//Hitbox = Vector2D(0.2, 0.2);
+	m_TextureName = "PlayerRegularBullet.png";
+	GetComponent<SpriteRenderer>()->Width = 0.32;
 	Speed = 0.16f;
 	Direction = 90;
 }
-Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size) : GameObject(Texture,Size)
+Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size)// : GameObject(Texture,Size)
 {
 	 //namn och tag tar vi som standard, man borde aktivt ändra istället
 	SetTag("Player_Bullet");
 	SetName("Player_Bullet");
+	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
+	GetComponent<SpriteRenderer>()->Width = Size;
 	Position = Plats;
+	m_TextureName = Texture;
 	//saker vi behöver faktiskt initializa	
 	//Hitbox
 	//Speed 
 	//direction
 	//vi sätter dem till bullshit nu
 	//Hitbox = Vector2D(0, 0);
+	m_TextureName = Texture;
 	Speed = 0;
 	Direction = 90;
 }
@@ -42,6 +49,8 @@ void Player_Bullet::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 0.2;
 	GetComponent<Rectangle_Hitbox>()->Height = 0.2;
+	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
 }
 void Player_Bullet::Update()
 {
@@ -261,11 +270,11 @@ void Player::Update()
 	}
 	if (Invincible_Timer > 0)
 	{
-		this->Renderer.ColorKoef.A = std::abs(std::sin(MBMath::DegreeToRadian(Invincible_Timer * 6))) * 0.5 + 0.3;
+		GetComponent<SpriteRenderer>()->ColorKoef.A = std::abs(std::sin(MBMath::DegreeToRadian(Invincible_Timer * 6))) * 0.5 + 0.3;
 	}
 	else
 	{
-		this->Renderer.ColorKoef.A = 1;
+		GetComponent<SpriteRenderer>()->ColorKoef.A = 1;
 	}
 
 	//nu ändrar vi värdet av våran position sett till värdet utav X_Change och Y_Change
@@ -397,7 +406,7 @@ void Player::Update()
 	}
 }
 //vi hardcoadar vilken sprite och vilken storlek föremålet har här
-Player::Player(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("Jakob.png",0.4)
+Player::Player(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("Jakob.png",0.4)
 {
 	Position = Plats;
 	SetName(Namn);
@@ -408,6 +417,7 @@ Player::Player(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject(
 	//väldigt provosiriska siffror
 	//Hitbox = Vector2D(0.15f, 0.15f);
 	speed = 0.1f;
+	AddComponent(new SpriteRenderer());
 	AddComponent(new Player_Attack_BigShot(this));
 	AddComponent(new Rectangle_Hitbox());
 	//AddComponent(new SpriteAnimationRenderer(this, "PlayerAnimationConfig.txt"));
@@ -416,15 +426,18 @@ void Player::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 0.15;
 	GetComponent<Rectangle_Hitbox>()->Height = 0.15;
+	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	Renderer->Width = 0.4;
+	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("Jakob.png", "Resources/SpelResurser/Sprites/Jakob.png");
 }
 std::vector<std::string> Player::RequiredResources()
 {
-	std::vector<std::string> ReturVärdet = std::vector<std::string>(0);
-	ReturVärdet.push_back("Resources/SpelResurser/Sprites/Jakob.png");
-	ReturVärdet.push_back("Resources/SpelResurser/Sprites/reverse.png");
-	ReturVärdet.push_back("Resources/Sounds/PlayerBomb.wav");
-	ReturVärdet.push_back("Resources/Sounds/PlayerBasicShot.wav");
-	return(ReturVärdet);
+	std::vector<std::string> ReturnValue = std::vector<std::string>(0);
+	ReturnValue.push_back("Resources/SpelResurser/Sprites/Jakob.png");
+	ReturnValue.push_back("Resources/SpelResurser/Sprites/reverse.png");
+	ReturnValue.push_back("Resources/Sounds/PlayerBomb.wav");
+	ReturnValue.push_back("Resources/Sounds/PlayerBasicShot.wav");
+	return(ReturnValue);
 }
 Player::~Player()
 {
@@ -432,13 +445,14 @@ Player::~Player()
 }
 //spelaren
 //Kul class
-Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg) : GameObject("fiendeattack1.png", 0.16)
+Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("fiendeattack1.png", 0.16)
 {
 	Position = Plats;
 	SetName(Namn);
 	SetTag(Tagg);
 	//väldigt provosoriska siffror
 	//Hitbox = Vector2D(0.16, .16);
+	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
 	Speed = 0.08f;
 	Direction = 270;
@@ -447,6 +461,9 @@ void Enemy_Bullet::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 0.16;
 	GetComponent<Rectangle_Hitbox>()->Height = 0.16;
+	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	Renderer->Width = 0.16;
+	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("fiendeattack1.png", "Resources/SpelResurser/Sprites/fiendeattack1.png");
 }
 Enemy_Bullet::~Enemy_Bullet()
 {
@@ -520,13 +537,15 @@ void Enemy_Bullet::Update()
 }
 //Kul klass
 //FIende 1 level 1
-Level1_Enemy_1::Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tagg) : Enemy("Fiende1.png", 0.8)
+Level1_Enemy_1::Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tagg)// : Enemy("Fiende1.png", 0.8)
 {
 	Position = Plats;
 	HP = 10;
 	//Hitbox = Vector2D(0.8, 0.8);
 	SetName(Namn);
 	SetTag(Tagg);
+	GetComponent<SpriteRenderer>()->Width = 0.8;
+	m_TextureName = "Fiende1.png";
 	speed = 0.01f;
 	MaxHp = 10;
 }
@@ -534,6 +553,7 @@ void Level1_Enemy_1::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Height = 0.8;
 	GetComponent<Rectangle_Hitbox>()->Width = 0.8;
+	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture("Fiende1.png", "Resources/SpelResurser/Sprites/Fiende1.png");
 }
 Level1_Enemy_1::~Level1_Enemy_1()
 {
@@ -825,8 +845,14 @@ void Level1::Update()
 //Player_Bullet
 
 //bass klassen för fiender
-Enemy::Enemy(std::string Texture, float size) : GameObject(Texture,size)
+//Enemy::Enemy(std::string Texture, float size) : GameObject(Texture,size)
+//{
+//	AddComponent(new SpriteRenderer());
+//	AddComponent(new Rectangle_Hitbox());
+//}
+Enemy::Enemy()
 {
+	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
 }
 void Enemy::DrawHealthbar()
@@ -838,7 +864,7 @@ void Enemy::DrawHealthbar()
 	std::array<int,4> LifeLayer = { 0,0,0,0 };
 	for (int i = 0; i < 4;i++)
 	{
-		LifeLayer[i] = this->Renderer.Layer[i];
+		LifeLayer[i] = GetComponent<SpriteRenderer>()->Layer[i];
 	}
 	LifeLayer[1] += 1;
 	float HealtbarPercentage = HP / MaxHp;
@@ -854,7 +880,7 @@ void Enemy::DrawHealthbar(float Offset)
 	std::array<int,4> LifeLayer = { 0,0,0,0 };
 	for (int i = 0; i < 4;i++)
 	{
-		LifeLayer[i] = this->Renderer.Layer[i];
+		LifeLayer[i] = GetComponent<SpriteRenderer>()->Layer[i];
 	}
 	LifeLayer[1] += 1;
 

@@ -4,6 +4,8 @@
 #include<Gameobject.h>
 class Enemy_Bullet_Template : public GameObject
 {
+private:
+	std::string m_TextureName = "";
 public:
 	float Speed;
 	void(*UpdateFunction)(Enemy_Bullet_Template*);

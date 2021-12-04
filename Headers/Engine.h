@@ -70,7 +70,7 @@ public:
 	};
 	ColorRGBA ColorKoef;
 	float Width = 1;
-	std::vector<int> Layer = { 0,0,0,0 };
+	std::array<int,4> Layer = { 0,0,0,0 };
 	//ett problem vi får med den här koden är att varje gameobject gör sin egen kopia av samma texture, vilket tar minne och eventuellt prestanda
 	//tanken är att jag gör en dictionary så att om en texture redans finns så säger vi att render idn är den texturen
 	std::shared_ptr<Texture> SpriteTexture = nullptr;
@@ -96,7 +96,7 @@ public:
 	MBGameEngine::Transform Transform;
 
 	int HP;
-	SpriteRenderer Renderer;
+	//SpriteRenderer Renderer;
 
 
 	bool Active = true;
@@ -120,10 +120,9 @@ public:
 	virtual void Update();
 	virtual void OnCreate();
 	//virtual void Collision();
-	void Render();
 	GameObject();
-	GameObject(Vector2D Plats, std::string Namn, std::string Tagg);
-	GameObject(std::string Namn, float Storlek);
+	//GameObject(Vector2D Plats, std::string Namn, std::string Tagg);
+	//GameObject(std::string Namn, float Storlek);
 	virtual ~GameObject();
 	inline std::string GetTag()
 	{

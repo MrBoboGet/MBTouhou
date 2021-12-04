@@ -56,7 +56,7 @@ void SpriteAnimationRenderer::Update()
         if (AnimationTimer < AntalFramesInIAnimationen)
         {
             //SpelObjectet->Renderer.ObjectTexture =/* Egentligen är detta fett farligt, har ingen anninge vad detta gör egentligen TODO tänk igenom om dett fugnerar*/ *(Texture::LoadTextureFrom("SpelResurser/Sprites/", TexturesInAnimation[i]));
-            SpelObjectet->Renderer.SpriteTexture = TouhouEngine::LoadNamedTexture(TexturesInAnimation[i], "SpelResurser/Sprites/" + TexturesInAnimation[i]);
+            SpelObjectet->GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture(TexturesInAnimation[i], "SpelResurser/Sprites/" + TexturesInAnimation[i]);
             break;
         }
     }

@@ -78,7 +78,7 @@ void JohanCircelAroundAttack::Update()
 				for (size_t i = 0; i < NumberOfShots; i++)
 				{
 					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(Object->Position, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
-					BulletToCreate->Renderer.ColorKoef.G = 4;
+					BulletToCreate->GetComponent<SpriteRenderer>()->ColorKoef.G = 4;
 					BulletToCreate->Speed = 0.07;
 					BulletToCreate->Direction = (360 / (float)NumberOfShots) * i;
 					BulletToCreate->Rotation = (360 / (float)NumberOfShots) * i - 90;
@@ -257,7 +257,7 @@ void JohanCirclingBulletAttack::Update()
 				for (int j = 0; j < 3; j++)
 				{
 					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(Object->Position, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
-					BulletToCreate->Renderer.ColorKoef.B = 4;
+					BulletToCreate->GetComponent<SpriteRenderer>()->ColorKoef.B = 4;
 					BulletToCreate->Position = Position;
 					BulletToCreate->Direction = 250 + 20 * j;
 					BulletToCreate->Rotation = BulletToCreate->Direction - 90;
@@ -279,7 +279,7 @@ JohanCirclingBulletAttack::~JohanCirclingBulletAttack()
 
 }
 
-Johan::Johan(Vector2D Position) : GameObject("Johan.png", 1.5)
+Johan::Johan(Vector2D Position)// : GameObject("Johan.png", 1.5)
 {
 	SetTag("Enemy");
 	SetName("Johan");
@@ -287,6 +287,7 @@ Johan::Johan(Vector2D Position) : GameObject("Johan.png", 1.5)
 	this->Position = Position;
 	//Hitbox = Vector2D(1.5, 1.5);
 	AddComponent(new Rectangle_Hitbox());
+	AddComponent(new SpriteRenderer());
 	//AddComponent();
 	Attacker.push_back(new JohanCirclingBulletAttack(this));
 	Attacker.push_back(new JohanCircelAroundAttack(this));
@@ -296,6 +297,9 @@ void Johan::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 1.5;
 	GetComponent<Rectangle_Hitbox>()->Height = 1.5;
+	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	Renderer->Width = 1.5;
+	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("Johan.png", "Resources/SpelResurser/Sprites/Johan.png");
 }
 void Johan::Update()
 {

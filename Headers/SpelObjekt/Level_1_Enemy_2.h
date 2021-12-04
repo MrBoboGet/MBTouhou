@@ -4,6 +4,8 @@
 
 class Level_1_Enemy_2 : public Enemy
 {
+private:
+	std::string m_TextureName = "";
 public:
 	Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg);
 	~Level_1_Enemy_2();

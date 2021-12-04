@@ -3,6 +3,8 @@
 #include<SpelObjekt.h>
 class Level_1_Enemy_3 : public Enemy
 {
+private:
+	std::string m_TextureName = "";
 public:
 	float Direction = 270;
 	float Speed = 0.2;

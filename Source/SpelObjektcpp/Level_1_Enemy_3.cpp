@@ -4,7 +4,7 @@
 #include <Hitbox.h>
 #include <SpelObjekt.h>
 #include <iostream>
-Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position) : Enemy("Fiende3.png", 0.8)
+Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position)// : Enemy("Fiende3.png", 0.8)
 {
 	//inget behöver hända, vi gör alla grejer i själva class beskrivningen
 	//fäörutom psoitioon doe
@@ -12,6 +12,8 @@ Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position) : Enemy("Fiende3.png", 0.8)
 	//Hitbox = Vector2D(0.8, 0.8);
 	SetName("Level_1_Enemy_3");
 	SetTag("Enemy");
+	GetComponent<SpriteRenderer>()->Width = 0.8;
+	m_TextureName = "Fiende3.png";
 	HP = 10;
 	MaxHp = HP;
 }
@@ -19,6 +21,7 @@ void Level_1_Enemy_3::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Height = 0.8;
 	GetComponent<Rectangle_Hitbox>()->Width = 0.8;
+	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
 }
 Level_1_Enemy_3::~Level_1_Enemy_3()
 {
@@ -46,9 +49,9 @@ void Level_1_Enemy_3::Update()
 			//vi har laddat klart, nu ska vi skjuta skottet
 			//vi skapar alltså den kula som har egenskapen vi vill ha
 			Enemy_Bullet_Template* Kula =static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(Position, "Enemy_Bullet", "Enemy_Bullet", "fiendeattack1.png", 0.2f, Vector2D(0.2, 0.2), *Enemy_3_KulLogik)));
-			Kula->Renderer.ColorKoef.B = 3;
-			Kula->Renderer.ColorKoef.R = 3;
-			Kula->Renderer.ColorKoef.G = 3;
+			Kula->GetComponent<SpriteRenderer>()->ColorKoef.B = 3;
+			Kula->GetComponent<SpriteRenderer>()->ColorKoef.R = 3;
+			Kula->GetComponent<SpriteRenderer>()->ColorKoef.G = 3;
 			Kula->Speed = BulletSpeed;
 			Timer = 0;
 		}

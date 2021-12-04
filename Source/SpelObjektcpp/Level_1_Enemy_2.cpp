@@ -8,7 +8,7 @@
 #include <MBUtility/MBMath.h>
 //extern std::vector<GameObject*> ActiveGameObjects;
 //extern std::vector<GameObject*> DeletedGameObjects;
-Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg) : Enemy("Fiende2.png", 1.6)
+Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg)// : Enemy("Fiende2.png", 1.6)
 {
 	//AddComponent(new Rectangle_Hitbox());
 	Position = Plats;
@@ -18,6 +18,8 @@ Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string T
 	speed = -0.005;
 	HP = 10;
 	MaxHp = HP;
+	m_TextureName = "Fiende2.png";
+	GetComponent<SpriteRenderer>()->Width = 1.6;
 	//std::cout << MaxHp << std::endl;
 }
 Level_1_Enemy_2::~Level_1_Enemy_2()
@@ -28,6 +30,7 @@ void Level_1_Enemy_2::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Height = 1.6;
 	GetComponent<Rectangle_Hitbox>()->Width = 1.6;
+	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/"+m_TextureName);
 }
 void Level_1_Enemy_2::Update()
 {
@@ -38,7 +41,7 @@ void Level_1_Enemy_2::Update()
 		for (int i = 0; i < 6; i++)
 		{
 			GameObject* kula = new Enemy_Bullet_Template(Position, "Enemy_Bullet", "Enemy_Bullet", "fiendeattack1.png", 0.16, Vector2D(0.16, 0.16),*Enemy_2_Kul_Logik);
-			kula->Renderer.ColorKoef.G = 4;
+			kula->GetComponent<SpriteRenderer>()->ColorKoef.G = 4;
 			Enemy_Bullet_Template* KulanRiktiga = (static_cast<Enemy_Bullet_Template*>(kula));
 			KulanRiktiga->Direction = 0 + 60 * i;
 			KulanRiktiga->Speed = 0.02;

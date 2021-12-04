@@ -136,10 +136,10 @@ void TouhouEngine::Render(std::vector<GameObject*> Lista)
 	//		}
 	//	}
 	//}
-	for (size_t i = 0; i < Lista.size(); i++)
-	{
-		Lista[i]->Render();
-	}
+	//for (size_t i = 0; i < Lista.size(); i++)
+	//{
+	//	Lista[i]->Render();
+	//}
 	if (TouhouEngine::DrawCalls.size() > 1)
 	{
 		for (int i = 0;i < TouhouEngine::DrawCalls.size() - 1; i++)
@@ -288,40 +288,40 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 	std::vector<int> ObjectOutside;
 	for (int i = 0;i < TouhouEngine::ActiveGameObjects.size();i++)
 	{
-		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
-		{
-			//i objektet så låter vi förhållandet vara dynamiskt, men jag orkar inte fixa det så jag hardcodar det
-			//borde också vara enkelt att se om det blir fel, objekt försvinner från skärmen innan dem borde
-			auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
-			auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
-			//TODO faktiskt ta sig tiden att kolla och se till att denna kod funkar
-			auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
-			auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
-			if (YPositionGlTop < -1 || YPositionGlBottom>1 || XPositionLeft < -1 || XPositionRight > 1)
-			{
-				//om den är utanför skärmen, spriten inte syns, deletar vi den helt enkelt
-				ObjectOutside.push_back(i);
-				TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
-			}
-		}
-		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
-		{
-			if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8 < -1)
-			{
-				ObjectOutside.push_back(i);
-				TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
-			}
-		}
-		if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player_Bullet")
-		{
-			auto Objektet = TouhouEngine::ActiveGameObjects[i];
-			if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Width * ((float)16 / (float)9) * (Objektet->Renderer.SpriteTexture->GetHeight() / (float)Objektet->Renderer.SpriteTexture->GetWidth()) / 8 > 1)
-			{
-				//spelar kulorna är över skärmen
-				ObjectOutside.push_back(i);
-				TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
-			}
-		}
+		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+		//{
+		//	//i objektet så låter vi förhållandet vara dynamiskt, men jag orkar inte fixa det så jag hardcodar det
+		//	//borde också vara enkelt att se om det blir fel, objekt försvinner från skärmen innan dem borde
+		//	auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)//TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
+		//	auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)//TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
+		//	//TODO faktiskt ta sig tiden att kolla och se till att denna kod funkar
+		//	auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
+		//	auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
+		//	if (YPositionGlTop < -1 || YPositionGlBottom>1 || XPositionLeft < -1 || XPositionRight > 1)
+		//	{
+		//		//om den är utanför skärmen, spriten inte syns, deletar vi den helt enkelt
+		//		ObjectOutside.push_back(i);
+		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
+		//	}
+		//}
+		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
+		//{
+		//	if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]-//>Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8 < -1)
+		//	{
+		//		ObjectOutside.push_back(i);
+		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
+		//	}
+		//}
+		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player_Bullet")
+		//{
+		//	auto Objektet = TouhouEngine::ActiveGameObjects[i];
+		//	if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Width * ((float)16 / (float)9) * (Objektet->Renderer.SpriteTexture->GetHeight() / (float)Objektet->Renderer.SpriteTexture->GetWidth/()) // 8 > 1)
+		//	{
+		//		//spelar kulorna är över skärmen
+		//		ObjectOutside.push_back(i);
+		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
+		//	}
+		//}
 	}
 	for (int i = 0; i < ObjectOutside.size();i++)
 	{
@@ -499,9 +499,18 @@ bool TouhouEngine::NamedTextureLoaded(std::string const& TextureName)
 }
 std::shared_ptr<Texture> TouhouEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
 {
-	std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath));
-	LoadedTextures[TextureName] = NewTexture;
-	return(NewTexture);
+	std::shared_ptr<Texture> ReturnValue = nullptr;
+	if (LoadedTextures.find(TextureName) == LoadedTextures.end())
+	{
+		std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath));
+		LoadedTextures[TextureName] = NewTexture;
+		ReturnValue = NewTexture;
+	}
+	else
+	{
+		ReturnValue = LoadedTextures[TextureName];
+	}
+	return(ReturnValue);
 }
 void TouhouEngine::DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int,4> Layer)
 {
