@@ -4,6 +4,7 @@
 #include <Hitbox.h>
 #include <SpelObjekt.h>
 #include <iostream>
+#include <MBTouhouTypes.h>
 Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position)// : Enemy("Fiende3.png", 0.8)
 {
 	//inget behöver hända, vi gör alla grejer i själva class beskrivningen
@@ -14,8 +15,10 @@ Level_1_Enemy_3::Level_1_Enemy_3(Vector2D Position)// : Enemy("Fiende3.png", 0.8
 	SetTag("Enemy");
 	GetComponent<SpriteRenderer>()->Width = 0.8;
 	m_TextureName = "Fiende3.png";
-	HP = 10;
-	MaxHp = HP;
+	//AddComponent(new MBTouhouEnemy_HP());
+	GetComponent<MBTouhouEnemy_HP>()->HP = 10;
+	GetComponent<MBTouhouEnemy_HP>()->MaxHP = 10;
+	//MaxHp = HP;
 }
 void Level_1_Enemy_3::OnCreate()
 {
@@ -56,11 +59,11 @@ void Level_1_Enemy_3::Update()
 			Timer = 0;
 		}
 	}
-	if (HP <= 0)
-	{
-		TouhouEngine::Destroy(static_cast<GameObject*>(this));
-	}
-	DrawHealthbar();
+	//if (HP <= 0)
+	//{
+	//	TouhouEngine::Destroy(static_cast<GameObject*>(this));
+	//}
+	//DrawHealthbar();
 }
 void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 {
@@ -84,9 +87,9 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 	//uppdaterar med bra kolliksion kod
 	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(), Kula->GetComponent<Rectangle_Hitbox>()))
 	{
-		void* Player_Pointer_Void = Spelaren;
-		Player* Player_Pointer = { static_cast<Player*>(Player_Pointer_Void) };
-		Player_Pointer->GotHit = 1;
+		//void* Player_Pointer_Void = Spelaren;
+		//Player* Player_Pointer = { static_cast<Player*>(Player_Pointer_Void) };
+		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		std::cout << Kula->Position.x << " " << Kula->Position.y << " " << Spelaren->Position.x << " " << Spelaren->Position.y << std::endl;
 		TouhouEngine::Destroy(Kula);
 	}

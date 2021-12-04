@@ -129,6 +129,7 @@ set(PROJECT_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/SpelObjektcpp/SpelarenFunktioner1.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Vector2D.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/MBGameEngine/MBGameEngine.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/MBTouhouTypes.cpp"
 )
 set(PROJECT_HEADERS 
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Engine.h"

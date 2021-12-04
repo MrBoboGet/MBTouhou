@@ -1,3 +1,4 @@
+#pragma once
 #include <Engine.h>
 
 class MBTouhouEnemy_HP : public Component

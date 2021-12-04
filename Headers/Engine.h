@@ -95,11 +95,13 @@ public:
 	float Rotation = 0;
 	MBGameEngine::Transform Transform;
 
-	int HP;
+	//int HP;
 	//SpriteRenderer Renderer;
 
 
 	bool Active = true;
+	
+	
 	//Vector2D Hitbox;
 	//komponent grejer
 	void AddComponent(Component* ComponentName); //ok inteface, kan stanna kvar

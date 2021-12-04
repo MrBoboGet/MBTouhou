@@ -80,7 +80,7 @@ private:
 class Johan : public GameObject
 {
 private:
-
+	MBTouhouEnemy_HP* m_HPComponent = nullptr;
 public:
 	Johan(Vector2D Position);
 	~Johan();

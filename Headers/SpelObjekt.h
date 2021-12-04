@@ -1,26 +1,47 @@
 #pragma once
 #include <Gameobject.h>
-#include <Engine\Engine_GenericComponent.h>
+#include <Engine/Engine_GenericComponent.h>
 #include <Engine.h>
+#include <MBTouhouTypes.h>
 //bas klass för fiender
-class Enemy : public GameObject
+//class Enemy : public GameObject
+//{
+//private:
+//
+//public:
+//	//float MaxHp = 0;
+//	//float HP = 0;
+//
+//	//void DrawHealthbar();
+//	//void DrawHealthbar(float Offset);
+//	Enemy();
+//	//Enemy(std::string Texture, float Size);
+//	
+//};
+typedef MBTouhouRegularEnemy Enemy;
+#include<Level_1_Enemy_2.h>
+
+
+class TouhouPlayer_HP : public Component
 {
 private:
-
+	bool m_GotHit = false;
+	int m_Invincible_Timer = 0;
+	int m_TotalHP = 0;
 public:
-	float MaxHp = 0;
-
-	void DrawHealthbar();
-	void DrawHealthbar(float Offset);
-	Enemy();
-	//Enemy(std::string Texture, float Size);
-	
+	TouhouPlayer_HP(int MaxHP)
+	{
+		m_TotalHP = MaxHP;
+	}
+	void RegisterCollision();
+	void Update() override;
 };
-#include<Level_1_Enemy_2.h>
+
 class Player : public GameObject
 {
 private:
 	std::string m_TextureName = "";
+	//TouhouPlayer_HP
 	void Player_Teleport();
 	//just nu med så få variablar så är det inte egentligen några problem, men i framtiden vill vi nog se till att varje funktion är ett objekt
 public:
@@ -47,8 +68,10 @@ public:
 
 	int Bombs = 3;
 	bool Key_X_Previous = false;
-	bool GotHit = 0;
-	int Invincible_Timer = 0;
+
+
+	//bool GotHit = 0;
+	//int Invincible_Timer = 0;
 	
 	//ljudför spelaren
 	TouhouSoundEngineSoundObject BasicShotSound = TouhouSoundEngineSoundObject("Resources/Sounds/PlayerBasicShot.wav","SoundEffect");

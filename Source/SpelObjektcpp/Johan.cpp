@@ -44,7 +44,8 @@ void JohanCircleAroundBulletUpdate(Enemy_Bullet_Template* Bullet)
 	//if (Rectangle_Hitbox::Rectangle_Collision(Spelaren->Position,Spelaren->Hitbox,Spelaren->Rotation,Bullet->Position,Bullet->Hitbox,Bullet->Rotation))
 	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(),Bullet->GetComponent<Rectangle_Hitbox>()))
 	{
-		Spelaren->GotHit = true;
+		//Spelaren->GotHit = true;
+		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		TouhouEngine::Destroy(Bullet);
 	}
 }
@@ -217,7 +218,8 @@ void MovingCircleBullet(Enemy_Bullet_Template* Bullet)
 	Bullet->Position = CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(Bullet->Rotation + 90 - 90 * RotationDirection)), std::sin(MBMath::DegreeToRadian(Bullet->Rotation + 90 - 90 * RotationDirection)))*CirleRadius;
 	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(), Bullet->GetComponent<Rectangle_Hitbox>()))
 	{
-		Spelaren->GotHit = true;
+		//Spelaren->GotHit = true;
+		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		TouhouEngine::Destroy(Bullet);
 	}
 }
@@ -283,7 +285,7 @@ Johan::Johan(Vector2D Position)// : GameObject("Johan.png", 1.5)
 {
 	SetTag("Enemy");
 	SetName("Johan");
-	HP = MaxHp;
+	AddComponent(new MBTouhouEnemy_HP());
 	this->Position = Position;
 	//Hitbox = Vector2D(1.5, 1.5);
 	AddComponent(new Rectangle_Hitbox());
@@ -300,6 +302,8 @@ void Johan::OnCreate()
 	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
 	Renderer->Width = 1.5;
 	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("Johan.png", "Resources/SpelResurser/Sprites/Johan.png");
+	m_HPComponent = GetComponent<MBTouhouEnemy_HP>();
+	m_HPComponent->HP = MaxHp;
 }
 void Johan::Update()
 {
@@ -317,9 +321,9 @@ void Johan::Update()
 			//nu spawnar healthbaren
 			StateStart = false;
 		}
-		if (MaxHp > HP)
+		if (MaxHp > m_HPComponent->HP)
 		{
-			HP = MaxHp;
+			m_HPComponent->HP = MaxHp;
 		}
 	}
 	else
@@ -327,15 +331,15 @@ void Johan::Update()
 		//den generella loopen för hur han kommer göra sina attacker
 		//här har vi också lite grejer som checka liv osv
 		//rita Johans liv
-		if (HP > 0)
+		if (m_HPComponent->HP > 0)
 		{
 			std::array<int,4> LivLayern = { 100,0,0,0 };
 			float HealthBarWidth = 6;
 			float HealthBarHeight = 1;
 			std::array<int,4> Layer2 = { 1001,0,0,0 };
 			DrawTextRectangle("Johan", Vector2D(0, 4.2), Layer2, 0.4);
-			TouhouEngine::DrawTexture("Green.png", Vector2D((1 - HP / (float)MaxHp) * HealthBarWidth * -0.5f, 3.8), 6 * (HP / (float)MaxHp), 0.1, LivLayern);
-			TouhouEngine::DrawTexture("RedSquare.png", Vector2D((HealthBarWidth / 2) - (1 - HP / (float)MaxHp) * 0.5f * HealthBarWidth, 3.8), 6 * (1 - HP / (float)MaxHp), 0.1, LivLayern);
+			TouhouEngine::DrawTexture("Green.png", Vector2D((1 - m_HPComponent->HP / (float)MaxHp) * HealthBarWidth * -0.5f, 3.8), 6 * (m_HPComponent->HP / (float)MaxHp), 0.1, LivLayern);
+			TouhouEngine::DrawTexture("RedSquare.png", Vector2D((HealthBarWidth / 2) - (1 - m_HPComponent->HP / (float)MaxHp) * 0.5f * HealthBarWidth, 3.8), 6 * (1 - m_HPComponent->HP / (float)MaxHp), 0.1, LivLayern);
 			JohanStartDelay -= 1;
 			if (JohanStartDelay < 0)
 			{

@@ -74,7 +74,7 @@ void Player_Bullet::Update()
 				//nu vet vi att vi har kolliderat med ett föremål med tagen fiende
 				//det finns 2 sätt att göra det här, 1, låta koden som skadar fienden vara i den eller låta den vara här
 				//jag låter den vara här eftersom det blir enklare att hålla koll på och mindre copy paste
-				ObjectIterator->HP -= Damage;
+				ObjectIterator->GetComponent<MBTouhouEnemy_HP>()->HP -= Damage;
 				//borde vara baserat på en damage variabel
 				Collision = 1;
 				//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
@@ -124,6 +124,52 @@ Player_Bullet::~Player_Bullet()
 {
 
 }
+
+//BEGIN TouhouPlayer_HP
+void TouhouPlayer_HP::RegisterCollision()
+{
+	m_GotHit = true;
+}
+void TouhouPlayer_HP::Update()
+{
+	//här kör vi koden som styr vad som händer när spelaren blir träffad
+	if (m_Invincible_Timer == 0 && m_GotHit == 1)
+	{
+		m_TotalHP -= 1;
+		TouhouEngine::PlaySound("Resources/Sounds/Oof.wav", 0.5, "SoundEffect");
+		m_Invincible_Timer = 60;
+	}
+	m_GotHit = 0;
+	m_Invincible_Timer -= 1;
+	if (m_Invincible_Timer < 0)
+	{
+		m_Invincible_Timer = 0;
+	}
+	if (m_Invincible_Timer > 0)
+	{
+		GetGameObject()->GetComponent<SpriteRenderer>()->ColorKoef.A = std::abs(std::sin(MBMath::DegreeToRadian(m_Invincible_Timer * 6))) * 0.5 + 0.3;
+	}
+	else
+	{
+		GetGameObject()->GetComponent<SpriteRenderer>()->ColorKoef.A = 1;
+	}
+	for (int i = 0; i < m_TotalHP; i++)
+	{
+		std::array<int, 4> Layer = { 100,1,0,0 };
+		TouhouEngine::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1, Layer);
+	}
+
+	if (m_TotalHP <= 0)
+	{
+		//TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
+		TouhouEngine::Destroy(GetGameObject());
+		if (TouhouEngine::FindObjectWithName("Johan") != nullptr)
+		{
+			TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
+		}
+	}
+}
+//END TouhouPlayer_HP
 
 //Eftersom vi bara kommer ha en spelare oavsett så kommer vi att kunna ha variabler som den använder här utan problem
 int Player_Shot_Timer = 0;
@@ -245,36 +291,10 @@ void Player::Update()
 	//Grafik grejer
 
 	//här ritar vi hur mycket HP man har
-	for (int i = 0; i < HP; i++)
-	{
-		std::array<int,4> Layer = { 100,1,0,0 };
-		TouhouEngine::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1,Layer);
-	}
 	for (int i = 0; i < Bombs; i++)
 	{
 		std::array<int,4> Layer = { 100,1,0,0 };
 		TouhouEngine::DrawTexture("Bomb.png", Vector2D(5 + i * 1.2f, -1.5), 1, 1, Layer);
-	}
-	//här kör vi koden som styr vad som händer när spelaren blir träffad
-	if (Invincible_Timer == 0 && GotHit == 1)
-	{
-		HP -= 1;
-		TouhouEngine::PlaySound("Resources/Sounds/Oof.wav", 0.5, "SoundEffect");
-		Invincible_Timer = 60;
-	}
-	GotHit = 0;
-	Invincible_Timer -= 1;
-	if (Invincible_Timer < 0)
-	{
-		Invincible_Timer = 0;
-	}
-	if (Invincible_Timer > 0)
-	{
-		GetComponent<SpriteRenderer>()->ColorKoef.A = std::abs(std::sin(MBMath::DegreeToRadian(Invincible_Timer * 6))) * 0.5 + 0.3;
-	}
-	else
-	{
-		GetComponent<SpriteRenderer>()->ColorKoef.A = 1;
 	}
 
 	//nu ändrar vi värdet av våran position sett till värdet utav X_Change och Y_Change
@@ -395,15 +415,6 @@ void Player::Update()
 
 	//Här kör vi koden om vad som händer om HP är mindre än eller lika med 0
 	//borde vara längst ner för att vara säker på att det är det sista som händer
-	if (HP <= 0)
-	{
-		//TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
-		TouhouEngine::Destroy(this);
-		if (TouhouEngine::FindObjectWithName("Johan") != nullptr)
-		{
-			TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
-		}
-	}
 }
 //vi hardcoadar vilken sprite och vilken storlek föremålet har här
 Player::Player(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("Jakob.png",0.4)
@@ -411,7 +422,7 @@ Player::Player(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObjec
 	Position = Plats;
 	SetName(Namn);
 	Rotation = 0;
-	HP = 3;
+	//HP = 3;
 	Bombs = 3;
 	SetTag(Tagg);
 	//väldigt provosiriska siffror
@@ -420,6 +431,7 @@ Player::Player(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObjec
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Player_Attack_BigShot(this));
 	AddComponent(new Rectangle_Hitbox());
+	AddComponent(new TouhouPlayer_HP(3));
 	//AddComponent(new SpriteAnimationRenderer(this, "PlayerAnimationConfig.txt"));
 }
 void Player::OnCreate()
@@ -529,9 +541,10 @@ void Enemy_Bullet::Update()
 		//nu kommer vi till "spelaren är träffad flaggen"
 		//Vi vill helst inte behöva ha massa variablar i Gameobject koden, så frågan är hur vi får det 
 		//den metod jag testar nu, är att jag givet en pointer till en gameobject assignar en ny Player pointer så jag kommer åt allt
-		void* Player_Pointer_Void = PlayerObject;
-		Player* Player_Pointer{static_cast<Player*>(Player_Pointer_Void)};
-		Player_Pointer->GotHit = 1;
+		
+		//void* Player_Pointer_Void = PlayerObject;
+		//Player* Player_Pointer{static_cast<Player*>(Player_Pointer_Void)};
+		PlayerObject->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		TouhouEngine::Destroy(this);
 	}
 }
@@ -540,14 +553,17 @@ void Enemy_Bullet::Update()
 Level1_Enemy_1::Level1_Enemy_1(Vector2D Plats, std::string Namn, std::string Tagg)// : Enemy("Fiende1.png", 0.8)
 {
 	Position = Plats;
-	HP = 10;
+	//HP = 10;
+	GetComponent<MBTouhouEnemy_HP>()->HP = 10;
+	GetComponent<MBTouhouEnemy_HP>()->MaxHP = 10;
+	
 	//Hitbox = Vector2D(0.8, 0.8);
 	SetName(Namn);
 	SetTag(Tagg);
 	GetComponent<SpriteRenderer>()->Width = 0.8;
 	m_TextureName = "Fiende1.png";
 	speed = 0.01f;
-	MaxHp = 10;
+	//MaxHp = 10;
 }
 void Level1_Enemy_1::OnCreate()
 {
@@ -582,13 +598,13 @@ void Level1_Enemy_1::Update()
 			Level1_Enemy_1_Timer = 0;
 		}
 	}
-	if (HP <= 0)
-	{
-		TouhouEngine::Destroy(this);
-	}
+	//if (HP <= 0)
+	//{
+	//	TouhouEngine::Destroy(this);
+	//}
 
 	//dra liv kod
-	DrawHealthbar();
+	//DrawHealthbar();
 }
 //fiende 1 level 1
 //Level1
@@ -850,42 +866,42 @@ void Level1::Update()
 //	AddComponent(new SpriteRenderer());
 //	AddComponent(new Rectangle_Hitbox());
 //}
-Enemy::Enemy()
-{
-	AddComponent(new SpriteRenderer());
-	AddComponent(new Rectangle_Hitbox());
-}
-void Enemy::DrawHealthbar()
-{
-	//vi drar det med en konstant
-	//dra liv kod
-	float LifeWidth = 0.5;
-	float LifeHeight = 0.125f;
-	std::array<int,4> LifeLayer = { 0,0,0,0 };
-	for (int i = 0; i < 4;i++)
-	{
-		LifeLayer[i] = GetComponent<SpriteRenderer>()->Layer[i];
-	}
-	LifeLayer[1] += 1;
-	float HealtbarPercentage = HP / MaxHp;
-	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
-}
-void Enemy::DrawHealthbar(float Offset)
-{
-	//vi drar det med en konstant
-	//dra liv kod
-	float LifeWidth = 0.5;
-	float LifeHeight = 0.125f;
-	std::array<int,4> LifeLayer = { 0,0,0,0 };
-	for (int i = 0; i < 4;i++)
-	{
-		LifeLayer[i] = GetComponent<SpriteRenderer>()->Layer[i];
-	}
-	LifeLayer[1] += 1;
-
-	float HealtbarPercentage = HP / MaxHp;
-	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f+Offset), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f+Offset), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
-	//std::cout << MaxHp << std::endl;
-}
+//Enemy::Enemy()
+//{
+//	AddComponent(new SpriteRenderer());
+//	AddComponent(new Rectangle_Hitbox());
+//}
+//void Enemy::DrawHealthbar()
+//{
+//	//vi drar det med en konstant
+//	//dra liv kod
+//	float LifeWidth = 0.5;
+//	float LifeHeight = 0.125f;
+//	std::array<int,4> LifeLayer = { 0,0,0,0 };
+//	for (int i = 0; i < 4;i++)
+//	{
+//		LifeLayer[i] = GetComponent<SpriteRenderer>()->Layer[i];
+//	}
+//	LifeLayer[1] += 1;
+//	float HealtbarPercentage = HP / MaxHp;
+//	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+//	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f), LifeWidth * (1 - HealtbarPercentage), LifeHeight, //LifeLayer);
+//}
+//void Enemy::DrawHealthbar(float Offset)
+//{
+//	//vi drar det med en konstant
+//	//dra liv kod
+//	float LifeWidth = 0.5;
+//	float LifeHeight = 0.125f;
+//	std::array<int,4> LifeLayer = { 0,0,0,0 };
+//	for (int i = 0; i < 4;i++)
+//	{
+//		LifeLayer[i] = GetComponent<SpriteRenderer>()->Layer[i];
+//	}
+//	LifeLayer[1] += 1;
+//
+//	float HealtbarPercentage = HP / MaxHp;
+//	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f+Offset), LifeWidth * HealtbarPercentage, LifeHeight, //LifeLayer);
+//	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f+Offset), LifeWidth * (1 - HealtbarPercentage), //LifeHeight, LifeLayer);
+//	//std::cout << MaxHp << std::endl;
+//}

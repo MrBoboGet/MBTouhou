@@ -6,6 +6,7 @@
 #include <Hitbox.h>
 #include <Engine.h>
 #include <MBUtility/MBMath.h>
+#include <MBTouhouTypes.h>
 //extern std::vector<GameObject*> ActiveGameObjects;
 //extern std::vector<GameObject*> DeletedGameObjects;
 Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string Tagg)// : Enemy("Fiende2.png", 1.6)
@@ -16,8 +17,8 @@ Level_1_Enemy_2::Level_1_Enemy_2(Vector2D Plats, std::string Namn, std::string T
 	SetTag(Tagg);
 	//Hitbox = Vector2D(1.6, 1.6);
 	speed = -0.005;
-	HP = 10;
-	MaxHp = HP;
+	GetComponent<MBTouhouEnemy_HP>()->HP = 10;
+	GetComponent<MBTouhouEnemy_HP>()->MaxHP = 10;
 	m_TextureName = "Fiende2.png";
 	GetComponent<SpriteRenderer>()->Width = 1.6;
 	//std::cout << MaxHp << std::endl;
@@ -31,6 +32,7 @@ void Level_1_Enemy_2::OnCreate()
 	GetComponent<Rectangle_Hitbox>()->Height = 1.6;
 	GetComponent<Rectangle_Hitbox>()->Width = 1.6;
 	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/"+m_TextureName);
+	GetComponent<MBTouhouEnemy_HP>()->HealthBarOffset = 1;
 }
 void Level_1_Enemy_2::Update()
 {
@@ -52,12 +54,12 @@ void Level_1_Enemy_2::Update()
 
 		Level_1_Enemy_2_Timer = 0;
 	}
-	if (HP <= 0)
-	{
-		TouhouEngine::Destroy(this);
-	}
+	//if (HP <= 0)
+	//{
+	//	TouhouEngine::Destroy(this);
+	//}
 	//std::cout << MaxHp << std::endl;
-	DrawHealthbar(1.0f);
+	//DrawHealthbar(1.0f);
 }
 void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 {
@@ -102,8 +104,8 @@ void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 	if (Rectangle_Hitbox::Collides(PlayerObject->GetComponent<Rectangle_Hitbox>(),Pointern->GetComponent<Rectangle_Hitbox>()))
 	{
 		//void* Player_Pointer_Void = PlayerObject;
-		Player* Player_Pointer = dynamic_cast<Player*>(PlayerObject); //fixa det här, väldigt jank
-		Player_Pointer->GotHit = 1;
+		//Player* Player_Pointer = dynamic_cast<Player*>(PlayerObject); //fixa det här, väldigt jank
+		PlayerObject->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		
 		TouhouEngine::Destroy(Pointern);
 	}
