@@ -1,7 +1,14 @@
 #pragma once
 #include <Engine.h>
 #include <random>
+#include <MBTouhouTypes.h>
 class Johan;
+
+class JohanHP : public MBTouhouEnemy_HP
+{
+public:
+	void Update() override;
+};
 class JohanAttack
 {
 public:

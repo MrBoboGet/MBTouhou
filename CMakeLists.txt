@@ -174,21 +174,21 @@ set(EXECUTABLE_FILES
 
 set(COMMON_LIBRARIES ${COMMON_STATIC_LIBRARIES} ${COMMON_DYNAMIC_LIBRARIES})
 
-add_library(MBTouhou_SD STATIC ${COMMON_FILES})
+add_library(MBTouhou_SD STATIC ${COMMON_FILES} "MBTouhouTypes.h")
 MBPM_ApplyTargetConfiguration("MBTouhou_SD" "STATIC" "DEBUG")
 target_compile_features("MBTouhou_SD" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou_SD" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou_SD" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
 target_include_directories("MBTouhou_SD" PRIVATE "$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/gl3w/include/")
 
-add_library(MBTouhou_SR STATIC ${COMMON_FILES})
+add_library(MBTouhou_SR STATIC ${COMMON_FILES} "MBTouhouTypes.h")
 MBPM_ApplyTargetConfiguration("MBTouhou_SR" "STATIC" "RELEASE")
 target_compile_features("MBTouhou_SR" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou_SR" ${COMMON_LIBRARIES})
 target_include_directories("MBTouhou_SR" PRIVATE ${COMMON_INCLUDE_DIRECTORIES})
 target_include_directories("MBTouhou_SR" PRIVATE "$ENV{MBPM_PACKETS_INSTALL_DIRECTORY}/gl3w/include/")
 
-add_executable(MBTouhou ${COMMON_FILES}  ${EXECUTABLE_FILES})
+add_executable(MBTouhou ${COMMON_FILES}  ${EXECUTABLE_FILES} "MBTouhouTypes.h")
 MBPM_ApplyTargetConfiguration("MBTouhou" "STATIC" "DEBUG")
 target_compile_features("MBTouhou" PRIVATE cxx_std_17)
 target_link_libraries("MBTouhou" ${COMMON_LIBRARIES})

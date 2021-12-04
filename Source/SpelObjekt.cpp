@@ -26,6 +26,7 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size) : 
 	 //namn och tag tar vi som standard, man borde aktivt ändra istället
 	SetTag("Player_Bullet");
 	SetName("Player_Bullet");
+	AddComponent(new Rectangle_Hitbox());
 	Position = Plats;
 	//saker vi behöver faktiskt initializa	
 	//Hitbox

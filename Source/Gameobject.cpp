@@ -6,12 +6,16 @@
 //extern std::vector<GameObject*> ActiveGameObjects;
 //extern std::unordered_map<std::string, Texture*> LoadedTextures;
 bool Debug = false;
-GameObjectRenderer::GameObjectRenderer()
+SpriteRenderer::SpriteRenderer()
 {
 	ColorKoef.A = 1;
 	ColorKoef.R = 1;
 	ColorKoef.B = 1;
 	ColorKoef.G = 1;
+}
+void SpriteRenderer::Update()
+{
+
 }
 //GameObjectRenderer::GameObjectRenderer(std::string Bild)
 //{
@@ -30,7 +34,7 @@ GameObject::GameObject()
 	*/
 }
 GameObject::GameObject(Vector2D Plats, std::string Namn, std::string Tagg)
-	:Position(Plats),Name(Namn),Tag(Tagg),Renderer(GameObjectRenderer())
+	:Position(Plats),Name(Namn),Tag(Tagg),Renderer(SpriteRenderer())
 {
 	if (!TouhouEngine::NamedTextureLoaded(Namn))
 	{
@@ -74,7 +78,7 @@ void GameObject::Render()
 	TouhouEngine::DrawTexture(Renderer.SpriteTexture, Position, Sprite_Width, Sprite_Height, Layer);
 
 }
-GameObjectRenderer::~GameObjectRenderer()
+SpriteRenderer::~SpriteRenderer()
 {
 
 }

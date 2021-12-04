@@ -34,29 +34,6 @@ public:
 	//DrawObject(std::string a, Vector2D b, float c, float d, int Layern[]);
 	//DrawObject(Vector2D Start,Vector2D End ,std::vector<int> Layern);
 };
-//iomed att jag är lite lat och vet att vi inte igentligen behöver ändra shadern så kommer jag från och med nu antat att varje objekt inte behöver en unik
-class GameObjectRenderer
-{
-public:
-	struct ColorRGBA
-	{
-		float R = 1;
-		float G = 1;
-		float B = 1;
-		float A = 1;
-	};
-	ColorRGBA ColorKoef;
-	float Width = 1;
-	std::vector<int> Layer = { 0,0,0,0 };
-	//ett problem vi får med den här koden är att varje gameobject gör sin egen kopia av samma texture, vilket tar minne och eventuellt prestanda
-	//tanken är att jag gör en dictionary så att om en texture redans finns så säger vi att render idn är den texturen
-	std::shared_ptr<Texture> SpriteTexture = nullptr;
-	//Shader ObjectShader;
-	//GameObjectRenderer(std::string Bild);
-	//GameObjectRenderer(std::string Namn, float Storlek);
-	GameObjectRenderer();
-	~GameObjectRenderer();
-};
 class GameObject;
 class GameObject;
 class Component
@@ -80,7 +57,29 @@ public:
 private:
 
 };
-
+class SpriteRenderer : public Component
+{
+public:
+	struct ColorRGBA
+	{
+		float R = 1;
+		float G = 1;
+		float B = 1;
+		float A = 1;
+	};
+	ColorRGBA ColorKoef;
+	float Width = 1;
+	std::vector<int> Layer = { 0,0,0,0 };
+	//ett problem vi får med den här koden är att varje gameobject gör sin egen kopia av samma texture, vilket tar minne och eventuellt prestanda
+	//tanken är att jag gör en dictionary så att om en texture redans finns så säger vi att render idn är den texturen
+	std::shared_ptr<Texture> SpriteTexture = nullptr;
+	//Shader ObjectShader;
+	//GameObjectRenderer(std::string Bild);
+	//GameObjectRenderer(std::string Namn, float Storlek);
+	virtual void Update() override;
+	SpriteRenderer();
+	~SpriteRenderer();
+};
 class GameObject
 {
 private:
@@ -96,7 +95,7 @@ public:
 	MBGameEngine::Transform Transform;
 
 	int HP;
-	GameObjectRenderer Renderer;
+	SpriteRenderer Renderer;
 
 
 	bool Active = true;

@@ -5,6 +5,17 @@
 #include <Hitbox.h>
 #include <random>
 #include <iostream>
+
+
+//BEGIN JohanHP
+void JohanHP::Update()
+{
+
+}
+//END JohanHP
+
+
+
 JohanAttack::JohanAttack()
 {
 	//
@@ -275,6 +286,8 @@ Johan::Johan(Vector2D Position) : GameObject("Johan.png", 1.5)
 	HP = MaxHp;
 	this->Position = Position;
 	//Hitbox = Vector2D(1.5, 1.5);
+	AddComponent(new Rectangle_Hitbox());
+	//AddComponent();
 	Attacker.push_back(new JohanCirclingBulletAttack(this));
 	Attacker.push_back(new JohanCircelAroundAttack(this));
 	Attacker.push_back(new JohanRightToLeftAttack(this));
