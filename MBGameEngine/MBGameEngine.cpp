@@ -67,13 +67,20 @@ namespace MBGameEngine
 	{
 		return(false);
 	}
-	void MBGameEngine::DestroyGameObject(GameObjectReference ObjectToDelete)
+	void MBGameEngine::Destroy(GameObjectReference ObjectToDelete)
 	{
 		if (ObjectToDelete)
 		{
 			m_ObjectsToDelete.push(ObjectToDelete);
 			ObjectToDelete->m_Active = false;
 		}
+	}
+	GameObjectReference MBGameEngine::Create(GameObject* NewObject)
+	{
+		m_LoadedGameObjects.push_back(std::unique_ptr<GameObject>(NewObject));
+		NewObject->m_AssociatedEngine = this;
+		NewObject->OnCreate();
+		return(GameObjectReference(m_LoadedGameObjects.back()->m_ObjectReferencePointer));
 	}
 	void MBGameEngine::MainLoop()
 	{
@@ -84,7 +91,7 @@ namespace MBGameEngine
 
 	}
 
-	GameObjectReference MBGameEngine::FindGameObjectWithName(std::string const& Name)
+	GameObjectReference MBGameEngine::FindObjectWithName(std::string const& Name)
 	{
 		GameObjectReference ReturnValue;
 		for (std::unique_ptr<GameObject>& Objects : m_LoadedGameObjects)
@@ -97,7 +104,7 @@ namespace MBGameEngine
 		}
 		return(ReturnValue);
 	}
-	GameObjectReference MBGameEngine::FindGameObjectWithTag(std::string const& Name)
+	GameObjectReference MBGameEngine::FindObjectWithTag(std::string const& Name)
 	{
 		GameObjectReference ReturnValue;
 		for (std::unique_ptr<GameObject>& Objects : m_LoadedGameObjects)

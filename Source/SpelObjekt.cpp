@@ -269,6 +269,7 @@ void Player::Update()
 	}
 	//teleport kod
 	Player_Teleport();
+	Position = Transform.GetPosition();
 	//nu kör vi våra komponent koder
 	
 	

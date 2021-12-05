@@ -40,6 +40,10 @@ GameObject* TouhouEngine::Create(GameObject* a)
 }
 void TouhouEngine::Destroy(GameObject* a)
 {
+	if (a->GetTag() == "Player" || a->GetName() == "Spelaren")
+	{
+		std::cout << "hmm" << std::endl;
+	}
 	int PositionIListan = 0;
 	for (int i = 0; i < ActiveGameObjects.size();i++)
 	{
@@ -267,6 +271,10 @@ void TouhouEngine::HandleDeletedGameobjects()
 	//nu deletar vi alla föremål som vi ville ha bort förra framen
 	for (int i = 0; i < TouhouEngine::DeletedGameObjects.size();i++)
 	{
+		if (DeletedGameObjects[i]->GetTag() == "Player" || DeletedGameObjects[i]->GetName() == "Spelaren")
+		{
+			std::cout << "Hmm";
+		}
 		delete TouhouEngine::DeletedGameObjects[i];
 	}
 	TouhouEngine::DeletedGameObjects = {};
@@ -446,15 +454,15 @@ std::shared_ptr<Texture> TouhouEngine::LoadNamedTexture(std::string const& Textu
 	}
 	return(ReturnValue);
 }
-void TouhouEngine::DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int,4> Layer)
+void TouhouEngine::DrawTexture(std::string const& NamedTexture, MBGE::Transform TextureTransform, float Width, float Height, std::array<int,4> Layer)
 {
 	if (NamedTexture.find("Back") != NamedTexture.npos)
 	{
 		std::cout << "";
 	}
-	DrawTexture(TouhouEngine::GetNamedTexture(NamedTexture), Position, Width, Height, Layer);
+	DrawTexture(TouhouEngine::GetNamedTexture(NamedTexture), TextureTransform, Width, Height, Layer);
 }
-void TouhouEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int,4>Layer)
+void TouhouEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, MBGE::Transform TextureTransform, float Width, float Height, std::array<int,4>Layer)
 {
 	if (TextureToDraw == nullptr)
 	{
@@ -462,7 +470,7 @@ void TouhouEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D 
 	}
 	DrawObject NewObjectToDraw;
 	NewObjectToDraw.Texturen = TextureToDraw;
-	NewObjectToDraw.Position = Position;
+	NewObjectToDraw.TextureTransform = std::move(TextureTransform);
 	NewObjectToDraw.Width = Width;
 	NewObjectToDraw.Height = Height;
 	for (size_t i = 0; i < 4; i++)
@@ -489,8 +497,16 @@ void TouhouEngine::p_DrawDrawObject(DrawObject& ObjectToDraw)
 	TouhouEngine::__SpriteModel->SetTexture(ObjectToDraw.Texturen);
 	ShaderToUse->SetUniformMat4f("View", TouhouEngine::__Camera.GetViewMatrix().GetContinousData());
 	ShaderToUse->SetUniformMat4f("Projection", TouhouEngine::__Camera.GetProjectionMatrix().GetContinousData());
-	TouhouEngine::__SpriteModel->ModelTransform.SetScaling(MBMath::MBVector3<float>(ObjectToDraw.Width,ObjectToDraw.Height,1));
-	TouhouEngine::__SpriteModel->ModelTransform.SetPosition(MBMath::MBVector3<float>(ObjectToDraw.Position.x,ObjectToDraw.Position.y,0));
+
+	TouhouEngine::__SpriteModel->ModelTransform = std::move(ObjectToDraw.TextureTransform);
+	MBMath::MBVector3<float> NewScaling = TouhouEngine::__SpriteModel->ModelTransform.GetScaling();
+	NewScaling[0] *= ObjectToDraw.Width;
+	NewScaling[1] *= ObjectToDraw.Height;
+	TouhouEngine::__SpriteModel->ModelTransform.SetScaling(NewScaling);
+	//TouhouEngine::__SpriteModel->ModelTransform.SetScaling(MBMath::MBVector3<float>(ObjectToDraw.Width,ObjectToDraw.Height,1));
+	//TouhouEngine::__SpriteModel->ModelTransform.SetPosition(MBMath::MBVector3<float>(ObjectToDraw.Position.x,ObjectToDraw.Position.y,0));
+
+
 	ShaderToUse->SetUniformMat4f("Model",TouhouEngine::__SpriteModel->ModelTransform.GetModelMatrix().GetContinousData());
 	//if (ObjectToDraw.Height == 36)
 	//{

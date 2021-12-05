@@ -52,7 +52,9 @@ void PausMenu::Update()
 		{
 			std::array<int,4> Layer3 = { 1000000,0,0,0 };
 			std::array<int,4> Layer4545 = { 1000001,0,0,0 };
-			TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
+			MBGE::Transform TextureTransform;
+			TextureTransform.SetPosition(Vector2D(0, 0));
+			TouhouEngine::DrawTexture("Backgrund1.png", TextureTransform, 16, 9, Layer3);
 			DrawTextRectangle("Continue", Vector2D(0, 1.5), Layer4545, 0.4);
 			DrawTextRectangle("Quit", Vector2D(0, -1.5), Layer4545, 0.4);
 			DrawTextRectangle("Retry", Vector2D(0, 0), Layer4545, 0.4);
@@ -69,7 +71,9 @@ void PausMenu::Update()
 					CurrentOption = NumberOfOptions - 1;
 				}
 			}
-			TouhouEngine::DrawTexture("Jakob.png", Vector2D(-3, 1.5 - 1.5*CurrentOption), 1, 1, Layer3);
+			//MBGE::Transform TextureTransform;
+			TextureTransform.SetPosition(Vector2D(-3, 1.5 - 1.5 * CurrentOption));
+			TouhouEngine::DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer3);
 			if (TouhouEngine::GetKeyPressed("enter"))
 			{
 				if (CurrentOption == 0)

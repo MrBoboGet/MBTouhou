@@ -32,7 +32,9 @@ void TouhouPlayer_HP::Update()
 	for (int i = 0; i < m_TotalHP; i++)
 	{
 		std::array<int, 4> Layer = { 100,1,0,0 };
-		TouhouEngine::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1, Layer);
+		MBGE::Transform TextureTransform;
+		TextureTransform.SetPosition(Vector2D(5 + i * 1.2f, -3));
+		TouhouEngine::DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer);
 	}
 
 	if (m_TotalHP <= 0)
@@ -113,8 +115,11 @@ void MBTouhouEnemy_HP::DrawHealthbar()
 	LifeLayer[1] += 1;
 
 	float HealtbarPercentage = HP / double(MaxHP);
-	TouhouEngine::DrawTexture("Green.png", Vector2D(GetGameObject()->Transform.GetPosition()[0] - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(GetGameObject()->Transform.GetPosition()[0] + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset), LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
+	MBGE::Transform TextureTransform;
+	TextureTransform.SetPosition(Vector2D(GetGameObject()->Transform.GetPosition()[0] - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset));
+	TouhouEngine::DrawTexture("Green.png", TextureTransform, LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+	TextureTransform.SetPosition(Vector2D(GetGameObject()->Transform.GetPosition()[0] + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset));
+	TouhouEngine::DrawTexture("RedSquare.png", TextureTransform, LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
 }
 MBTouhouRegularEnemy::MBTouhouRegularEnemy()
 {

@@ -26,7 +26,8 @@ class DrawObject
 public:
 	std::shared_ptr<Texture> Texturen = nullptr;
 	ColorRGBA Color;
-	Vector2D Position;
+	//Vector2D Position;
+	MBGE::Transform TextureTransform;
 	float Width;
 	float Height;
 	std::array<int,4> Layer = { 0,0,0,0 };
@@ -245,11 +246,11 @@ private:
 	//static MBGE::MBGraphicsEngine __GraphicsEngine;
 
 	static void p_DrawDrawObject(DrawObject& ObjectToDraw);
+	static float Framerate;
 public:
 
 
 
-	static float Framerate;
 	TouhouEngine();
 	~TouhouEngine();
 
@@ -273,8 +274,8 @@ public:
 	static std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
 	static bool NamedTextureLoaded(std::string const& TextureName);
 	
-	static void DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int,4> Layer);
-	static void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
+	static void DrawTexture(std::string const& NamedTexture, MBGE::Transform TextureTransform, float Width, float Height, std::array<int,4> Layer);
+	static void DrawTexture(std::shared_ptr<Texture> TextureToDraw, MBGE::Transform TextureTransform, float Width, float Height, std::array<int, 4> Layer);
 
 	//static void DebugLog(std::string TextToLog);
 

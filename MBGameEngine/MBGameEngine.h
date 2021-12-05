@@ -13,14 +13,6 @@ namespace MBGameEngine
 		Shift,Left,Right,Up,Down,
 	};
 
-	class Texture
-	{
-	private:
-
-	public:
-
-	};
-
 	//class Transform
 	//{
 	//
@@ -28,6 +20,8 @@ namespace MBGameEngine
 	//	MBMath::MBVector3<float> Position;
 	//};
 	typedef MBGE::Transform Transform;
+	typedef MBGE::Texture Texture;
+	typedef MBGE::ShaderProgram Shader;
 	template<typename T>
 	class SharedDeletableObjectReference
 	{
@@ -175,18 +169,33 @@ namespace MBGameEngine
 		template<typename T> GameObjectReference CreateGameObject()
 		{
 			m_LoadedGameObjects.push_back(std::unique_ptr<GameObject>(new T()));
-			m_LoadedGameObjects.back()->OnCreate();
 			m_LoadedGameObjects.back()->m_AssociatedEngine = this;
+			m_LoadedGameObjects.back()->OnCreate();
 			return(GameObjectReference(m_LoadedGameObjects.back()->m_ObjectReferencePointer));
 		}
-		void DestroyGameObject(GameObjectReference ObjectToDelete);
 
-		//Top Loop grejer
 		void MainLoop();
 
-		//convinience icke best practice grejer
-		void PlaySound(std::string const& SoundFile, float Volume);
-		GameObjectReference FindGameObjectWithName(std::string const& Name);
-		GameObjectReference FindGameObjectWithTag(std::string const& Name);
+		GameObjectReference Create(GameObject* NewObject);
+		void Destroy(GameObjectReference ObjectToDelete);
+		GameObjectReference FindObjectWithName(std::string const& Name);
+		GameObjectReference FindObjectWithTag(std::string const& ObjectTag);
+		//void InitializeWindow(int Width, int Height, std::string WindowName, GLFWmonitor* Monitor, GLFWwindow* Share);
+
+
+		ActiveObjectIterator GetActiveObjectsIterator();
+		void ClearObjects();
+		std::shared_ptr<Shader> GetNamedShader(std::string const& ShaderName);
+		std::shared_ptr<Texture> GetNamedTexture(std::string const& TextureName);
+		std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
+		bool NamedTextureLoaded(std::string const& TextureName);
+
+		//void DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
+		//void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
+
+		std::shared_ptr<Shader> LoadShader(std::string ShaderName, std::string VertexFilepath, std::string FragmentFilepath);
+
+		void PlaySound(std::string const& Path, float Volume);
+		void PlaySound(std::string const& , float RelativeVolume, std::string const& Tag);
 	};
 }

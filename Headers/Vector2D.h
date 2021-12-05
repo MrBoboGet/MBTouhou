@@ -1,5 +1,6 @@
 #pragma once
 #include <MBUtility/MBMatrix.h>
+#include <MBGraphicsEngine/MBGE.h>
 class Vector2D
 {
 public:
@@ -16,9 +17,15 @@ public:
 		x = InitialVector[0];
 		y = InitialVector[1];
 	}
-	operator MBMath::MBVector3<float>()
+	operator MBMath::MBVector3<float>() const
 	{
 		return(MBMath::MBVector3<float>(x, y, 0));
+	}
+	operator MBGE::Transform() const
+	{
+		MBGE::Transform ReturnValue;
+		ReturnValue.SetPosition(MBMath::MBVector3<float>(x, y, 0));
+		return(ReturnValue);
 	}
 	float Length();
 	void Rotate(float Degrees);
