@@ -5,6 +5,7 @@
 #include <vector>
 #include <stack>
 #include <MBGraphicsEngine/MBGE.h>
+#include <array>
 namespace MBGameEngine
 {
 	enum class KeyCode
@@ -82,6 +83,8 @@ namespace MBGameEngine
 	class Component;
 	typedef SharedDeletableObjectReference<GameObject> GameObjectReference;
 	typedef SharedDeletableObjectReference<Component> ComponentReference;
+	template <typename T>
+	using ObjectReference = SharedDeletableObjectReference<T>;
 
 	class Component
 	{
@@ -102,6 +105,7 @@ namespace MBGameEngine
 	{
 	private:
 		friend class MBGameEngine;
+		friend class ActiveObjectIterator;
 		std::string m_Name = "";
 		std::string m_Tag = "";
 		bool m_Active = true;
@@ -112,6 +116,8 @@ namespace MBGameEngine
 		std::vector<std::unique_ptr<Component>> m_Components = {};
 		void p_DefaultUpdate();
 		//GameObject(MBGameEngine* AssociatedEngine);
+		bool m_Deleted = false;
+		//bool IsDeleted();
 	protected:
 		MBGameEngine& GetEngine() {return(*m_AssociatedEngine);};
 	public:
@@ -143,8 +149,11 @@ namespace MBGameEngine
 	{
 		friend MBGameEngine;
 	private:
-
-
+		bool m_HasEnded = false;
+		GameObjectReference m_CurrentReference;
+		std::vector<std::unique_ptr<GameObject>>::iterator m_InternalIterator;
+		std::vector<std::unique_ptr<GameObject>>::iterator m_EndIterator;
+		ActiveObjectIterator() {};
 	public:
 		bool HasEnded();
 
@@ -158,15 +167,71 @@ namespace MBGameEngine
 		
 		ActiveObjectIterator& Increment();
 	};
+
+	struct ColorRGBA
+	{
+		float R = 1;
+		float G = 1;
+		float B = 1;
+		float A = 1;
+	};
+	class DrawObject
+	{
+	public:
+		std::shared_ptr<Texture> Texturen = nullptr;
+		ColorRGBA Color;
+		//Vector2D Position;
+		MBGE::Transform TextureTransform;
+		float Width;
+		float Height;
+		std::array<int, 4> Layer = { 0,0,0,0 };
+		friend bool operator<(DrawObject const& LeftObject, DrawObject const& RightObject)
+		{
+			bool ReturnValue = false;
+			for (size_t i = 0; i < 4; i++)
+			{
+				if (LeftObject.Layer[i] < RightObject.Layer[i])
+				{
+					ReturnValue = true;
+					break;
+				}
+				else if (LeftObject.Layer[i] > RightObject.Layer[i])
+				{
+					break;
+				}
+			}
+			return(ReturnValue);
+		}
+
+		//DrawObject(std::string a, Vector2D b, float c, float d, int Layern[]);
+		//DrawObject(Vector2D Start,Vector2D End ,std::vector<int> Layern);
+	};
 	class MBGameEngine
 	{
 	private:
 		std::vector<std::unique_ptr<GameObject>> m_LoadedGameObjects = {};
-		std::stack<GameObjectReference> m_ObjectsToDelete = {};
+		std::vector<std::unique_ptr<GameObject>> m_ObjectsToDelete = {};
+		std::vector<std::unique_ptr<GameObject>> m_NewObjects = {};
 		MBGE::MBGraphicsEngine m_InternalGraphicsEngine;
+
+		//lite legacy grejer, inte helt säker på om jag ogillar eller gillar iden, men behövs nu i alla fall för att supporta grejerna
+		std::unordered_map<std::string, std::shared_ptr<Shader>> m_LoadedShaders = {};
+		std::unordered_map<std::string, std::shared_ptr<Texture>> m_LoadedTextures = {};
+
+		std::vector<DrawObject> m_DrawCalls = {};
+
+
+		MBGE::Camera m_SpriteCamera;
+		std::unique_ptr<MBGE::SpriteModel> m_SpriteRenderingModel = nullptr;
+		void p_DrawDrawObject(DrawObject& ObjectToDraw);
+
 		void p_Update_CleanUpObjects();
 		void p_Update_LoadedGameObjects();
+		void p_Update_Render();
+		void p_Update_Render_DrawDrawCalls();
 		void p_Update();
+
+		float m_FrameRate = 60;
 	public:
 		bool GetKeyDown(KeyCode KeyToCheck);
 		bool GetKeyPressed(KeyCode KeyToCheck);
@@ -178,7 +243,7 @@ namespace MBGameEngine
 			m_LoadedGameObjects.back()->OnCreate();
 			return(GameObjectReference(m_LoadedGameObjects.back()->m_ObjectReferencePointer));
 		}
-
+		void WindowCreate(float Width,float Height,std::string const& WindowName,bool FullScreen);
 		void MainLoop();
 
 		GameObjectReference Create(GameObject* NewObject);
@@ -193,12 +258,12 @@ namespace MBGameEngine
 		std::shared_ptr<Shader> GetNamedShader(std::string const& ShaderName);
 		std::shared_ptr<Texture> GetNamedTexture(std::string const& TextureName);
 		std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
-		bool NamedTextureLoaded(std::string const& TextureName);
-
-		//void DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
-		//void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
 
 		std::shared_ptr<Shader> LoadShader(std::string const& ShaderName, std::string const& VertexFilepath, std::string const& FragmentFilepath);
+		bool NamedTextureLoaded(std::string const& TextureName);
+
+		void DrawTexture(std::string const& NamedTexture, MBGE::Transform TextureTransform, float Width, float Height, std::array<int, 4> Layer);
+		void DrawTexture(std::shared_ptr<Texture> TextureToDraw, MBGE::Transform TextureTransform, float Width, float Height, std::array<int, 4> Layer);
 
 		void PlaySound(std::string const& Path, float Volume);
 		void PlaySound(std::string const& , float RelativeVolume, std::string const& Tag);
