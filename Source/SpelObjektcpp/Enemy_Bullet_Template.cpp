@@ -1,5 +1,6 @@
 #include<Enemy_Bullet_Template.h>
 #include <Hitbox.h>
+#include <SpelObjekt.h>
 Enemy_Bullet_Template::~Enemy_Bullet_Template()
 {
 
@@ -8,6 +9,7 @@ Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, s
 {
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
+	AddComponent(new MBTouhou_Bullet_DeleteOffScreen());
 	//Position = Plats;
 	Transform.SetPosition(Plats);
 	UpdateFunction = Funktion;

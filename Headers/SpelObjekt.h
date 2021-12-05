@@ -21,22 +21,6 @@
 typedef MBTouhouRegularEnemy Enemy;
 #include<Level_1_Enemy_2.h>
 
-
-class TouhouPlayer_HP : public Component
-{
-private:
-	bool m_GotHit = false;
-	int m_Invincible_Timer = 0;
-	int m_TotalHP = 0;
-public:
-	TouhouPlayer_HP(int MaxHP)
-	{
-		m_TotalHP = MaxHP;
-	}
-	void RegisterCollision();
-	void Update() override;
-};
-
 class Player : public GameObject
 {
 private:

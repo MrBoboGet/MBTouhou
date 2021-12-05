@@ -119,97 +119,31 @@ bool LayerIsBigger(std::vector<int> Layer1, std::vector<int> Layer2)
 }
 void TouhouEngine::Render(std::vector<GameObject*> Lista)
 {
-	//if (Lista.size() > 1)
+	//Sorterar draw calls, vi kan använda standard sort istället
+
+	//if (TouhouEngine::DrawCalls.size() > 1)
 	//{
-	//	for (int i = 0;i < Lista.size() - 1; i++)
+	//	for (int i = 0;i < TouhouEngine::DrawCalls.size() - 1; i++)
 	//	{
-	//		for (int j = 0; j < Lista.size() - 1 - i; j++)
+	//		for (int j = 0; j < TouhouEngine::DrawCalls.size() - 1 - i; j++)
 	//		{
 	//			//själva jämförelsen, bygger på hur Layer systemet fungerar
-	//			if (LayerIsBigger(Lista[j]->Renderer.Layer, Lista[j + 1]->Renderer.Layer) == true)
+	//			if (LayerIsBigger(TouhouEngine::DrawCalls[j].Layer, TouhouEngine::DrawCalls[j + 1].Layer) == true)
 	//			{
 	//				//Då byter vi plats på dem
-	//				auto Temp = Lista[j];
-	//				Lista[j] = Lista[j + 1];
-	//				Lista[j + 1] = Temp;
+	//				auto Temp = std::move(TouhouEngine::DrawCalls[j]);
+	//				TouhouEngine::DrawCalls[j] = std::move(TouhouEngine::DrawCalls[j + 1]);
+	//				TouhouEngine::DrawCalls[j + 1] = std::move(Temp);
 	//			}
 	//		}
 	//	}
 	//}
-	//for (size_t i = 0; i < Lista.size(); i++)
-	//{
-	//	Lista[i]->Render();
-	//}
-	if (TouhouEngine::DrawCalls.size() > 1)
-	{
-		for (int i = 0;i < TouhouEngine::DrawCalls.size() - 1; i++)
-		{
-			for (int j = 0; j < TouhouEngine::DrawCalls.size() - 1 - i; j++)
-			{
-				//själva jämförelsen, bygger på hur Layer systemet fungerar
-				if (LayerIsBigger(TouhouEngine::DrawCalls[j].Layer, TouhouEngine::DrawCalls[j + 1].Layer) == true)
-				{
-					//Då byter vi plats på dem
-					auto Temp = std::move(TouhouEngine::DrawCalls[j]);
-					TouhouEngine::DrawCalls[j] = std::move(TouhouEngine::DrawCalls[j + 1]);
-					TouhouEngine::DrawCalls[j + 1] = std::move(Temp);
-				}
-			}
-		}
-	}
+	std::sort(TouhouEngine::DrawCalls.begin(), TouhouEngine::DrawCalls.end());
 	for (size_t i = 0; i < TouhouEngine::DrawCalls.size(); i++)
 	{
 		p_DrawDrawObject(TouhouEngine::DrawCalls[i]);
 	}
-	//int GameObjectIterator = 0;
-	//int DrawObjectIterator = 0;
-	//while (GameObjectIterator != Lista.size())
-	//{
-	//	if (DrawObjectIterator != TouhouEngine::DrawCalls.size())
-	//	{
-	//		if (LayerIsBigger(Lista[GameObjectIterator]->Renderer.Layer, TouhouEngine::DrawCalls[DrawObjectIterator].Layer) == false)
-	//		{
-	//			Lista[GameObjectIterator]->Render();
-	//			GameObjectIterator += 1;
-	//		}
-	//		else
-	//		{
-	//			while (LayerIsBigger(Lista[GameObjectIterator]->Renderer.Layer, TouhouEngine::DrawCalls[DrawObjectIterator].Layer) == true)
-	//			{
-	//				p_DrawDrawObject(TouhouEngine::DrawCalls[DrawObjectIterator]);
-	//				DrawObjectIterator += 1;
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		Lista[GameObjectIterator]->Render();
-	//		GameObjectIterator += 1;
-	//	}
-	//	if (GameObjectIterator == Lista.size())
-	//	{
-	//		if (DrawObjectIterator != TouhouEngine::DrawCalls.size())
-	//		{
-	//			while (DrawObjectIterator != TouhouEngine::DrawCalls.size())
-	//			{
-	//				p_DrawDrawObject(TouhouEngine::DrawCalls[DrawObjectIterator]);
-	//				DrawObjectIterator += 1;
-	//			}
-	//		}
-	//	}
-	//}
-	//efter den hät sinnessjukt långa koden för något mycket enkelt, får kolla över om jag kan göra den bättre, så vill vi deleta alla draw calls
-	//for (int i = 0; i < TouhouEngine::DrawCalls.size();i++)
-	//{
-	//	delete TouhouEngine::DrawCalls[i];
-	//}
 	TouhouEngine::DrawCalls = {};
-	/*
-	for (int i = 0; i < Lista.size();i++)
-	{
-		Lista[i]->Render();
-	}
-	*/
 }
 void TouhouEngine::InitializeEngineCompononets()
 {
@@ -292,8 +226,8 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		//{
 		//	//i objektet så låter vi förhållandet vara dynamiskt, men jag orkar inte fixa det så jag hardcodar det
 		//	//borde också vara enkelt att se om det blir fel, objekt försvinner från skärmen innan dem borde
-		//	auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)//TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
-		//	auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)//TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
+		//	auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)///TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
+		//	auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)///TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
 		//	//TODO faktiskt ta sig tiden att kolla och se till att denna kod funkar
 		//	auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
 		//	auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
@@ -306,7 +240,7 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		//}
 		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
 		//{
-		//	if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]-//>Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8 < -1)
+		//	if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]-///>Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8 < -1)
 		//	{
 		//		ObjectOutside.push_back(i);
 		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
@@ -315,7 +249,7 @@ void TouhouEngine::DeleteObjectsOutsideScreen()
 		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player_Bullet")
 		//{
 		//	auto Objektet = TouhouEngine::ActiveGameObjects[i];
-		//	if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Width * ((float)16 / (float)9) * (Objektet->Renderer.SpriteTexture->GetHeight() / (float)Objektet->Renderer.SpriteTexture->GetWidth/()) // 8 > 1)
+		//	if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Width * ((float)16 / (float)9) * (Objektet->Renderer.SpriteTexture->GetHeight() / (float)Objektet->Renderer.SpriteTexture->GetWidth//()) // 8 > 1)
 		//	{
 		//		//spelar kulorna är över skärmen
 		//		ObjectOutside.push_back(i);
@@ -452,11 +386,11 @@ bool TouhouEngine::GetKeyReleased(std::string Key)
 		return(false);
 	}
 }
-void TouhouEngine::_GetWindowSize(int* Width, int* Height)
-{
-	//TouhouEngine::__GraphicsEngine.GetWindowSize(Width,Height);
-	glfwGetWindowSize(TouhouEngine::CurrentWindow, Width, Height);
-}
+//void TouhouEngine::_GetWindowSize(int* Width, int* Height)
+//{
+//	//TouhouEngine::__GraphicsEngine.GetWindowSize(Width,Height);
+//	glfwGetWindowSize(TouhouEngine::CurrentWindow, Width, Height);
+//}
 ActiveObjectIterator TouhouEngine::GetActiveObjectsIterator()
 {
 	ActiveObjectIterator ReturnValue;
@@ -547,14 +481,14 @@ void TouhouEngine::p_DrawDrawObject(DrawObject& ObjectToDraw)
 	//ObjectToDraw.Width = 8;
 	//ObjectToDraw.Height = 5;
 	ObjectToDraw.Texturen->Bind(0);
-	MBGE::UniformValue ValuesToUse;
+	//MBGE::UniformValue ValuesToUse;
 	TouhouEngine::__Camera.WorldSpaceCoordinates = MBMath::MBVector3<float>(0, 0, -20);
-	TouhouEngine::__Camera.Update(ValuesToUse);
+	//TouhouEngine::__Camera.Update(ValuesToUse);
 	auto ShaderToUse = GetNamedShader("SpriteShader");
 	TouhouEngine::__SpriteModel->SetShader(ShaderToUse);
 	TouhouEngine::__SpriteModel->SetTexture(ObjectToDraw.Texturen);
-	ShaderToUse->SetUniformMat4f("View", ValuesToUse.GetValue("View").GetMat4().GetContinousData());
-	ShaderToUse->SetUniformMat4f("Projection", ValuesToUse.GetValue("Projection").GetMat4().GetContinousData());
+	ShaderToUse->SetUniformMat4f("View", TouhouEngine::__Camera.GetViewMatrix().GetContinousData());
+	ShaderToUse->SetUniformMat4f("Projection", TouhouEngine::__Camera.GetProjectionMatrix().GetContinousData());
 	TouhouEngine::__SpriteModel->ModelTransform.SetScaling(MBMath::MBVector3<float>(ObjectToDraw.Width,ObjectToDraw.Height,1));
 	TouhouEngine::__SpriteModel->ModelTransform.SetPosition(MBMath::MBVector3<float>(ObjectToDraw.Position.x,ObjectToDraw.Position.y,0));
 	ShaderToUse->SetUniformMat4f("Model",TouhouEngine::__SpriteModel->ModelTransform.GetModelMatrix().GetContinousData());

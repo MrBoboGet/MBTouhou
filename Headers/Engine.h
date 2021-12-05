@@ -29,7 +29,24 @@ public:
 	Vector2D Position;
 	float Width;
 	float Height;
-	std::vector<int> Layer = { 0,0,0,0 };
+	std::array<int,4> Layer = { 0,0,0,0 };
+	friend bool operator<(DrawObject const& LeftObject, DrawObject const& RightObject)
+	{
+		bool ReturnValue = false;
+		for (size_t i = 0; i < 4; i++)
+		{
+			if (LeftObject.Layer[i] < RightObject.Layer[i])
+			{
+				ReturnValue = true;
+				break;
+			}
+			else if (LeftObject.Layer[i] > RightObject.Layer[i])
+			{
+				break;
+			}
+		}
+		return(ReturnValue);
+	}
 
 	//DrawObject(std::string a, Vector2D b, float c, float d, int Layern[]);
 	//DrawObject(Vector2D Start,Vector2D End ,std::vector<int> Layern);
@@ -126,11 +143,11 @@ public:
 	//GameObject(Vector2D Plats, std::string Namn, std::string Tagg);
 	//GameObject(std::string Namn, float Storlek);
 	virtual ~GameObject();
-	inline std::string GetTag()
+	inline std::string const& GetTag()
 	{
 		return(Tag);
 	}
-	inline std::string GetName()
+	inline std::string const& GetName()
 	{
 		return(Name);
 	}
@@ -248,7 +265,7 @@ public:
 	static bool GetKeyReleased(std::string Key);
 
 
-	static void _GetWindowSize(int* Width,int* Height);
+	//static void _GetWindowSize(int* Width,int* Height);
 	static ActiveObjectIterator GetActiveObjectsIterator();
 	static void ClearObjects();
 	static std::shared_ptr<Shader> GetNamedShader(std::string const& ShaderName);
@@ -259,7 +276,7 @@ public:
 	static void DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int,4> Layer);
 	static void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
 
-	static void DebugLog(std::string TextToLog);
+	//static void DebugLog(std::string TextToLog);
 
 	static std::shared_ptr<Shader> LoadShader(std::string ShaderName,std::string VertexFilepath,std::string FragmentFilepath);
 	

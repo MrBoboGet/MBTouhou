@@ -10,6 +10,7 @@
 #include <PausMenu.h>
 #include <MainMenu.h>
 #include <assert.h>
+
 Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObject("PlayerRegularBullet.png", 0.32)
 {
 	Transform.SetPosition(Plats);
@@ -17,6 +18,7 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)
 	SetTag(Tagg);
 	AddComponent(new Rectangle_Hitbox());
 	AddComponent(new SpriteRenderer());
+	AddComponent(new MBTouhou_Bullet_DeleteOffScreen());
 	//väldigt provosoriska siffror
 	//vi gör hitboxen större än spriten
 	//Hitbox = Vector2D(0.2, 0.2);
@@ -32,6 +34,7 @@ Player_Bullet::Player_Bullet(Vector2D Plats, std::string Texture, float Size)// 
 	SetName("Player_Bullet");
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
+	AddComponent(new MBTouhou_Bullet_DeleteOffScreen());
 	GetComponent<SpriteRenderer>()->Width = Size;
 	Transform.SetPosition(Plats);
 	m_TextureName = Texture;
@@ -82,58 +85,11 @@ void Player_Bullet::Update()
 	{
 		TouhouEngine::Destroy(this);
 	}
-
 }
 Player_Bullet::~Player_Bullet()
 {
 
 }
-
-//BEGIN TouhouPlayer_HP
-void TouhouPlayer_HP::RegisterCollision()
-{
-	m_GotHit = true;
-}
-void TouhouPlayer_HP::Update()
-{
-	//här kör vi koden som styr vad som händer när spelaren blir träffad
-	if (m_Invincible_Timer == 0 && m_GotHit == 1)
-	{
-		m_TotalHP -= 1;
-		TouhouEngine::PlaySound("Resources/Sounds/Oof.wav", 0.5, "SoundEffect");
-		m_Invincible_Timer = 60;
-	}
-	m_GotHit = 0;
-	m_Invincible_Timer -= 1;
-	if (m_Invincible_Timer < 0)
-	{
-		m_Invincible_Timer = 0;
-	}
-	if (m_Invincible_Timer > 0)
-	{
-		GetGameObject()->GetComponent<SpriteRenderer>()->ColorKoef.A = std::abs(std::sin(MBMath::DegreeToRadian(m_Invincible_Timer * 6))) * 0.5 + 0.3;
-	}
-	else
-	{
-		GetGameObject()->GetComponent<SpriteRenderer>()->ColorKoef.A = 1;
-	}
-	for (int i = 0; i < m_TotalHP; i++)
-	{
-		std::array<int, 4> Layer = { 100,1,0,0 };
-		TouhouEngine::DrawTexture("Jakob.png", Vector2D(5 + i * 1.2f, -3), 1, 1, Layer);
-	}
-
-	if (m_TotalHP <= 0)
-	{
-		//TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
-		TouhouEngine::Destroy(GetGameObject());
-		if (TouhouEngine::FindObjectWithName("Johan") != nullptr)
-		{
-			TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
-		}
-	}
-}
-//END TouhouPlayer_HP
 
 //Eftersom vi bara kommer ha en spelare oavsett så kommer vi att kunna ha variabler som den använder här utan problem
 int Player_Shot_Timer = 0;
@@ -435,6 +391,7 @@ Enemy_Bullet::Enemy_Bullet(Vector2D Plats, std::string Namn, std::string Tagg)//
 	//Hitbox = Vector2D(0.16, .16);
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
+	AddComponent(new MBTouhou_Bullet_DeleteOffScreen());
 	Speed = 0.08f;
 	Direction = 270;
 }
@@ -464,55 +421,16 @@ void Enemy_Bullet::Update()
 	X_Change += std::cos(MBMath::DegreeToRadian(Direction)) * Speed;
 	Y_Change += std::sin(MBMath::DegreeToRadian(Direction)) * Speed;
 
-	AddComponent(new Rectangle_Hitbox());
-	//std::cout << Position.x << " " << Position.y << " " << Math::Sin(270);
-	//std::cout << "Kula existerar" << std::endl;
-	//Här ändrar vi positionen så att kulan faktiskt åker
+	//AddComponent(new Rectangle_Hitbox());
 	Position.x += X_Change;
 	Position.y += Y_Change;
-
-	//vi kör all kollision mellan spelare och kulor i kul koden, för den behöver bara hitta spelaren så det blir snabbare
-	//kollision kod
-
-
-	//int PlayerObjectPosition = 0;
-	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
-	//{
-	//	if(TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player")
-	//	{
-	//		PlayerObjectPosition = i;
-	//		break;
-	//	}
-	//}
 	auto PlayerObject = TouhouEngine::FindObjectWithTag("Player");
 	if (PlayerObject == nullptr)
 	{
 		return;
 	}
-	//Eftersom vi antagit att kvadratens sidor är parallella med skärmens sidor behöver vi bara jämföra om i två omgångar om
-	//dem två olikheterna för x och y led var för sig kan ha gemensamma element, kan dem det så är det en kollision
-	//Vi kollar om spelarens vänstraste position är mindre än kulans högraste och om spelarens högrasta är större om kulans vänstraste,
-	//om det inte stämmer så kan det inte vara en kollision
 	if(Rectangle_Hitbox::Collides(GetComponent<Rectangle_Hitbox>(),PlayerObject->GetComponent<Rectangle_Hitbox>()))
 	{
-		//nu vet vi att en kollision hänt
-		//i vårt fall just nu vill vi bara förstöra kulan
-
-		//ett problem vi får nu är att vi inte riktigt vet var någonstans i listan av alla aktiva gameobject vårt föremål är
-		//beroende på kan det ju vara så att this pointer korresponderar med ett föremål i listan.
-		//std::cout << "Kollision har hänt!" <<" "<<"Spelarens position: "<<PlayerObject->Position.x<<" "<<PlayerObject->Position.y<<" Kulan: "<<Position.x<<" "<<Position.y<< std::endl;
-		//vi testar att loopa igenom alla pointers och ser om någon matchar this pointer
-
-		//Nu när vi vet att en kollision hänt så vill vi att spelaren ska ta skada etc
-		//Här vill jag faktiskt att denna kod ska hända i spelaren av 2 anledningar
-		//1. Om spelaren blir träffad av 2 kulor samtidigt ska den inte ta 2 skada
-		//2. den exakta proceduren kan ändras och det blir enklare att ändra i spelaren istället för här
-		//nu kommer vi till "spelaren är träffad flaggen"
-		//Vi vill helst inte behöva ha massa variablar i Gameobject koden, så frågan är hur vi får det 
-		//den metod jag testar nu, är att jag givet en pointer till en gameobject assignar en ny Player pointer så jag kommer åt allt
-		
-		//void* Player_Pointer_Void = PlayerObject;
-		//Player* Player_Pointer{static_cast<Player*>(Player_Pointer_Void)};
 		PlayerObject->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		TouhouEngine::Destroy(this);
 	}
