@@ -65,7 +65,7 @@ void MBTouhou_Bullet_DeleteOffScreen::Update()
 	{
 		TouhouEngine::Destroy(GetGameObject());
 	}
-	if (ObjectPosition[0] + (SpriteWidth - m_Margin) / 2 > m_ScreenWidth / 2 || ObjectPosition[0] - (SpriteWidth - m_Margin) / 2 < -m_ScreenWidth / 2)
+	else if (ObjectPosition[0] + (SpriteWidth - m_Margin) / 2 > m_ScreenWidth / 2 || ObjectPosition[0] - (SpriteWidth - m_Margin) / 2 < -m_ScreenWidth / 2)
 	{
 		TouhouEngine::Destroy(GetGameObject());
 	}

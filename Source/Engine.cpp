@@ -40,11 +40,7 @@ GameObject* TouhouEngine::Create(GameObject* a)
 }
 void TouhouEngine::Destroy(GameObject* a)
 {
-	if (a->GetTag() == "Player" || a->GetName() == "Spelaren")
-	{
-		std::cout << "hmm" << std::endl;
-	}
-	int PositionIListan = 0;
+	int PositionIListan = -1;
 	for (int i = 0; i < ActiveGameObjects.size();i++)
 	{
 		if (ActiveGameObjects[i] == a)
@@ -53,9 +49,15 @@ void TouhouEngine::Destroy(GameObject* a)
 			break;
 		}
 	}
+	if (PositionIListan == -1)
+	{
+		//dubble delet ska inett delata randomly
+		return;
+	}
 	//OBS!!! Vi måte erasa efter vi deletat grejer, annars så kommer vi få fel
 	ActiveGameObjects[PositionIListan]->Active = false;
 	DeletedGameObjects.push_back(ActiveGameObjects[PositionIListan]);
+	assert(DeletedGameObjects.back() == a);
 	ActiveGameObjects.erase(ActiveGameObjects.begin() + PositionIListan);
 }
 GameObject* TouhouEngine::FindObjectWithName(std::string Namn)
@@ -215,55 +217,9 @@ void TouhouEngine::Mainloop()
 			{
 				std::cout << "Render time is " << float(clock() - Timer2) / CLOCKS_PER_SEC << std::endl;
 			}
-			DeleteObjectsOutsideScreen();
 			glfwSwapBuffers(TouhouEngine::CurrentWindow);
 		}
 		glfwPollEvents();
-	}
-}
-void TouhouEngine::DeleteObjectsOutsideScreen()
-{
-	std::vector<int> ObjectOutside;
-	for (int i = 0;i < TouhouEngine::ActiveGameObjects.size();i++)
-	{
-		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
-		//{
-		//	//i objektet så låter vi förhållandet vara dynamiskt, men jag orkar inte fixa det så jag hardcodar det
-		//	//borde också vara enkelt att se om det blir fel, objekt försvinner från skärmen innan dem borde
-		//	auto YPositionGlTop = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)///TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
-		//	auto YPositionGlBottom = TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)///TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8;
-		//	//TODO faktiskt ta sig tiden att kolla och se till att denna kod funkar
-		//	auto XPositionLeft = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
-		//	auto XPositionRight = TouhouEngine::ActiveGameObjects[i]->Position.x / 8 - TouhouEngine::ActiveGameObjects[i]->Renderer.Width / 8;
-		//	if (YPositionGlTop < -1 || YPositionGlBottom>1 || XPositionLeft < -1 || XPositionRight > 1)
-		//	{
-		//		//om den är utanför skärmen, spriten inte syns, deletar vi den helt enkelt
-		//		ObjectOutside.push_back(i);
-		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
-		//	}
-		//}
-		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
-		//{
-		//	if (TouhouEngine::ActiveGameObjects[i]->Position.y / 4.5 + TouhouEngine::ActiveGameObjects[i]->Renderer.Width * ((float)16 / (float)9) * ((float)TouhouEngine::ActiveGameObjects[i]-///>Renderer.SpriteTexture->GetHeight() / (float)TouhouEngine::ActiveGameObjects[i]->Renderer.SpriteTexture->GetWidth()) / 8 < -1)
-		//	{
-		//		ObjectOutside.push_back(i);
-		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
-		//	}
-		//}
-		//if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player_Bullet")
-		//{
-		//	auto Objektet = TouhouEngine::ActiveGameObjects[i];
-		//	if ((Objektet->Position.y / 4.5) - Objektet->Renderer.Width * ((float)16 / (float)9) * (Objektet->Renderer.SpriteTexture->GetHeight() / (float)Objektet->Renderer.SpriteTexture->GetWidth//()) // 8 > 1)
-		//	{
-		//		//spelar kulorna är över skärmen
-		//		ObjectOutside.push_back(i);
-		//		TouhouEngine::DeletedGameObjects.push_back(TouhouEngine::ActiveGameObjects[i]);
-		//	}
-		//}
-	}
-	for (int i = 0; i < ObjectOutside.size();i++)
-	{
-		TouhouEngine::ActiveGameObjects.erase(TouhouEngine::ActiveGameObjects.begin() + (ObjectOutside[i] - i));
 	}
 }
 void TouhouEngine::HandleDeletedGameobjects()
@@ -271,10 +227,6 @@ void TouhouEngine::HandleDeletedGameobjects()
 	//nu deletar vi alla föremål som vi ville ha bort förra framen
 	for (int i = 0; i < TouhouEngine::DeletedGameObjects.size();i++)
 	{
-		if (DeletedGameObjects[i]->GetTag() == "Player" || DeletedGameObjects[i]->GetName() == "Spelaren")
-		{
-			std::cout << "Hmm";
-		}
 		delete TouhouEngine::DeletedGameObjects[i];
 	}
 	TouhouEngine::DeletedGameObjects = {};

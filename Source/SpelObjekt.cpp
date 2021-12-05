@@ -379,7 +379,7 @@ std::vector<std::string> Player::RequiredResources()
 }
 Player::~Player()
 {
-
+	//std::cout << "Hmm" << std::endl;
 }
 //spelaren
 //Kul class

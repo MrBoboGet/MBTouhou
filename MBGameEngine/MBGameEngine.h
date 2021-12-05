@@ -91,6 +91,8 @@ namespace MBGameEngine
 		std::shared_ptr<Component*> m_ComponentReference = nullptr;
 
 	public:
+		GameObjectReference GetGameObject();
+		GameObjectReference GetGameObject() const;
 		virtual void Update();
 		virtual ~Component();
 	};
@@ -118,6 +120,7 @@ namespace MBGameEngine
 			GameObject** NewPointerReference = new GameObject * (this);
 			m_ObjectReferencePointer = std::shared_ptr<GameObject*>(NewPointerReference);
 		};
+		void AddComponent(Component* ComponentToAdd);
 		virtual void Update();
 		virtual void OnCreate();
 		//virtual MBGameEngine& GetEngine()
@@ -126,8 +129,10 @@ namespace MBGameEngine
 		//}
 		template<typename T>
 		SharedDeletableObjectReference<T> GetComponent();
-		std::string GetName() const { return(m_Name); };
-		std::string GetTag() const { return(m_Tag); };
+		std::string const& GetName() const { return(m_Name); };
+		std::string const& GetTag() const { return(m_Tag); };
+		void SetName(std::string NewName) { m_Name = std::move(NewName); };
+		void SetTag(std::string NewTag) { m_Tag = std::move(NewTag); };
 		virtual ~GameObject()
 		{
 			*m_ObjectReferencePointer = nullptr;
@@ -193,7 +198,7 @@ namespace MBGameEngine
 		//void DrawTexture(std::string const& NamedTexture, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
 		//void DrawTexture(std::shared_ptr<Texture> TextureToDraw, Vector2D Position, float Width, float Height, std::array<int, 4> Layer);
 
-		std::shared_ptr<Shader> LoadShader(std::string ShaderName, std::string VertexFilepath, std::string FragmentFilepath);
+		std::shared_ptr<Shader> LoadShader(std::string const& ShaderName, std::string const& VertexFilepath, std::string const& FragmentFilepath);
 
 		void PlaySound(std::string const& Path, float Volume);
 		void PlaySound(std::string const& , float RelativeVolume, std::string const& Tag);

@@ -215,7 +215,6 @@ class TouhouEngine
 {
 	friend class TouhouSoundEngineSoundObject;
 private:
-	static void DeleteObjectsOutsideScreen();
 	static void HandleDeletedGameobjects();
 	static void UpdateGameobjects(std::vector<GameObject*> GameobjectsToUpdate);
 	static void Render(std::vector<GameObject*> ObjectsToRender);
