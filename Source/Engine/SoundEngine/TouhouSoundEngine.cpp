@@ -167,11 +167,11 @@ void TouhouSoundEngine::LoadSound(std::string Path)
 
 TouhouSoundEngineSoundObject::TouhouSoundEngineSoundObject(std::string SoundToPlay, std::string Tag)
 {
-    this->Tag = Tag;
-    Sound = SoundToPlay;
-    //lägger till den i den stora listan av soundobjects
-    TouhouEngine::SoundObjects.push_back(this);
-    ActiveSoundEngine = GetActiveEngine();
+    //this->Tag = Tag;
+    //Sound = SoundToPlay;
+    ////lägger till den i den stora listan av soundobjects
+    //GetEngine().SoundObjects.push_back(this);
+    //ActiveSoundEngine = GetActiveEngine();
 }
 TouhouSoundEngine* TouhouSoundEngineSoundObject::GetActiveEngine()
 {
@@ -196,16 +196,16 @@ void TouhouSoundEngineSoundObject::SetPause(bool Value)
 TouhouSoundEngineSoundObject::~TouhouSoundEngineSoundObject()
 {
     //tar bort detta objekt ur listan
-    int PositionIListan = -1;
-    for (int i = 0; i < TouhouEngine::SoundObjects.size(); i++)
-    {
-        if (TouhouEngine::SoundObjects[i] == this)
-        {
-            PositionIListan = i;
-            break;
-        }
-    }
-    TouhouEngine::SoundObjects.erase(TouhouEngine::SoundObjects.begin() + PositionIListan);
+   //int PositionIListan = -1;
+   //for (int i = 0; i < GetEngine().SoundObjects.size(); i++)
+   //{
+   //    if (GetEngine().SoundObjects[i] == this)
+   //    {
+   //        PositionIListan = i;
+   //        break;
+   //    }
+   //}
+   //GetEngine().SoundObjects.erase(GetEngine().SoundObjects.begin() + PositionIListan);
 }
 
 

@@ -12,7 +12,7 @@ void TouhouPlayer_HP::Update()
 	if (m_Invincible_Timer == 0 && m_GotHit == 1)
 	{
 		m_TotalHP -= 1;
-		TouhouEngine::PlaySound("Resources/Sounds/Oof.wav", 0.5, "SoundEffect");
+		GetEngine().PlaySound("Resources/Sounds/Oof.wav", 0.5, "SoundEffect");
 		m_Invincible_Timer = 60;
 	}
 	m_GotHit = 0;
@@ -34,17 +34,17 @@ void TouhouPlayer_HP::Update()
 		std::array<int, 4> Layer = { 100,1,0,0 };
 		MBGE::Transform TextureTransform;
 		TextureTransform.SetPosition(Vector2D(5 + i * 1.2f, -3));
-		TouhouEngine::DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer);
+		GetEngine().DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer);
 	}
 
 	if (m_TotalHP <= 0)
 	{
-		//TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
-		TouhouEngine::Destroy(GetGameObject());
-		if (TouhouEngine::FindObjectWithName("Johan") != nullptr)
+		//GetEngine().PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
+		if (GetEngine().FindObjectWithName("Johan") != nullptr)
 		{
-			TouhouEngine::PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
+			GetEngine().PlaySound("Resources/Sounds/OMyGodNejJohan.wav", 0.5);
 		}
+		GetEngine().Destroy(GetGameObject());
 	}
 }
 //END TouhouPlayer_HP
@@ -63,11 +63,11 @@ void MBTouhou_Bullet_DeleteOffScreen::Update()
 	MBMath::MBVector3<float> ObjectPosition = GetGameObject()->Transform.GetPosition();
 	if (ObjectPosition[1] + (SpriteHeight - m_Margin) / 2 > m_ScreenHeight / 2 || ObjectPosition[1] - (SpriteHeight - m_Margin) / 2 < -m_ScreenHeight / 2)
 	{
-		TouhouEngine::Destroy(GetGameObject());
+		GetEngine().Destroy(GetGameObject());
 	}
 	else if (ObjectPosition[0] + (SpriteWidth - m_Margin) / 2 > m_ScreenWidth / 2 || ObjectPosition[0] - (SpriteWidth - m_Margin) / 2 < -m_ScreenWidth / 2)
 	{
-		TouhouEngine::Destroy(GetGameObject());
+		GetEngine().Destroy(GetGameObject());
 	}
 }
 //END MBTouhou_Bullet_DeleteOffScreen
@@ -87,7 +87,7 @@ void MBTouhouRegularEnemy_DeleteOffScreen::Update()
 	MBMath::MBVector3<float> ObjectPosition = GetGameObject()->Transform.GetPosition();
 	if (ObjectPosition[1] - (SpriteHeight - m_Margin) / 2 < -m_ScreenHeight / 2)
 	{
-		TouhouEngine::Destroy(GetGameObject());
+		GetEngine().Destroy(GetGameObject());
 	}
 }
 
@@ -98,9 +98,12 @@ void MBTouhouEnemy_HP::Update()
 {
 	if (HP <= 0)
 	{
-		TouhouEngine::Destroy(GetGameObject());
+		GetEngine().Destroy(GetGameObject());
 	}
-	DrawHealthbar();
+	else
+	{
+		DrawHealthbar();
+	}
 }
 void MBTouhouEnemy_HP::DrawHealthbar()
 {
@@ -117,9 +120,9 @@ void MBTouhouEnemy_HP::DrawHealthbar()
 	float HealtbarPercentage = HP / double(MaxHP);
 	MBGE::Transform TextureTransform;
 	TextureTransform.SetPosition(Vector2D(GetGameObject()->Transform.GetPosition()[0] - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset));
-	TouhouEngine::DrawTexture("Green.png", TextureTransform, LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+	GetEngine().DrawTexture("Green.png", TextureTransform, LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
 	TextureTransform.SetPosition(Vector2D(GetGameObject()->Transform.GetPosition()[0] + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), GetGameObject()->Transform.GetPosition()[1] + 0.5f + HealthBarOffset));
-	TouhouEngine::DrawTexture("RedSquare.png", TextureTransform, LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
+	GetEngine().DrawTexture("RedSquare.png", TextureTransform, LifeWidth * (1 - HealtbarPercentage), LifeHeight, LifeLayer);
 }
 MBTouhouRegularEnemy::MBTouhouRegularEnemy()
 {

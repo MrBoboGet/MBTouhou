@@ -14,5 +14,5 @@ private:
 public:
 	float Width = 0;
 	float Height = 0;
-	static bool Collides(const Rectangle_Hitbox * LeftHitbox, const Rectangle_Hitbox * RightHitbox);
+	static bool Collides(MBGameEngine::ObjectReference<Rectangle_Hitbox> const& LeftPointer, MBGameEngine::ObjectReference<Rectangle_Hitbox> const& RightPointer);
 };

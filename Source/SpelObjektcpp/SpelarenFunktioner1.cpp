@@ -10,7 +10,7 @@ void Player::Player_Teleport()
 			if (CurrentEnergy >= TeleportEnergyConsumption)
 			{
 				CurrentEnergy -= TeleportEnergyConsumption;
-				TouhouEngine::PlaySound("Resources/Sounds/AnimeTeleport.wav", 0.2, "SoundEffect");
+				GetEngine().PlaySound("Resources/Sounds/AnimeTeleport.wav", 0.2, "SoundEffect");
 				//resten av teleport koden
 
 				//vi tpar oss beroende på vilka knappar vi håller in
@@ -39,8 +39,8 @@ void Player::Player_Teleport()
 				Position = Vector2D(Position.x + Direction.x * TeleportDistance, Position.y + Direction.y * TeleportDistance);
 				//nu förstör vi kulor i en viss radie
 				//detta är verkligen inte självklart, men det vi gör nu är att vi loopar igenom alla objekt, kollar om dem är av en enemy kula, och är den nära nog förstör vi den
-				std::vector<GameObject*> ObjectToDestroy = {};
-				ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+				std::vector<MBGameEngine::GameObjectReference> ObjectToDestroy = {};
+				ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 				while (ObjectIterator.HasEnded() == false)
 				{
 					if (ObjectIterator->GetTag() == "Enemy_Bullet")
@@ -48,7 +48,7 @@ void Player::Player_Teleport()
 						if (Position.DistanceToPoint(ObjectIterator->Transform.GetPosition()) <= TeleportBulletDestructionRadius)
 						{
 							//nu ska vi förstöra föremålet
-							//TouhouEngine::Destroy(*ObjectIterator);
+							//GetEngine().Destroy(*ObjectIterator);
 							ObjectToDestroy.push_back(*ObjectIterator);
 						}
 					}
@@ -56,16 +56,16 @@ void Player::Player_Teleport()
 				}
 				for (size_t i = 0; i < ObjectToDestroy.size(); i++)
 				{
-					TouhouEngine::Destroy(ObjectToDestroy[i]);
+					GetEngine().Destroy(ObjectToDestroy[i]);
 				}
-				//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 				//{
-				//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+				//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
 				//	{
-				//		if (Position.DistanceToPoint(TouhouEngine::ActiveGameObjects[i]->Position) <= TeleportBulletDestructionRadius)
+				//		if (Position.DistanceToPoint(GetEngine().ActiveGameObjects[i]->Position) <= TeleportBulletDestructionRadius)
 				//		{
 				//			//nu ska vi förstöra föremålet
-				//			TouhouEngine::Destroy(TouhouEngine::ActiveGameObjects[i]);
+				//			GetEngine().Destroy(GetEngine().ActiveGameObjects[i]);
 				//		}
 				//	}
 				//}

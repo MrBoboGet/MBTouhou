@@ -21,7 +21,7 @@ void SpriteRenderer::Update()
 	}
 	float Sprite_Width = Width;
 	float Sprite_Height = Sprite_Width * ((float)SpriteTexture->GetHeight() / (float)SpriteTexture->GetWidth());
-	TouhouEngine::DrawTexture(SpriteTexture, GetGameObject()->Transform, Sprite_Width, Sprite_Height, Layer);
+	GetEngine().DrawTexture(SpriteTexture, GetGameObject()->Transform, Sprite_Width, Sprite_Height, Layer);
 }
 //GameObjectRenderer::GameObjectRenderer(std::string Bild)
 //{
@@ -30,15 +30,15 @@ void SpriteRenderer::Update()
 //	ColorKoef.B = 1;
 //	ColorKoef.G = 1;
 //}
-GameObject::GameObject()
-{	/*
-	Shader Shadern("Source/vertexshader.txt", "Source/fragmentshader.txt");
-	Renderer.ObjectShader = Shadern;
-	Renderer.ObjectShader.Bind();
-	Renderer.ObjectShader.SetUniform1i("u_Texture", 0);
-	Renderer.ObjectTexture = Texture("SpelResurser/Sprites/" + Renderer.Image);
-	*/
-}
+//GameObject::GameObject()
+//{	/*
+//	Shader Shadern("Source/vertexshader.txt", "Source/fragmentshader.txt");
+//	Renderer.ObjectShader = Shadern;
+//	Renderer.ObjectShader.Bind();
+//	Renderer.ObjectShader.SetUniform1i("u_Texture", 0);
+//	Renderer.ObjectTexture = Texture("SpelResurser/Sprites/" + Renderer.Image);
+//	*/
+//}
 //GameObject::GameObject(Vector2D Plats, std::string Namn, std::string Tagg)
 //	:Position(Plats),Name(Namn),Tag(Tagg),Renderer(SpriteRenderer())
 //{
@@ -55,14 +55,14 @@ GameObject::GameObject()
 //	}
 //	//Renderer.Width = Storlek;
 //}
-void GameObject::Update()
-{
-
-}
-void GameObject::OnCreate()
-{
-
-}
+//void GameObject::Update()
+//{
+//
+//}
+//void GameObject::OnCreate()
+//{
+//
+//}
 //void GameObject::Render()
 //{
 //	if (Renderer.SpriteTexture == nullptr)
@@ -82,15 +82,15 @@ SpriteRenderer::~SpriteRenderer()
 {
 
 }
-GameObject::~GameObject()
-{
-	//std::cout << Name << " Forstordes" << std::endl;
-	//vi vill förstöra alla komponenter då dem alla är dynamiskt allokerade
-	for (int i = 0; i < Components.size(); i++)
-	{
-		delete(Components[i]);
-	}
-}
+//GameObject::~GameObject()
+//{
+//	//std::cout << Name << " Forstordes" << std::endl;
+//	//vi vill förstöra alla komponenter då dem alla är dynamiskt allokerade
+//	for (int i = 0; i < Components.size(); i++)
+//	{
+//		delete(Components[i]);
+//	}
+//}
 //GameObject::GameObject(std::string Namn,float Storlek)
 //{
 //	if (!TouhouEngine::NamedTextureLoaded(Namn))
@@ -132,19 +132,19 @@ GameObjectRenderer::GameObjectRenderer(std::string Namn, float Storlek) : Object
 */
 
 //component grejer
-void GameObject::UpdateComponents()
-{
-	for (size_t i = 0; i < Components.size(); i++)
-	{
-		Components[i]->Update();
-	}
-}
-void GameObject::AddComponent(Component* Komponenten)
-{
-	Components.push_back(Komponenten);
-	Komponenten->SpelObjectet = this;
-	//ComponentDictionary[Komponenten->ComponentName] = Komponenten;
-}
+//void GameObject::UpdateComponents()
+//{
+//	for (size_t i = 0; i < Components.size(); i++)
+//	{
+//		Components[i]->Update();
+//	}
+//}
+//void GameObject::AddComponent(Component* Komponenten)
+//{
+//	Components.push_back(Komponenten);
+//	Komponenten->SpelObjectet = this;
+//	//ComponentDictionary[Komponenten->ComponentName] = Komponenten;
+//}
 //Component* GameObject::GetComponent(std::string ComponentName)
 //{
 //	if(ComponentDictionary.find(ComponentName) != ComponentDictionary.end())

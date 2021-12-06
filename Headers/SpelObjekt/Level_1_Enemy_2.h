@@ -14,4 +14,4 @@ public:
 	void Update() override;
 	void OnCreate() override;
 };
-void Enemy_2_Kul_Logik(Enemy_Bullet_Template* a);
+void Enemy_2_Kul_Logik(MBGameEngine::MBGameEngine& Engine, Enemy_Bullet_Template* Pointern);

@@ -1,13 +1,50 @@
 #include "MBGameEngine.h"
-
+#include <filesystem>
 namespace MBGameEngine
 {
 
+	//BEGIN Component
+	MBGameEngine& Component::GetEngine()
+	{
+		return(m_AssociatedGameObject->GetEngine());
+	}
+	GameObjectReference Component::GetGameObject()
+	{
+		return(m_AssociatedGameObject);
+	}
+	const GameObjectReference Component::GetGameObject() const
+	{
+		return(m_AssociatedGameObject);
+	}
+	//GameObjectReference Component::GetGameObject() const
+	//{
+	//
+	//}
+	void Component::Update()
+	{
+
+	}
+	Component::~Component()
+	{
+
+	}
+	//END Component
+
+
 	//BEGIN GameObject
+	void GameObject::AddComponent(Component* ComponentToAdd)
+	{
+		m_Components.push_back(std::unique_ptr<Component>(ComponentToAdd));
+		m_Components.back()->m_AssociatedGameObject = GameObjectReference(this, m_ObjectDeletedPointer);
+	}
 	void GameObject::p_DefaultUpdate()
 	{
 		for(std::unique_ptr<Component>& Components : m_Components)
 		{
+			if (*m_ObjectDeletedPointer == true)
+			{
+				break;
+			}
 			Components->Update();
 		}
 	}
@@ -47,6 +84,10 @@ namespace MBGameEngine
 		while (m_InternalIterator != m_EndIterator)
 		{
 			m_InternalIterator++;
+			if (m_InternalIterator == m_EndIterator)
+			{
+				break;
+			}
 			if (*m_InternalIterator != nullptr)
 			{
 				break;
@@ -59,7 +100,7 @@ namespace MBGameEngine
 		}
 		else
 		{
-			m_CurrentReference = GameObjectReference((*m_InternalIterator)->m_ObjectReferencePointer);
+			m_CurrentReference = GameObjectReference(m_InternalIterator->get(),(*m_InternalIterator)->m_ObjectDeletedPointer);
 		}
 		return(*this);
 	}
@@ -89,12 +130,15 @@ namespace MBGameEngine
 	{
 		for(std::unique_ptr<GameObject>& Object : m_LoadedGameObjects)
 		{
-			if (Object->m_Active == false)
+			if (Object.get() == nullptr || Object->m_Active == false  || *Object->m_ObjectDeletedPointer == true)
 			{
 				continue;
 			}
 			Object->p_DefaultUpdate();
-			Object->Update();
+			if (Object.get() != nullptr)
+			{
+				Object->Update();
+			}
 		}
 	}
 	void MBGameEngine::p_Update()
@@ -105,17 +149,17 @@ namespace MBGameEngine
 	}
 	bool MBGameEngine::GetKeyDown(KeyCode KeyToCheck)
 	{
-		return(false);
+		return(true);
 	}
 	bool MBGameEngine::GetKeyPressed(KeyCode KeyToCheck)
 	{
-		return(false);
+		return(true);
 	}
 	bool MBGameEngine::GetKeyReleased(KeyCode KeyToCheck)
 	{
-		return(false);
+		return(true);
 	}
-	void MBGameEngine::Destroy(GameObjectReference ObjectToDelete)
+	void MBGameEngine::Destroy(GameObject* ObjectToDelete)
 	{
 		//if (ObjectToDelete)
 		//{
@@ -131,22 +175,40 @@ namespace MBGameEngine
 		{
 			if (&(*ObjectToDelete) == m_LoadedGameObjects[i].get())
 			{
+				*m_LoadedGameObjects[i]->m_ObjectDeletedPointer = true;
 				m_ObjectsToDelete.push_back(std::move(m_LoadedGameObjects[i]));
-				*m_LoadedGameObjects[i]->m_ObjectReferencePointer = nullptr;
+				break;
+			}
+		}
+	}
+	void MBGameEngine::Destroy(GameObjectReference ObjectToDelete)
+	{
+		if (ObjectToDelete == nullptr)
+		{
+			return;
+		}
+		for (size_t i = 0; i < m_LoadedGameObjects.size(); i++)
+		{
+			if (&(*ObjectToDelete) == m_LoadedGameObjects[i].get())
+			{
+				*m_LoadedGameObjects[i]->m_ObjectDeletedPointer = true;
+				m_ObjectsToDelete.push_back(std::move(m_LoadedGameObjects[i]));
 				break;
 			}
 		}
 	}
 	GameObjectReference MBGameEngine::Create(GameObject* NewObject)
 	{
-		m_LoadedGameObjects.push_back(std::unique_ptr<GameObject>(NewObject));
+		m_NewObjects.push_back(std::unique_ptr<GameObject>(NewObject));
 		NewObject->m_AssociatedEngine = this;
 		NewObject->OnCreate();
-		return(GameObjectReference(m_LoadedGameObjects.back()->m_ObjectReferencePointer));
+		return(GameObjectReference(m_NewObjects.back().get(), m_NewObjects.back()->m_ObjectDeletedPointer));
 	}
 	void MBGameEngine::WindowCreate(float Width, float Height, std::string const& WindowName, bool FullScreen)
 	{
 		m_InternalGraphicsEngine.WindowCreate(Width, Height, WindowName, FullScreen);
+		m_SpriteRenderingModel = std::unique_ptr<MBGE::SpriteModel>(new MBGE::SpriteModel(nullptr));
+		m_SpriteCamera.SetOrtographicProjection(16, 9);
 	}
 	void MBGameEngine::MainLoop()
 	{
@@ -154,11 +216,12 @@ namespace MBGameEngine
 		clock_t DeltaTime = 0;
 		while (true)
 		{
-			while ((DeltaTime=((clock() - Timer) / double(CLOCKS_PER_SEC))) < 1 / m_FrameRate)
+			while (((clock() - Timer) / double(CLOCKS_PER_SEC)) < 1 / m_FrameRate)
 			{}
 			Timer = clock();
 			p_Update();
 			m_InternalGraphicsEngine.Update();
+			m_InternalGraphicsEngine.PollEvents();
 		}
 	}
 	void MBGameEngine::p_Update_Render()
@@ -185,6 +248,7 @@ namespace MBGameEngine
 		m_SpriteCamera.WorldSpaceCoordinates = MBMath::MBVector3<float>(0, 0, -20);
 		//TouhouEngine::__Camera.Update(ValuesToUse);
 		auto ShaderToUse = GetNamedShader("SpriteShader");
+		ShaderToUse->Bind();
 		m_SpriteRenderingModel->SetShader(ShaderToUse);
 		m_SpriteRenderingModel->SetTexture(ObjectToDraw.Texturen);
 		ShaderToUse->SetUniformMat4f("View", m_SpriteCamera.GetViewMatrix().GetContinousData());
@@ -212,7 +276,15 @@ namespace MBGameEngine
 		ActiveObjectIterator ReturnValue;
 		ReturnValue.m_InternalIterator = m_LoadedGameObjects.begin();
 		ReturnValue.m_EndIterator = m_LoadedGameObjects.end();
-		ReturnValue.Increment();
+		//ReturnValue.Increment();
+		if (m_LoadedGameObjects.size() > 0)
+		{
+			ReturnValue.m_CurrentReference = m_LoadedGameObjects[0]->GetReference();
+		}
+		else
+		{
+			ReturnValue.m_HasEnded = true;
+		}
 		return(ReturnValue);
 	}
 	void MBGameEngine::ClearObjects()
@@ -239,10 +311,22 @@ namespace MBGameEngine
 		{
 			ReturnValue = m_LoadedTextures[TextureName];
 		}
+		else
+		{
+			//LEGACY KOD, ska bort
+			if (std::filesystem::exists("./Resources/SpelResurser/Sprites/" + TextureName))
+			{
+				ReturnValue =LoadNamedTexture(TextureName, "./Resources/SpelResurser/Sprites/" + TextureName);
+			}
+		}
 		return(ReturnValue);
 	}
 	std::shared_ptr<Texture> MBGameEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath)
 	{
+		if (NamedTextureLoaded(TextureName))
+		{
+			return(m_LoadedTextures[TextureName]);
+		}
 		std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath));
 		m_LoadedTextures[TextureName] = NewTexture;
 		return(NewTexture);
@@ -277,9 +361,9 @@ namespace MBGameEngine
 		GameObjectReference ReturnValue;
 		for (std::unique_ptr<GameObject>& Objects : m_LoadedGameObjects)
 		{
-			if (Objects->GetName() == Name && Objects->m_Active)
+			if (Objects.get() != nullptr && Objects->GetName() == Name && Objects->m_Active)
 			{
-				ReturnValue = GameObjectReference(Objects->m_ObjectReferencePointer);
+				ReturnValue = GameObjectReference(Objects.get(),Objects->m_ObjectDeletedPointer);
 				break;
 			}
 		}
@@ -290,9 +374,9 @@ namespace MBGameEngine
 		GameObjectReference ReturnValue;
 		for (std::unique_ptr<GameObject>& Objects : m_LoadedGameObjects)
 		{
-			if (Objects->GetTag() == Name && Objects->m_Active)
+			if (Objects.get() != nullptr && Objects->GetTag() == Name && Objects->m_Active)
 			{
-				ReturnValue = GameObjectReference(Objects->m_ObjectReferencePointer);
+				ReturnValue = GameObjectReference(Objects.get(),Objects->m_ObjectDeletedPointer);
 				break;
 			}
 		}

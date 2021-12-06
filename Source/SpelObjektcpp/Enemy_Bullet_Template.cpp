@@ -5,7 +5,7 @@ Enemy_Bullet_Template::~Enemy_Bullet_Template()
 {
 
 }
-Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, std::string Tagg, std::string Bild, float Storlek, Vector2D Hitplox, void(*Funktion)(Enemy_Bullet_Template*))// : GameObject(Bild,Storlek)
+Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, std::string Tagg, std::string Bild, float Storlek, Vector2D Hitplox, void(*Funktion)(MBGameEngine::MBGameEngine&,Enemy_Bullet_Template*))// : GameObject(Bild,Storlek)
 {
 	AddComponent(new SpriteRenderer());
 	AddComponent(new Rectangle_Hitbox());
@@ -23,10 +23,10 @@ Enemy_Bullet_Template::Enemy_Bullet_Template(Vector2D Plats, std::string Namn, s
 }
 void Enemy_Bullet_Template::OnCreate()
 {
-	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
-	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
+	MBGameEngine::ObjectReference<SpriteRenderer> Renderer = GetComponent<SpriteRenderer>();
+	Renderer->SpriteTexture = GetEngine().LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
 }
 void Enemy_Bullet_Template::Update()
 {
-	UpdateFunction(this);
+	UpdateFunction(GetEngine(),this);
 }

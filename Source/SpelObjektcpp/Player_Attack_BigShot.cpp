@@ -3,13 +3,13 @@
 #include <Engine\SpriteAnimationRenderer.h>
 #include <assert.h>
 #include <Hitbox.h>
-Player_Attack_BigShot::Player_Attack_BigShot(Player* Spelaren)
-{
-	this->Spelaren = Spelaren;
-}	
 
 Player_Attack_BigShot::~Player_Attack_BigShot()
 {
+}
+Player_Attack_BigShot::Player_Attack_BigShot(MBGameEngine::ObjectReference<Player> NySpelare)
+{
+	this->Spelaren = NySpelare;
 }
 void Player_Attack_BigShot::Update()
 {
@@ -26,14 +26,14 @@ void Player_Attack_BigShot::Update()
 				Timer = ShotDelay;
 
 				//nu skapar vi ju faktiskt big bad skottet, vilket egentligen är det viktiga
-				Player_Bullet* NyBullet = static_cast<Player_Bullet*>(TouhouEngine::Create(new Player_Bullet(Spelaren->Transform.GetPosition(), "BigShot.png", 0.32f)));
+				MBGameEngine::ObjectReference<Player_Bullet> NyBullet = GetEngine().Create(new Player_Bullet(Spelaren->Transform.GetPosition(), "BigShot.png", 0.32f));
 				NyBullet->Speed = 0.24f;
 				NyBullet->Direction = 90;
 				NyBullet->Damage = 10;
 				//NyBullet->Hitbox = Vector2D(0.4f, 0.4f);
 				NyBullet->GetComponent<Rectangle_Hitbox>()->Width = 0.4;
 				NyBullet->GetComponent<Rectangle_Hitbox>()->Height = 0.4;
-				TouhouEngine::PlaySound("Resources/Sounds/BigShot.wav",0.2,"SoundEffect");
+				GetEngine().PlaySound("Resources/Sounds/BigShot.wav",0.2,"SoundEffect");
 
 				//som litet test ska vi nu testa att byta animationen också
 				//SpriteAnimationRenderer* SpriteRendern = static_cast<SpriteAnimationRenderer*>((Spelaren->GetComponent("SpriteAnimationRenderer")));

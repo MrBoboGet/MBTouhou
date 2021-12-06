@@ -15,7 +15,10 @@ void JohanHP::Update()
 //END JohanHP
 
 
-
+MBGameEngine::MBGameEngine& JohanAttack::GetEngine()
+{
+	return(Object->GetEngine());
+}
 JohanAttack::JohanAttack()
 {
 	//
@@ -33,10 +36,10 @@ JohanCircelAroundAttack::JohanCircelAroundAttack(Johan* ObjectToAttachTo)
 {
 	Object = ObjectToAttachTo;
 }
-void JohanCircleAroundBulletUpdate(Enemy_Bullet_Template* Bullet)
+void JohanCircleAroundBulletUpdate(MBGameEngine::MBGameEngine& Engine,Enemy_Bullet_Template* Bullet)
 {
 	Bullet->Transform.SetPosition(Vector2D(Bullet->Transform.GetPosition())+ Vector2D(Bullet->Speed * std::cos(MBMath::DegreeToRadian(Bullet->Direction)), Bullet->Speed * std::sin(MBMath::DegreeToRadian(Bullet->Direction))));
-	Player* Spelaren = static_cast<Player*>(TouhouEngine::FindObjectWithName("Spelaren"));
+	MBGameEngine::ObjectReference<Player> Spelaren = Engine.FindObjectWithName("Spelaren");
 	if (Bullet == nullptr || Spelaren == nullptr)
 	{
 		return;
@@ -46,7 +49,7 @@ void JohanCircleAroundBulletUpdate(Enemy_Bullet_Template* Bullet)
 	{
 		//Spelaren->GotHit = true;
 		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
-		TouhouEngine::Destroy(Bullet);
+		Engine.Destroy(Bullet);
 	}
 }
 void JohanCircelAroundAttack::Update()
@@ -79,7 +82,7 @@ void JohanCircelAroundAttack::Update()
 				int NumberOfShots = 16;
 				for (size_t i = 0; i < NumberOfShots; i++)
 				{
-					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
+					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate));
 					BulletToCreate->GetComponent<SpriteRenderer>()->ColorKoef.G = 4;
 					BulletToCreate->Speed = 0.07;
 					BulletToCreate->Direction = (360 / (float)NumberOfShots) * i;
@@ -95,8 +98,8 @@ void JohanCircelAroundAttack::Update()
 				float Angle = 60;
 				for (size_t i = 0; i < NumberOfAttackes; i++)
 				{
-					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
-					Enemy_Bullet_Template* BulletToCreate2 = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
+					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate));
+					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate2 = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate));
 					BulletToCreate->Transform.SetPosition(Vector2D(4, 4.5 - i * DistanceBetweenAttacks));
 					BulletToCreate2->Transform.SetPosition(Vector2D(-4, 4.5 - i * DistanceBetweenAttacks));
 					BulletToCreate->Speed = SpeedOfAttacks;
@@ -170,7 +173,7 @@ void JohanRightToLeftAttack::Update()
 				std::uniform_real_distribution<float> YDistribution(0, MaxYDifference);
 				for (size_t i = 0; i < NumberOfBulletsToSpawn; i++)
 				{
-					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
+					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate));
 					BulletToCreate->Transform.SetPosition(Vector2D(PositionDistribution(Generator), 4.5 - YDistribution(Generator)));
 					BulletToCreate->Direction = AngleDistribution(Generator);
 					BulletToCreate->Transform.SetRotation(MBMath::MBVector3<float>(BulletToCreate->Direction - 90,0,0));
@@ -198,9 +201,9 @@ void JohanRightToLeftAttack::Update()
 JohanRightToLeftAttack::~JohanRightToLeftAttack()
 {
 }
-void MovingCircleBullet(Enemy_Bullet_Template* Bullet)
+void MovingCircleBullet(MBGameEngine::MBGameEngine& Engine,Enemy_Bullet_Template* Bullet)
 {
-	Player* Spelaren = static_cast<Player*>(TouhouEngine::FindObjectWithName("Spelaren"));
+	MBGameEngine::ObjectReference<Player> Spelaren = Engine.FindObjectWithName("Spelaren");
 	if (Bullet == nullptr || Spelaren == nullptr)
 	{
 		return;
@@ -226,7 +229,7 @@ void MovingCircleBullet(Enemy_Bullet_Template* Bullet)
 	{
 		//Spelaren->GotHit = true;
 		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
-		TouhouEngine::Destroy(Bullet);
+		Engine.Destroy(Bullet);
 	}
 	Bullet->Transform.SetPosition(BulletPosition);
 	Bullet->Transform.SetRotation(MBMath::MBVector3<float>(BulletRotation, 0, 0));
@@ -253,7 +256,7 @@ void JohanCirclingBulletAttack::Update()
 				Vector2D CircleCenter = JohanPosition + VectorAttAddera;
 				for (int i = 0; i < NumberOfBullets; i++)
 				{
-					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), MovingCircleBullet)));
+					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), MovingCircleBullet));
 					BulletToCreate->Transform.SetRotation(MBMath::MBVector3<float>((360 / NumberOfBullets) * i,0,0));
 					BulletToCreate->Direction = 270;
 					BulletToCreate->Transform.SetPosition(CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(BulletToCreate->Transform.GetRotation()[0] + 90 - 90 * RotationDirection)), std::sin(MBMath::DegreeToRadian(BulletToCreate->Transform.GetRotation()[0] + 90 - 90 * RotationDirection))) * CircleRadius);
@@ -267,7 +270,7 @@ void JohanCirclingBulletAttack::Update()
 				Vector2D Position = Vector2D(-2 + (4 * i), 2.7);
 				for (int j = 0; j < 3; j++)
 				{
-					Enemy_Bullet_Template* BulletToCreate = static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate)));
+					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), JohanCircleAroundBulletUpdate));
 					BulletToCreate->GetComponent<SpriteRenderer>()->ColorKoef.B = 4;
 					BulletToCreate->Transform.SetPosition(Position);
 					BulletToCreate->Direction = 250 + 20 * j;
@@ -308,9 +311,9 @@ void Johan::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 1.5;
 	GetComponent<Rectangle_Hitbox>()->Height = 1.5;
-	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	MBGameEngine::ObjectReference<SpriteRenderer> Renderer = GetComponent<SpriteRenderer>();
 	Renderer->Width = 1.5;
-	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("Johan.png", "Resources/SpelResurser/Sprites/Johan.png");
+	Renderer->SpriteTexture = GetEngine().LoadNamedTexture("Johan.png", "Resources/SpelResurser/Sprites/Johan.png");
 	m_HPComponent = GetComponent<MBTouhouEnemy_HP>();
 	m_HPComponent->HP = MaxHp;
 }
@@ -347,9 +350,9 @@ void Johan::Update()
 			float HealthBarWidth = 6;
 			float HealthBarHeight = 1;
 			std::array<int,4> Layer2 = { 1001,0,0,0 };
-			DrawTextRectangle("Johan", Vector2D(0, 4.2), Layer2, 0.4);
-			TouhouEngine::DrawTexture("Green.png", Vector2D((1 - m_HPComponent->HP / (float)MaxHp) * HealthBarWidth * -0.5f, 3.8), 6 * (m_HPComponent->HP / (float)MaxHp), 0.1, LivLayern);
-			TouhouEngine::DrawTexture("RedSquare.png", Vector2D((HealthBarWidth / 2) - (1 - m_HPComponent->HP / (float)MaxHp) * 0.5f * HealthBarWidth, 3.8), 6 * (1 - m_HPComponent->HP / (float)MaxHp), 0.1, LivLayern);
+			DrawTextRectangle(GetEngine(),"Johan", Vector2D(0, 4.2), Layer2, 0.4);
+			GetEngine().DrawTexture("Green.png", Vector2D((1 - m_HPComponent->HP / (float)MaxHp) * HealthBarWidth * -0.5f, 3.8), 6 * (m_HPComponent->HP / (float)MaxHp), 0.1, LivLayern);
+			GetEngine().DrawTexture("RedSquare.png", Vector2D((HealthBarWidth / 2) - (1 - m_HPComponent->HP / (float)MaxHp) * 0.5f * HealthBarWidth, 3.8), 6 * (1 - m_HPComponent->HP / (float)MaxHp), 0.1, LivLayern);
 			JohanStartDelay -= 1;
 			if (JohanStartDelay < 0)
 			{
@@ -367,8 +370,8 @@ void Johan::Update()
 					Attacker[CurrentAttackIndex]->Finished = false;
 					CurrentAttackIndex = (CurrentAttackIndex + 1) % Attacker.size();
 					//vad händer när´ett spellcard är finished
-					std::vector<GameObject*> BulletsToDestroy = {};
-					ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+					std::vector<MBGameEngine::GameObjectReference> BulletsToDestroy = {};
+					ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 					while (ObjectIterator.HasEnded() == false)
 					{
 						if (ObjectIterator->GetTag() == "Enemy_Bullet")
@@ -378,16 +381,16 @@ void Johan::Update()
 						ObjectIterator++;
 					}
 					
-					//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+					//for (size_t i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 					//{
-					//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+					//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
 					//	{
-					//		BulletsToDestroy.push_back(TouhouEngine::ActiveGameObjects[i]);
+					//		BulletsToDestroy.push_back(GetEngine().ActiveGameObjects[i]);
 					//	}
 					//}
 					for (size_t i = 0; i < BulletsToDestroy.size(); i++)
 					{
-						TouhouEngine::Destroy(BulletsToDestroy[i]);
+						GetEngine().Destroy(BulletsToDestroy[i]);
 					}
 					AttackDelayTimer = AttackDelay;
 					//play sound av att grejer förstörs
@@ -398,8 +401,8 @@ void Johan::Update()
 		else
 		{
 			//försör alla kulor
-			std::vector<GameObject*> BulletsToDestroy = {};
-			ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+			std::vector<MBGameEngine::GameObjectReference> BulletsToDestroy = {};
+			ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 			while (ObjectIterator.HasEnded() == false)
 			{
 				if (ObjectIterator->GetTag() == "Enemy_Bullet")
@@ -408,22 +411,22 @@ void Johan::Update()
 				}
 				ObjectIterator++;
 			}
-			//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//for (size_t i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 			//{
-			//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+			//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
 			//	{
-			//		BulletsToDestroy.push_back(TouhouEngine::ActiveGameObjects[i]);
+			//		BulletsToDestroy.push_back(GetEngine().ActiveGameObjects[i]);
 			//	}
 			//}
 			for (size_t i = 0; i < BulletsToDestroy.size(); i++)
 			{
-				TouhouEngine::Destroy(BulletsToDestroy[i]);
+				GetEngine().Destroy(BulletsToDestroy[i]);
 			}
 			DestroyTimer -= 1;
 			if (DestroyTimer <= 0)
 			{
-				TouhouEngine::Destroy(this);
-				TouhouEngine::PlaySound("Resources/Sounds/PlayerBomb.wav", 0.1);
+				GetEngine().Destroy(this);
+				GetEngine().PlaySound("Resources/Sounds/PlayerBomb.wav", 0.1);
 			}
 		}
 	}

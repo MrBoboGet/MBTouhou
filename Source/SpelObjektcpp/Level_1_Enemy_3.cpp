@@ -24,12 +24,12 @@ void Level_1_Enemy_3::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Height = 0.8;
 	GetComponent<Rectangle_Hitbox>()->Width = 0.8;
-	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
+	GetComponent<SpriteRenderer>()->SpriteTexture = GetEngine().LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
 }
 Level_1_Enemy_3::~Level_1_Enemy_3()
 {
 }
-void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula);
+void Enemy_3_KulLogik(MBGameEngine::MBGameEngine&, Enemy_Bullet_Template* Kula);
 //	Enemy_Bullet_Template(Vector2D Plats, std::string Namn, std::string Tagg,std::string Bild, float Storlek, Vector2D hitplox,void(*Update)(Enemy_Bullet_Template*));
 void Level_1_Enemy_3::Update()
 {
@@ -52,7 +52,7 @@ void Level_1_Enemy_3::Update()
 		{
 			//vi har laddat klart, nu ska vi skjuta skottet
 			//vi skapar alltså den kula som har egenskapen vi vill ha
-			Enemy_Bullet_Template* Kula =static_cast<Enemy_Bullet_Template*>(TouhouEngine::Create(new Enemy_Bullet_Template(Position, "Enemy_Bullet", "Enemy_Bullet", "fiendeattack1.png", 0.2f, Vector2D(0.2, 0.2), *Enemy_3_KulLogik)));
+			MBGameEngine::ObjectReference<Enemy_Bullet_Template> Kula =GetEngine().Create(new Enemy_Bullet_Template(Position, "Enemy_Bullet", "Enemy_Bullet", "fiendeattack1.png", 0.2f, Vector2D(0.2, 0.2), *Enemy_3_KulLogik));
 			Kula->GetComponent<SpriteRenderer>()->ColorKoef.B = 3;
 			Kula->GetComponent<SpriteRenderer>()->ColorKoef.R = 3;
 			Kula->GetComponent<SpriteRenderer>()->ColorKoef.G = 3;
@@ -63,14 +63,14 @@ void Level_1_Enemy_3::Update()
 	Transform.SetPosition(Position);
 	//if (HP <= 0)
 	//{
-	//	TouhouEngine::Destroy(static_cast<GameObject*>(this));
+	//	GetEngine().Destroy(static_cast<GameObject*>(this));
 	//}
 	//DrawHealthbar();
 }
-void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
+void Enemy_3_KulLogik(MBGameEngine::MBGameEngine& Engine, Enemy_Bullet_Template* Kula)
 {
 	//den rör sig mot spelaren
-	GameObject* Spelaren =  TouhouEngine::FindObjectWithName("Spelaren");
+	MBGameEngine::GameObjectReference Spelaren = Kula->GetEngine().FindObjectWithName("Spelaren");
 	//använder timern som en "har den satts igång funktion
 	if (Spelaren == nullptr)
 	{
@@ -94,7 +94,7 @@ void Enemy_3_KulLogik(Enemy_Bullet_Template* Kula)
 		//Player* Player_Pointer = { static_cast<Player*>(Player_Pointer_Void) };
 		Spelaren->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		std::cout << BulletPosition.x << " " << BulletPosition.y << " " << Spelaren->Transform.GetPosition()[0] << " " << Spelaren->Transform.GetPosition()[1] << std::endl;
-		TouhouEngine::Destroy(Kula);
+		Engine.Destroy(Kula);
 	}
 	Kula->Transform.SetPosition(BulletPosition);
 }

@@ -302,7 +302,7 @@ public:
 		return(SkärVarandraIOmkretsen);
 	}
 };
-bool Rectangle_Hitbox::Collides(const Rectangle_Hitbox* LeftPointer, const Rectangle_Hitbox* RightPointer)
+bool Rectangle_Hitbox::Collides(MBGameEngine::ObjectReference<Rectangle_Hitbox> const& LeftPointer, MBGameEngine::ObjectReference<Rectangle_Hitbox> const& RightPointer)
 {
 	const Rectangle_Hitbox& LeftHitbox = *LeftPointer;
 	const Rectangle_Hitbox& RightHitbox = *RightPointer;

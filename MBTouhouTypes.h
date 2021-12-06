@@ -9,7 +9,7 @@ private:
 	float m_ScreenHeight = MBTOUHOU_SCREEN_HEIGHT;
 	float m_ScreenWidth = MBTOUHOU_SCREEN_WIDTH;
 	float m_Margin = 2;
-	SpriteRenderer* m_ObjectRenderer = nullptr;
+	MBGameEngine::ObjectReference<SpriteRenderer> m_ObjectRenderer;
 public:
 	void Update() override;
 };
@@ -44,7 +44,7 @@ private:
 	float m_ScreenHeight = MBTOUHOU_SCREEN_HEIGHT;
 	float m_ScreenWidth = MBTOUHOU_SCREEN_WIDTH;
 	float m_Margin = 2;
-	SpriteRenderer* m_ObjectRenderer = nullptr;
+	MBGameEngine::ObjectReference<SpriteRenderer> m_ObjectRenderer;
 public:
 	//MBTouhouRegularEnemy();
 	void Update() override;

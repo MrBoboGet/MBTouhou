@@ -14,23 +14,23 @@
 #include <MainMenu.h>
 #include <filesystem>
 #include <memory>
-//vet itne varför denna behövs
-//TODO Ha johan som boss för banan
-//pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#include <MBGameEngine/MBGameEngine.h>
+
 int main(void)
 {
-	int qwerty = glfwInit();
+	//int qwerty = glfwInit();
 	std::filesystem::current_path("C:/Users/emanu/Desktop/Program/C++/MBTouhou/");
-	TouhouEngine::InitializeWindow(1920, 1080, "OMyGodNej", glfwGetPrimaryMonitor(), NULL);
+	MBGameEngine::MBGameEngine TestEngine;
+	TestEngine.WindowCreate(1920, 1080, "OMyGodNej", false);
 	//TouhouEngine::Create(new Level1()); asd
-	TouhouEngine::Create(new MainMenu());
-	std::shared_ptr<Shader> Shadern = TouhouEngine::LoadShader("SpriteShader", "vertexshader.txt", "fragmentshader.txt");
-	std::shared_ptr<Shader> MonochromeShader = TouhouEngine::LoadShader("MonochromeShader", "MonochromeShaderVertex.txt", "MonochromeShaderFragment.txt");
+	TestEngine.Create(new MainMenu());
+	std::shared_ptr<Shader> Shadern = TestEngine.LoadShader("SpriteShader", "Resources/Shaders/vertexshader.txt", "Resources/Shaders/fragmentshader.txt");
+	std::shared_ptr<Shader> MonochromeShader = TestEngine.LoadShader("MonochromeShader", "Resources/Shaders/MonochromeShaderVertex.txt", "Resources/Shaders/MonochromeShaderFragment.txt");
 	Shadern->Bind();
 	Shadern->SetUniform1i("u_Texture", 0);
 	Shadern->SetUniform4f("ColorKoef", 1, 1, 1, 1);
 
-	TouhouEngine::Mainloop();
+	TestEngine.MainLoop();
 	glfwTerminate();
 	return 0;
 }

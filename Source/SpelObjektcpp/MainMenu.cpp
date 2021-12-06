@@ -14,15 +14,15 @@ void MainMenu::Update()
 	std::array<int,4> Layer2 = { 1,1,1,1 };
 	if (!InSubMenu)
 	{
-		DrawTextRectangle("Start Game", Vector2D(0, 2), Layer, 0.4);
-		DrawTextRectangle("Tutorial", Vector2D(0, 2 - VerticalPadding), Layer, 0.4);
-		DrawTextRectangle("Quit", Vector2D(0, 2 - VerticalPadding * 2), Layer, 0.4);
-		if (TouhouEngine::GetKeyPressed("down") || TouhouEngine::GetKeyPressed("s"))
+		DrawTextRectangle(GetEngine(),"Start Game", Vector2D(0, 2), Layer, 0.4);
+		DrawTextRectangle(GetEngine(),"Tutorial", Vector2D(0, 2 - VerticalPadding), Layer, 0.4);
+		DrawTextRectangle(GetEngine(),"Quit", Vector2D(0, 2 - VerticalPadding * 2), Layer, 0.4);
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Down) || GetEngine().GetKeyPressed(MBGameEngine::KeyCode::S))
 		{
 			CurrentOption += 1;
 			CurrentOption %= NumberOfOptions;
 		}
-		if (TouhouEngine::GetKeyPressed("up") || TouhouEngine::GetKeyPressed("w"))
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Up) || GetEngine().GetKeyPressed(MBGameEngine::KeyCode::W))
 		{
 			CurrentOption -= 1;
 			if (CurrentOption < 0)
@@ -32,13 +32,13 @@ void MainMenu::Update()
 		}
 		MBGE::Transform TextureTransform;
 		TextureTransform.SetPosition(Vector2D(-3, 2 - CurrentOption * VerticalPadding));
-		TouhouEngine::DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer2);
-		if (TouhouEngine::GetKeyPressed("enter"))
+		GetEngine().DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer2);
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Enter))
 		{
 			if (CurrentOption == 0)
 			{
-				TouhouEngine::Create(new Level1());
-				TouhouEngine::Destroy(this);
+				GetEngine().Create(new Level1());
+				GetEngine().Destroy(this);
 			}
 			if (CurrentOption == 1)
 			{
@@ -53,13 +53,13 @@ void MainMenu::Update()
 	}
 	else
 	{
-		DrawTextRectangle("Press Z to fire. This consumes some Energy", Vector2D(0, 3), Layer, 0.2);
-		DrawTextRectangle("Press C to fire a big shot. This consumes half your Max Energy", Vector2D(0, 2), Layer, 0.2);
-		DrawTextRectangle("Press X to use on of your bombs. This clears the screen of enemy bullets", Vector2D(0, 1), Layer, 0.2);
-		DrawTextRectangle("Press Space to Teleport. This uses half of your Max Energy", Vector2D(0, 0), Layer, 0.2);
-		DrawTextRectangle("Hold shift to slow down and show your hitbox", Vector2D(0, -1), Layer, 0.2);
-		DrawTextRectangle("Press Esc to return to main menu", Vector2D(0, -2), Layer, 0.3);
-		if (TouhouEngine::GetKeyPressed("esc"))
+		DrawTextRectangle(GetEngine(),"Press Z to fire. This consumes some Energy", Vector2D(0, 3), Layer, 0.2);
+		DrawTextRectangle(GetEngine(),"Press C to fire a big shot. This consumes half your Max Energy", Vector2D(0, 2), Layer, 0.2);
+		DrawTextRectangle(GetEngine(),"Press X to use on of your bombs. This clears the screen of enemy bullets", Vector2D(0, 1), Layer, 0.2);
+		DrawTextRectangle(GetEngine(),"Press Space to Teleport. This uses half of your Max Energy", Vector2D(0, 0), Layer, 0.2);
+		DrawTextRectangle(GetEngine(),"Hold shift to slow down and show your hitbox", Vector2D(0, -1), Layer, 0.2);
+		DrawTextRectangle(GetEngine(),"Press Esc to return to main menu", Vector2D(0, -2), Layer, 0.3);
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Esc))
 		{
 			InSubMenu = false;
 		}
@@ -67,7 +67,7 @@ void MainMenu::Update()
 	std::array<int,4> Layer3 = { 0,0,0,0 };
 	MBGE::Transform TextureTransform;
 	TextureTransform.SetPosition(Vector2D(0, 0));
-	TouhouEngine::DrawTexture("Backgrund1.png", TextureTransform, 16, 9, Layer3);
+	GetEngine().DrawTexture("Backgrund1.png", TextureTransform, 16, 9, Layer3);
 
 }
 MainMenu::~MainMenu()

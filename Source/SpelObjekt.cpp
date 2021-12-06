@@ -52,8 +52,8 @@ void Player_Bullet::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 0.2;
 	GetComponent<Rectangle_Hitbox>()->Height = 0.2;
-	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
-	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
+	MBGameEngine::ObjectReference<SpriteRenderer> Renderer = GetComponent<SpriteRenderer>();
+	Renderer->SpriteTexture = GetEngine().LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/" + m_TextureName);
 }
 void Player_Bullet::Update()
 {
@@ -67,7 +67,7 @@ void Player_Bullet::Update()
 	Transform.SetPosition(Vector2D(Transform.GetPosition()) + Vector2D(X_Change, Y_Change));
 
 	int Collision = 0;
-	ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+	ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 	while (ObjectIterator.HasEnded() == false)
 	{
 		if (ObjectIterator->GetTag() == "Enemy")
@@ -83,7 +83,7 @@ void Player_Bullet::Update()
 	}
 	if (Collision == 1)
 	{
-		TouhouEngine::Destroy(this);
+		GetEngine().Destroy(this);
 	}
 }
 Player_Bullet::~Player_Bullet()
@@ -116,40 +116,40 @@ void Player::Update()
 	//kollar alla keys
 	if (true)
 	{
-		if (TouhouEngine::GetKeyDown("right"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Right))
 		{
 			Key_Right = true;
 		}
-		if (TouhouEngine::GetKeyDown("left"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Left))
 		{
 			Key_Left = true;
 		}
-		if (TouhouEngine::GetKeyDown("up"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Up))
 		{
 			Key_Up = true;
 		}
-		if (TouhouEngine::GetKeyDown("down"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Down))
 		{
 			Key_Down = true;
 		}
-		if (TouhouEngine::GetKeyDown("z"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Z))
 		{
 			Key_Z = true;
 		}
-		if (TouhouEngine::GetKeyDown("leftshift"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::LeftShift))
 		{
 			Key_Shift = true;
 		}
-		if (TouhouEngine::GetKeyDown("space"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Space))
 		{
 			Key_Space = true;
 		}
-		if (TouhouEngine::GetKeyDown("c"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::C))
 		{
 			Key_C = true;
 		}
 		//Eftersom vi vill se om det är pressed så vill vi göra att den är bara sann när man klickade på den
-		if (TouhouEngine::GetKeyPressed("x"))
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::X))
 		{
 			Key_X_Pressed = true;
 		}
@@ -205,9 +205,9 @@ void Player::Update()
 			SpelarKula2 = new Player_Bullet(Vector2D(Position.x + 0.15f, Position.y), "Player_Bullet", "Player_Bullet");
 		}
 
-		TouhouEngine::Create(SpelarKula);
-		TouhouEngine::Create(SpelarKula2);
-		TouhouEngine::PlaySound("Resources/Sounds/PlayerBasicShot.wav",0.5,"SoundEffect");
+		GetEngine().Create(SpelarKula);
+		GetEngine().Create(SpelarKula2);
+		GetEngine().PlaySound("Resources/Sounds/PlayerBasicShot.wav",0.5,"SoundEffect");
 		//BasicShotSound.PlaySound();
 		Player_Shot_Timer = 0;
 	}
@@ -217,7 +217,7 @@ void Player::Update()
 	for (int i = 0; i < Bombs; i++)
 	{
 		std::array<int,4> Layer = { 100,1,0,0 };
-		TouhouEngine::DrawTexture("Bomb.png", Vector2D(5 + i * 1.2f, -1.5), 1, 1, Layer);
+		GetEngine().DrawTexture("Bomb.png", Vector2D(5 + i * 1.2f, -1.5), 1, 1, Layer);
 	}
 
 	//nu ändrar vi värdet av våran position sett till värdet utav X_Change och Y_Change
@@ -236,16 +236,16 @@ void Player::Update()
 	std::array<int,4> VisualLayerEnergy = { 100,1,0,0 };
 	float FullLength = 4;
 	Vector2D EnergybarPosition = Vector2D(-6, 0 -(FullLength - FullLength * (CurrentEnergy / MaxEnergy)/2));
-	TouhouEngine::DrawTexture("Bluesquare.png", EnergybarPosition, 1, FullLength* (CurrentEnergy / MaxEnergy), VisualLayerEnergy);
+	GetEngine().DrawTexture("Bluesquare.png", EnergybarPosition, 1, FullLength* (CurrentEnergy / MaxEnergy), VisualLayerEnergy);
 
 	//Bomb koden
-	std::vector<GameObject*> KulorAttDeleta = {};
+	std::vector<MBGameEngine::GameObjectReference> KulorAttDeleta = {};
 	if (Bombs > 0 && Key_X_Pressed)
 	{
 		Bombs -= 1;
 		//spela ljudet
 		BombSound.PlaySound(0.1);
-		ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+		ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 		while (ObjectIterator.HasEnded() == false)
 		{
 			if (ObjectIterator->GetTag() == "Enemy_Bullet")
@@ -254,18 +254,18 @@ void Player::Update()
 			}
 			ObjectIterator++;
 		}
-		//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+		//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 		//{
 		//	//std::cout << ActiveGameObjects[i]->GetTag() << std::endl;
-		//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
+		//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Enemy_Bullet")
 		//	{
-		//		KulorAttDeleta.push_back(TouhouEngine::ActiveGameObjects[i]);
+		//		KulorAttDeleta.push_back(GetEngine().ActiveGameObjects[i]);
 		//	}
 		//}
 	}
 	for (int i = 0; i < KulorAttDeleta.size(); i++)
 	{
-		TouhouEngine::Destroy(KulorAttDeleta[i]);
+		GetEngine().Destroy(KulorAttDeleta[i]);
 	}
 	//teleport kod
 	Player_Teleport();
@@ -295,35 +295,34 @@ void Player::Update()
 	}
 	//nu behöver vi hitta banan variabeln
 	//int Level_Position;
-	GameObject* LevelPointer = nullptr;
-	ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+	MBGameEngine::ObjectReference<Level> Leveln;
+	ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 	while (ObjectIterator.HasEnded() == false)
 	{
 		if (ObjectIterator->GetTag() == "Level")
 		{
-			LevelPointer = *ObjectIterator;
+			Leveln = *ObjectIterator;
 			break;
 		}
 		ObjectIterator++;
 	}
-	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size();i++)
+	//for (int i = 0; i < GetEngine().ActiveGameObjects.size();i++)
 	//{
-	//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Level")
+	//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Level")
 	//	{
 	//		Level_Position = i;
 	//		break;
 	//	}
 	//}
-	assert(LevelPointer != nullptr);
-	void* Leveln = LevelPointer;
-	Level* Leveln_Object{ static_cast<Level*>(Leveln)};
-	if (Position.x > (8-Leveln_Object->X_Limit))
+	assert(Leveln != nullptr);
+	//void* Leveln = LevelPointer;
+	if (Position.x > (8- Leveln->X_Limit))
 	{
-		Position.x = (8 - Leveln_Object->X_Limit);
+		Position.x = (8 - Leveln->X_Limit);
 	}
-	if (Position.x < (-8 + Leveln_Object->X_Limit))
+	if (Position.x < (-8 + Leveln->X_Limit))
 	{
-		Position.x = (-8 + Leveln_Object->X_Limit);
+		Position.x = (-8 + Leveln->X_Limit);
 	}
 	//Player* Player_Pointer{ static_cast<Player*>(Player_Pointer_Void) };
 
@@ -331,7 +330,7 @@ void Player::Update()
 	if (Key_Shift)
 	{
 		std::array<int,4> VisualLayer = { 0,1,0,0 };
-		TouhouEngine::DrawTexture("RedSquare.png", Position, GetComponent<Rectangle_Hitbox>()->Width, GetComponent<Rectangle_Hitbox>()->Height, VisualLayer);
+		GetEngine().DrawTexture("RedSquare.png", Position, GetComponent<Rectangle_Hitbox>()->Width, GetComponent<Rectangle_Hitbox>()->Height, VisualLayer);
 	}
 	//kod för att skrigva spelarens namn, bara för att testa
 	std::vector<int> LayerFörNamnet = { 10000000,1,1,1 };
@@ -355,7 +354,7 @@ Player::Player(Vector2D Plats, std::string Namn, std::string Tagg)// : GameObjec
 	//Hitbox = Vector2D(0.15f, 0.15f);
 	speed = 0.1f;
 	AddComponent(new SpriteRenderer());
-	AddComponent(new Player_Attack_BigShot(this));
+	AddComponent(new Player_Attack_BigShot(GetReference()));
 	AddComponent(new Rectangle_Hitbox());
 	AddComponent(new TouhouPlayer_HP(3));
 	//AddComponent(new SpriteAnimationRenderer(this, "PlayerAnimationConfig.txt"));
@@ -364,9 +363,9 @@ void Player::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 0.15;
 	GetComponent<Rectangle_Hitbox>()->Height = 0.15;
-	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	MBGameEngine::ObjectReference<SpriteRenderer> Renderer = GetComponent<SpriteRenderer>();
 	Renderer->Width = 0.4;
-	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("Jakob.png", "Resources/SpelResurser/Sprites/Jakob.png");
+	Renderer->SpriteTexture = GetEngine().LoadNamedTexture("Jakob.png", "Resources/SpelResurser/Sprites/Jakob.png");
 }
 std::vector<std::string> Player::RequiredResources()
 {
@@ -400,9 +399,9 @@ void Enemy_Bullet::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Width = 0.16;
 	GetComponent<Rectangle_Hitbox>()->Height = 0.16;
-	SpriteRenderer* Renderer = GetComponent<SpriteRenderer>();
+	MBGameEngine::ObjectReference<SpriteRenderer> Renderer = GetComponent<SpriteRenderer>();
 	Renderer->Width = 0.16;
-	Renderer->SpriteTexture = TouhouEngine::LoadNamedTexture("fiendeattack1.png", "Resources/SpelResurser/Sprites/fiendeattack1.png");
+	Renderer->SpriteTexture = GetEngine().LoadNamedTexture("fiendeattack1.png", "Resources/SpelResurser/Sprites/fiendeattack1.png");
 }
 Enemy_Bullet::~Enemy_Bullet()
 {
@@ -425,7 +424,7 @@ void Enemy_Bullet::Update()
 	//AddComponent(new Rectangle_Hitbox());
 	Position.x += X_Change;
 	Position.y += Y_Change;
-	auto PlayerObject = TouhouEngine::FindObjectWithTag("Player");
+	auto PlayerObject = GetEngine().FindObjectWithTag("Player");
 	if (PlayerObject == nullptr)
 	{
 		return;
@@ -433,7 +432,7 @@ void Enemy_Bullet::Update()
 	if(Rectangle_Hitbox::Collides(GetComponent<Rectangle_Hitbox>(),PlayerObject->GetComponent<Rectangle_Hitbox>()))
 	{
 		PlayerObject->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
-		TouhouEngine::Destroy(this);
+		GetEngine().Destroy(this);
 	}
 	Transform.SetPosition(Position);
 }
@@ -458,7 +457,7 @@ void Level1_Enemy_1::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Height = 0.8;
 	GetComponent<Rectangle_Hitbox>()->Width = 0.8;
-	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture("Fiende1.png", "Resources/SpelResurser/Sprites/Fiende1.png");
+	GetComponent<SpriteRenderer>()->SpriteTexture = GetEngine().LoadNamedTexture("Fiende1.png", "Resources/SpelResurser/Sprites/Fiende1.png");
 }
 Level1_Enemy_1::~Level1_Enemy_1()
 {
@@ -482,14 +481,14 @@ void Level1_Enemy_1::Update()
 		for (int i = 0; i < 8; i++)
 		{
 			GameObject* Kula = new Enemy_Bullet(Transform.GetPosition(), "Kula", "Enemy_Bullet");
-			TouhouEngine::Create(Kula);
+			GetEngine().Create(Kula);
 			Kula->Transform.SetRotation(MBMath::MBVector3<float>(45 * i,0,0));
 			Level1_Enemy_1_Timer = 0;
 		}
 	}
 	//if (HP <= 0)
 	//{
-	//	TouhouEngine::Destroy(this);
+	//	GetEngine().Destroy(this);
 	//}
 
 	//dra liv kod
@@ -507,7 +506,7 @@ Level1::~Level1()
 bool PlayerWasAlive = true;
 void Level1::Update()
 {
-	if ((TouhouEngine::FindObjectWithName("Spelaren") != nullptr || Level1_Timer == 0) || LevelISFinised == true)
+	if ((GetEngine().FindObjectWithName("Spelaren") != nullptr || Level1_Timer == 0) || LevelISFinised == true)
 	{
 		std::array<int,4> Layer123 = { 1000000,0,0,0 };
 		if (LevelISFinised == false)
@@ -516,10 +515,10 @@ void Level1::Update()
 			PlayerWasAlive = true;
 			std::array<int,4> Layer = { 100,0,0,0 };
 			std::array<int,4> Layer2 = { -100,0,0,0 };
-			TouhouEngine::DrawTexture("RedSquare.png", Vector2D(6, 0), 4, 9, Layer);
-			TouhouEngine::DrawTexture("RedSquare.png", Vector2D(-6, 0), 4, 9, Layer);
+			GetEngine().DrawTexture("RedSquare.png", Vector2D(6, 0), 4, 9, Layer);
+			GetEngine().DrawTexture("RedSquare.png", Vector2D(-6, 0), 4, 9, Layer);
 			//vi drar ban texturen
-			TouhouEngine::DrawTexture("Backgrund3.png", Vector2D(0, (-4.5 + 18) - Level_1_BGPosition), 16, 36, Layer2);
+			GetEngine().DrawTexture("Backgrund3.png", Vector2D(0, (-4.5 + 18) - Level_1_BGPosition), 16, 36, Layer2);
 			//test
 			Level_1_BGPosition += Level_1_BGSpeed;
 			Level_1_BGPosition = std::fmod(Level_1_BGPosition, 27);
@@ -527,80 +526,80 @@ void Level1::Update()
 			{
 				//vi vill testa den nya fienden
 				GameObject* Spelaren = new Player(Vector2D(0.0f, 0.0f), "Spelaren", "Player");
-				//TouhouEngine::Create(new Johan(Vector2D(0, 6)));
-				TouhouEngine::Create(Spelaren);
-				TouhouEngine::Create(new PausMenu());
+				//GetEngine().Create(new Johan(Vector2D(0, 6)));
+				GetEngine().Create(Spelaren);
+				GetEngine().Create(new PausMenu());
 			}
 			//return;
 			///*
 			//DrawTextRectangle()
 			//std::vector<int> Layer123 = { 1000000,0,0,0 };
-			DrawTextRectangle("Time " + std::to_string(Level1_Timer / 60), Vector2D(-8, 4), Vector2D(-3, 2), Layer123, 0.4);
+			DrawTextRectangle(GetEngine(), "Time " + std::to_string(Level1_Timer / 60), Vector2D(-8, 4), Vector2D(-3, 2), Layer123, 0.4);
 		}
 		if (Level1_Timer == 120)
 		{
 			GameObject* Fiende1 = new Level_1_Enemy_3(Vector2D(0.0f, 5));
-			TouhouEngine::Create(Fiende1);
+			GetEngine().Create(Fiende1);
 		}
 		if (Level1_Timer == 320)
 		{
 			GameObject* Fiende1 = new Level1_Enemy_1(Vector2D(0.0f, 3.15f), "Fiende1", "Enemy");
-			TouhouEngine::Create(Fiende1);
+			GetEngine().Create(Fiende1);
 			GameObject* Fiende2 = new Level1_Enemy_1(Vector2D(-3.0f, 3.15f), "Fiende2", "Enemy");
-			TouhouEngine::Create(Fiende2);
+			GetEngine().Create(Fiende2);
 			GameObject* Fiende3 = new Level1_Enemy_1(Vector2D(3.0f, 3.15f), "Fiende3", "Enemy");
-			TouhouEngine::Create(Fiende3);
+			GetEngine().Create(Fiende3);
 
 		}
 		if (Level1_Timer == 520)
 		{
 			GameObject* Fiendeny = new Level_1_Enemy_2(Vector2D(0, 4), "Fiende", "Enemy");
-			TouhouEngine::Create(Fiendeny);
+			GetEngine().Create(Fiendeny);
 		}
 		if (Level1_Timer == 720)
 		{
 			GameObject* Fiendeny = new Level_1_Enemy_2(Vector2D(-3, 4), "Fiende", "Enemy");
-			TouhouEngine::Create(Fiendeny);
+			GetEngine().Create(Fiendeny);
 			GameObject* Fiendeny2 = new Level_1_Enemy_2(Vector2D(3, 4), "Fiende", "Enemy");
-			TouhouEngine::Create(Fiendeny2);
+			GetEngine().Create(Fiendeny2);
 
 			GameObject* Fiende1 = new Level1_Enemy_1(Vector2D(0.0f, 3.15f), "Fiende1", "Enemy");
-			TouhouEngine::Create(Fiende1);
+			GetEngine().Create(Fiende1);
 			GameObject* Fiende2 = new Level1_Enemy_1(Vector2D(-3.0f, 3.15f), "Fiende2", "Enemy");
-			TouhouEngine::Create(Fiende2);
+			GetEngine().Create(Fiende2);
 			GameObject* Fiende3 = new Level1_Enemy_1(Vector2D(3.0f, 3.15f), "Fiende3", "Enemy");
-			TouhouEngine::Create(Fiende3);
+			GetEngine().Create(Fiende3);
 		}
 		if (Level1_Timer == 920)
 		{
 			//tanken med denna banna är att vi vill ha en strategisk aspekt mellan att döda snipersen och den stora blå i mitten
-			TouhouEngine::Create(new Level_1_Enemy_3(Vector2D(-3, 5)));
-			TouhouEngine::Create(new Level_1_Enemy_3(Vector2D(0, 5)));
-			TouhouEngine::Create(new Level_1_Enemy_3(Vector2D(3, 5)));
+			GetEngine().Create(new Level_1_Enemy_3(Vector2D(-3, 5)));
+			GetEngine().Create(new Level_1_Enemy_3(Vector2D(0, 5)));
+			GetEngine().Create(new Level_1_Enemy_3(Vector2D(3, 5)));
 			//satmidigt har vi 2 stora blåa som åker ner
-			TouhouEngine::Create(new Level_1_Enemy_2(Vector2D(-2, 5), "Enemy_2", "Enemy"));
-			TouhouEngine::Create(new Level_1_Enemy_2(Vector2D(2, 5), "Enemy_2", "Enemy"));
+			GetEngine().Create(new Level_1_Enemy_2(Vector2D(-2, 5), "Enemy_2", "Enemy"));
+			GetEngine().Create(new Level_1_Enemy_2(Vector2D(2, 5), "Enemy_2", "Enemy"));
 		}
 		if (Level1_Timer == 1120)
 		{
-			TouhouEngine::Create(new Level_1_Enemy_2(Vector2D(-3, 5), "Enemy_2", "Enemy"));
-			TouhouEngine::Create(new Level_1_Enemy_2(Vector2D(-1, 5), "Enemy_2", "Enemy"));
-			TouhouEngine::Create(new Level_1_Enemy_2(Vector2D(1, 5), "Enemy_2", "Enemy"));
-			TouhouEngine::Create(new Level_1_Enemy_2(Vector2D(3, 5), "Enemy_2", "Enemy"));
+			GetEngine().Create(new Level_1_Enemy_2(Vector2D(-3, 5), "Enemy_2", "Enemy"));
+			GetEngine().Create(new Level_1_Enemy_2(Vector2D(-1, 5), "Enemy_2", "Enemy"));
+			GetEngine().Create(new Level_1_Enemy_2(Vector2D(1, 5), "Enemy_2", "Enemy"));
+			GetEngine().Create(new Level_1_Enemy_2(Vector2D(3, 5), "Enemy_2", "Enemy"));
 
-			TouhouEngine::Create(new Level1_Enemy_1(Vector2D(-3, 5), "Enemy1", "Enemy"));
-			TouhouEngine::Create(new Level1_Enemy_1(Vector2D(-2, 5), "Enemy1", "Enemy"));
-			TouhouEngine::Create(new Level1_Enemy_1(Vector2D(-1, 5), "Enemy1", "Enemy"));
-			TouhouEngine::Create(new Level1_Enemy_1(Vector2D(1, 5), "Enemy1", "Enemy"));
-			TouhouEngine::Create(new Level1_Enemy_1(Vector2D(2, 5), "Enemy1", "Enemy"));
-			TouhouEngine::Create(new Level1_Enemy_1(Vector2D(3, 5), "Enemy1", "Enemy"));
+			GetEngine().Create(new Level1_Enemy_1(Vector2D(-3, 5), "Enemy1", "Enemy"));
+			GetEngine().Create(new Level1_Enemy_1(Vector2D(-2, 5), "Enemy1", "Enemy"));
+			GetEngine().Create(new Level1_Enemy_1(Vector2D(-1, 5), "Enemy1", "Enemy"));
+			GetEngine().Create(new Level1_Enemy_1(Vector2D(1, 5), "Enemy1", "Enemy"));
+			GetEngine().Create(new Level1_Enemy_1(Vector2D(2, 5), "Enemy1", "Enemy"));
+			GetEngine().Create(new Level1_Enemy_1(Vector2D(3, 5), "Enemy1", "Enemy"));
 		}
 		if (Level1_Timer > 1120)
 		{
 			if (EndBossSpawned == false)
 			{
 				int NumberOfActiveEnemies = 0;
-				ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+				ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 				while(ObjectIterator.HasEnded() == false)
 				{
 					if (ObjectIterator->GetTag() == "Enemy")
@@ -609,9 +608,9 @@ void Level1::Update()
 					}
 					ObjectIterator++;
 				}
-				//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//for (size_t i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 				//{
-				//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Enemy")
+				//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Enemy")
 				//	{
 				//		NumberOfActiveEnemies += 1;
 				//	}
@@ -624,22 +623,22 @@ void Level1::Update()
 					if ((EndBossSpawnTimer / 20) % 2 == 1)
 					{
 						std::array<int,4> Layern = { 10000,0,0,0 };
-						TouhouEngine::DrawTexture("Ossian.png", Vector2D(-3, 2.7), 1, 1, Layern);
-						TouhouEngine::DrawTexture("Ossian.png", Vector2D(3, 2.7), 1, 1, Layern);
+						GetEngine().DrawTexture("Ossian.png", Vector2D(-3, 2.7), 1, 1, Layern);
+						GetEngine().DrawTexture("Ossian.png", Vector2D(3, 2.7), 1, 1, Layern);
 						std::array<int,4> Layer3 = { 10000,0,0,0 };
-						DrawTextRectangle("Varning", Vector2D(0, 2.7),Layer3, 0.4);
+						DrawTextRectangle(GetEngine(), "Varning", Vector2D(0, 2.7), Layer3, 0.4);
 					}
 				}
 				if (EndBossSpawnTimer == 0)
 				{
-					TouhouEngine::Create(new Johan(Vector2D(0, 6)));
+					GetEngine().Create(new Johan(Vector2D(0, 6)));
 					EndBossSpawned = true;
 				}
 			}
 			else
 			{
 				bool JohanExists = false;
-				ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+				ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 				while (ObjectIterator.HasEnded() == false)
 				{
 					if (ObjectIterator->GetName() == "Johan")
@@ -649,9 +648,9 @@ void Level1::Update()
 					}
 					ObjectIterator++;
 				}
-				//for (size_t i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+				//for (size_t i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 				//{
-				//	if (TouhouEngine::ActiveGameObjects[i]->GetName() == "Johan")
+				//	if (GetEngine().ActiveGameObjects[i]->GetName() == "Johan")
 				//	{
 				//		JohanExists = true;
 				//		break;
@@ -665,7 +664,7 @@ void Level1::Update()
 					{
 						LevelISFinised = true;
 						//förstör alla object utom level
-						std::vector<GameObject*> ObjectAttDelete = {};
+						std::vector <MBGameEngine::GameObjectReference> ObjectAttDelete = {};
 						while (ObjectIterator.HasEnded() == false)
 						{
 							if (ObjectIterator->GetTag() != "Level")
@@ -674,27 +673,27 @@ void Level1::Update()
 							}
 							ObjectIterator++;
 						}
-						//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+						//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 						//{
-						//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "Level")
+						//	if (GetEngine().ActiveGameObjects[i]->GetTag() != "Level")
 						//	{
-						//		ObjectAttDelete.push_back(TouhouEngine::ActiveGameObjects[i]);
+						//		ObjectAttDelete.push_back(GetEngine().ActiveGameObjects[i]);
 						//	}
 						//}
 						for (int i = 0; i < ObjectAttDelete.size(); i++)
 						{
-							TouhouEngine::Destroy(ObjectAttDelete[i]);
+							GetEngine().Destroy(ObjectAttDelete[i]);
 						}
 						//dra grejer till skärmen
-						DrawTextRectangle("Congratulations", Vector2D(0, 2.75), Layer123,0.6);
-						DrawTextRectangle("Your time is "+std::to_string(Level1_Timer/60), Vector2D(0, 0), Layer123,0.4);
-						DrawTextRectangle("Press Esc to return to main menu", Vector2D(0, -2), Layer123,0.25);
+						DrawTextRectangle(GetEngine(),"Congratulations", Vector2D(0, 2.75), Layer123,0.6);
+						DrawTextRectangle(GetEngine(),"Your time is "+std::to_string(Level1_Timer/60), Vector2D(0, 0), Layer123,0.4);
+						DrawTextRectangle(GetEngine(),"Press Esc to return to main menu", Vector2D(0, -2), Layer123,0.25);
 						std::array<int,4> Layer3 = { 0,0,0,0 };
-						TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
-						if (TouhouEngine::GetKeyDown("esc"))
+						GetEngine().DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layer3);
+						if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Esc))
 						{
-							TouhouEngine::Destroy(this);
-							TouhouEngine::Create(new MainMenu());
+							GetEngine().Destroy(this);
+							GetEngine().Create(new MainMenu());
 						}
 					}
 				}
@@ -706,8 +705,8 @@ void Level1::Update()
 		//delete alla nuvarande objekt och skriv en ny text som är gameover
 		if (PlayerWasAlive == true)
 		{
-			std::vector<GameObject*> ObjectAttDelete = {};
-			ActiveObjectIterator ObjectIterator = TouhouEngine::GetActiveObjectsIterator();
+			std::vector < MBGameEngine::GameObjectReference > ObjectAttDelete = {};
+			ActiveObjectIterator ObjectIterator = GetEngine().GetActiveObjectsIterator();
 			
 			while (ObjectIterator.HasEnded() == false)
 			{
@@ -717,30 +716,30 @@ void Level1::Update()
 				}
 				ObjectIterator++;
 			}
-			//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 			//{
-			//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "Level")
+			//	if (GetEngine().ActiveGameObjects[i]->GetTag() != "Level")
 			//	{
-			//		ObjectAttDelete.push_back(TouhouEngine::ActiveGameObjects[i]);
+			//		ObjectAttDelete.push_back(GetEngine().ActiveGameObjects[i]);
 			//	}
 			//}
 			for (int i = 0; i < ObjectAttDelete.size(); i++)
 			{
-				TouhouEngine::Destroy(ObjectAttDelete[i]);
+				GetEngine().Destroy(ObjectAttDelete[i]);
 			}
 		}
 		//vi ritar game over, och sedan "klicka enter för att fortsätta
 		std::array<int,4> Layern = { 1,1,1,1 };
 		std::array<int,4> Layern2 = { 0,1,1,1 };
-		TouhouEngine::DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layern2);
-		DrawTextRectangle("GAME OVER", Vector2D(0, 2.75), Layern,0.6);
-		DrawTextRectangle("Press enter to retry", Vector2D(0, -0.75), Layern);
+		GetEngine().DrawTexture("Backgrund1.png", Vector2D(0, 0), 16, 9, Layern2);
+		DrawTextRectangle(GetEngine(),"GAME OVER", Vector2D(0, 2.75), Layern,0.6);
+		DrawTextRectangle(GetEngine(),"Press enter to retry", Vector2D(0, -0.75), Layern);
 		PlayerWasAlive = false;
 		//kollar enter för att se om vi ska restarta
-		if (TouhouEngine::GetKeyDown("enter"))
+		if (GetEngine().GetKeyDown(MBGameEngine::KeyCode::Enter))
 		{
-			TouhouEngine::Destroy(this);
-			TouhouEngine::Create(new Level1());
+			GetEngine().Destroy(this);
+			GetEngine().Create(new Level1());
 		}
 	}
 	//*/
@@ -773,8 +772,8 @@ void Level1::Update()
 //	}
 //	LifeLayer[1] += 1;
 //	float HealtbarPercentage = HP / MaxHp;
-//	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
-//	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f), LifeWidth * (1 - HealtbarPercentage), LifeHeight, //LifeLayer);
+//	GetEngine().DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f), LifeWidth * HealtbarPercentage, LifeHeight, LifeLayer);
+//	GetEngine().DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f), LifeWidth * (1 - HealtbarPercentage), LifeHeight, //LifeLayer);
 //}
 //void Enemy::DrawHealthbar(float Offset)
 //{
@@ -790,7 +789,7 @@ void Level1::Update()
 //	LifeLayer[1] += 1;
 //
 //	float HealtbarPercentage = HP / MaxHp;
-//	TouhouEngine::DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f+Offset), LifeWidth * HealtbarPercentage, LifeHeight, //LifeLayer);
-//	TouhouEngine::DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f+Offset), LifeWidth * (1 - HealtbarPercentage), //LifeHeight, LifeLayer);
+//	GetEngine().DrawTexture("Green.png", Vector2D(Position.x - (LifeWidth / 2 - (LifeWidth / 2) * HealtbarPercentage), Position.y + 0.5f+Offset), LifeWidth * HealtbarPercentage, LifeHeight, //LifeLayer);
+//	GetEngine().DrawTexture("RedSquare.png", Vector2D(Position.x + (LifeWidth / 2 - (LifeWidth / 2) * (1 - HealtbarPercentage)), Position.y + 0.5f+Offset), LifeWidth * (1 - HealtbarPercentage), //LifeHeight, LifeLayer);
 //	//std::cout << MaxHp << std::endl;
 //}

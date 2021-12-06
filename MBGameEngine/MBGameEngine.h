@@ -8,12 +8,12 @@
 #include <array>
 namespace MBGameEngine
 {
-	enum class KeyCode
-	{
-		A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,
-		Shift,Left,Right,Up,Down,
-	};
-
+	//enum class KeyCode
+	//{
+	//	A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,
+	//	LeftShift,Space,Left,Right,Up,Down,Esc,Enter,
+	//};
+	typedef MBGE::KeyCode KeyCode;
 	//class Transform
 	//{
 	//
@@ -27,18 +27,44 @@ namespace MBGameEngine
 	class SharedDeletableObjectReference
 	{
 	private:
-		std::shared_ptr<T*> m_ObjectPointer = nullptr;
-		void p_Validate()
+		template<typename U>
+		friend class SharedDeletableObjectReference;
+		T* m_ObjectPointer = nullptr;
+		std::shared_ptr<bool> m_ObjectDeleted = nullptr;
+		void p_Validate() const
 		{
-			if (!(*this))
+			if (m_ObjectPointer == nullptr || !(m_ObjectDeleted.get()!= nullptr && *m_ObjectDeleted==false))
 			{
 				throw std::exception();
 			}
 		}
 	public:
-		SharedDeletableObjectReference(std::shared_ptr<T*> PointerToUse)
+		SharedDeletableObjectReference(T* ObjectPointer,std::shared_ptr<bool> DeletedPointer)
 		{
-			m_ObjectPointer = PointerToUse;
+			m_ObjectPointer = ObjectPointer;
+			m_ObjectDeleted = DeletedPointer;
+		}
+		//template<typename M>
+		//operator SharedDeletableObjectReference<M>()
+		//{
+		//	//std::dynamic_pointer_cast<M*,T*>(m_ObjectPointer)
+		//	//static_assert(1 == 2,std::typeid(M).name());
+		//	SharedDeletableObjectReference<M> ReturnValue(m_ObjectPointer, m_ObjectDeleted);
+		//	return(ReturnValue);
+		//
+		//}
+		template<typename M>
+		SharedDeletableObjectReference(SharedDeletableObjectReference<M> Object)
+		{
+			std::swap(m_ObjectDeleted, Object.m_ObjectDeleted);
+			m_ObjectPointer = dynamic_cast<T*>(Object.m_ObjectPointer);
+		}
+		template<typename M>
+		SharedDeletableObjectReference& operator=(SharedDeletableObjectReference<M> Object)
+		{
+			std::swap(m_ObjectDeleted, Object.m_ObjectDeleted);
+			m_ObjectPointer = dynamic_cast<T*>(Object.m_ObjectPointer);
+			return(*this);
 		}
 		SharedDeletableObjectReference()
 		{
@@ -46,61 +72,75 @@ namespace MBGameEngine
 		}
 		operator bool()
 		{
-			return(m_ObjectPointer.get() != nullptr && *m_ObjectPointer != nullptr);
+			return(m_ObjectPointer != nullptr && (m_ObjectDeleted.get() != nullptr && *m_ObjectDeleted == false));
 		}
-		bool operator==(T* OtherPointer)
+		friend bool operator==(SharedDeletableObjectReference const& LeftObject, const T* RightPointer)
 		{
-			if (m_ObjectPointer.get() == nullptr)
-			{
-				return(false);
-			}
-			return(*m_ObjectPointer == OtherPointer);
+			return(LeftObject.m_ObjectPointer == RightPointer);
+		}
+		friend bool operator==(const T* LeftPointer, SharedDeletableObjectReference const& RightObject)
+		{
+			return(RightObject, LeftPointer);
+		}
+		friend bool operator!=(SharedDeletableObjectReference const& LeftObject, const T* RightPointer)
+		{
+			return(!(LeftObject == RightPointer));
+		}
+		friend bool operator!=(const T* LeftPointer, SharedDeletableObjectReference const& RightObject)
+		{
+			return(!(LeftPointer == RightObject));
 		}
 		T* operator->()
 		{
 			p_Validate();
-			return *m_ObjectPointer;
+			return m_ObjectPointer;
 		}
 		T& operator*()
 		{
 			p_Validate();
-			return **m_ObjectPointer;
+			return *m_ObjectPointer;
 		}
 		T const* operator->() const
 		{
 			p_Validate();
-			return *m_ObjectPointer;
+			return m_ObjectPointer;
 		}
 		T const& operator*() const
 		{
 			p_Validate();
-			return **m_ObjectPointer;
+			return *m_ObjectPointer;
 		}
 	};
 	// template <typename T>
 	// using SharedDeletableObjectReference<GameObject> = GameObjectReference;
 	class GameObject;
 	class Component;
-	typedef SharedDeletableObjectReference<GameObject> GameObjectReference;
 	typedef SharedDeletableObjectReference<Component> ComponentReference;
 	template <typename T>
 	using ObjectReference = SharedDeletableObjectReference<T>;
+	typedef ObjectReference<GameObject> GameObjectReference;
 
+	class MBGameEngine;
 	class Component
 	{
 	private:
-
+		friend class GameObject;
 		GameObjectReference m_AssociatedGameObject;
-		std::shared_ptr<Component*> m_ComponentReference = nullptr;
-
+		std::shared_ptr<bool> m_ComponentDeleted = nullptr;
+	protected:	
+	MBGameEngine& GetEngine();
 	public:
+		Component()
+		{
+			m_ComponentDeleted = std::make_shared<bool>(false);
+		}
 		GameObjectReference GetGameObject();
-		GameObjectReference GetGameObject() const;
+		const GameObjectReference GetGameObject() const;
+		//GameObjectReference GetGameObject() const;
 		virtual void Update();
 		virtual ~Component();
 	};
 
-	class MBGameEngine;
 	class GameObject
 	{
 	private:
@@ -111,7 +151,7 @@ namespace MBGameEngine
 		bool m_Active = true;
 
 
-		std::shared_ptr<GameObject*> m_ObjectReferencePointer = {};
+		std::shared_ptr<bool> m_ObjectDeletedPointer = {};
 		MBGameEngine* m_AssociatedEngine = nullptr;
 		std::vector<std::unique_ptr<Component>> m_Components = {};
 		void p_DefaultUpdate();
@@ -119,13 +159,20 @@ namespace MBGameEngine
 		bool m_Deleted = false;
 		//bool IsDeleted();
 	protected:
-		MBGameEngine& GetEngine() {return(*m_AssociatedEngine);};
 	public:
+		MBGameEngine& GetEngine() { return(*m_AssociatedEngine); };
+		bool Active = true;
+		MBGE::Transform Transform;
+
 		GameObject() 
 		{
-			GameObject** NewPointerReference = new GameObject * (this);
-			m_ObjectReferencePointer = std::shared_ptr<GameObject*>(NewPointerReference);
+			///GameObject** NewPointerReference = new GameObject * (this);
+			m_ObjectDeletedPointer = std::make_shared<bool>(false);
 		};
+		GameObjectReference GetReference()
+		{
+			return(GameObjectReference(this, m_ObjectDeletedPointer));
+		}
 		void AddComponent(Component* ComponentToAdd);
 		virtual void Update();
 		virtual void OnCreate();
@@ -134,14 +181,27 @@ namespace MBGameEngine
 		//	return(m_AssociatedEngine);
 		//}
 		template<typename T>
-		SharedDeletableObjectReference<T> GetComponent();
+		ObjectReference<T> GetComponent()
+		{
+			ObjectReference<T> ReturnValue;
+			for (size_t i = 0; i < m_Components.size(); i++)
+			{
+				T* ComponentPointer = dynamic_cast<T*>(m_Components[i].get());
+				if (ComponentPointer != nullptr)
+				{
+					ReturnValue = ObjectReference<T>(ComponentPointer, ComponentPointer->m_ComponentDeleted);
+					break;
+				}
+			}
+			return(ReturnValue);
+		}
 		std::string const& GetName() const { return(m_Name); };
 		std::string const& GetTag() const { return(m_Tag); };
 		void SetName(std::string NewName) { m_Name = std::move(NewName); };
 		void SetTag(std::string NewTag) { m_Tag = std::move(NewTag); };
 		virtual ~GameObject()
 		{
-			*m_ObjectReferencePointer = nullptr;
+			*m_ObjectDeletedPointer = true;
 		}
 	};
 
@@ -190,12 +250,12 @@ namespace MBGameEngine
 			bool ReturnValue = false;
 			for (size_t i = 0; i < 4; i++)
 			{
-				if (LeftObject.Layer[i] < RightObject.Layer[i])
+				if (LeftObject.Layer[i] > RightObject.Layer[i])
 				{
 					ReturnValue = true;
 					break;
 				}
-				else if (LeftObject.Layer[i] > RightObject.Layer[i])
+				else if (LeftObject.Layer[i] < RightObject.Layer[i])
 				{
 					break;
 				}
@@ -246,8 +306,9 @@ namespace MBGameEngine
 		void WindowCreate(float Width,float Height,std::string const& WindowName,bool FullScreen);
 		void MainLoop();
 
-		GameObjectReference Create(GameObject* NewObject);
 		void Destroy(GameObjectReference ObjectToDelete);
+		void Destroy(GameObject* ObjectToDelete);
+		GameObjectReference Create(GameObject* NewObject);
 		GameObjectReference FindObjectWithName(std::string const& Name);
 		GameObjectReference FindObjectWithTag(std::string const& ObjectTag);
 		//void InitializeWindow(int Width, int Height, std::string WindowName, GLFWmonitor* Monitor, GLFWwindow* Share);

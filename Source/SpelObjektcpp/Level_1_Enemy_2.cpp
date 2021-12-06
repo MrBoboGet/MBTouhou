@@ -31,7 +31,7 @@ void Level_1_Enemy_2::OnCreate()
 {
 	GetComponent<Rectangle_Hitbox>()->Height = 1.6;
 	GetComponent<Rectangle_Hitbox>()->Width = 1.6;
-	GetComponent<SpriteRenderer>()->SpriteTexture = TouhouEngine::LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/"+m_TextureName);
+	GetComponent<SpriteRenderer>()->SpriteTexture = GetEngine().LoadNamedTexture(m_TextureName, "Resources/SpelResurser/Sprites/"+m_TextureName);
 	GetComponent<MBTouhouEnemy_HP>()->HealthBarOffset = 1;
 }
 void Level_1_Enemy_2::Update()
@@ -48,20 +48,20 @@ void Level_1_Enemy_2::Update()
 			KulanRiktiga->Direction = 0 + 60 * i;
 			KulanRiktiga->Speed = 0.02;
 			KulanRiktiga->Transform.SetRotation(MBMath::MBVector3<float>(KulanRiktiga->Direction - 90,0,0));
-			TouhouEngine::Create(kula);
-			//TouhouEngine::ActiveGameObjects.push_back(kula);
+			GetEngine().Create(kula);
+			//GetEngine().ActiveGameObjects.push_back(kula);
 		}
 
 		Level_1_Enemy_2_Timer = 0;
 	}
 	//if (HP <= 0)
 	//{
-	//	TouhouEngine::Destroy(this);
+	//	GetEngine().Destroy(this);
 	//}
 	//std::cout << MaxHp << std::endl;
 	//DrawHealthbar(1.0f);
 }
-void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
+void Enemy_2_Kul_Logik(MBGameEngine::MBGameEngine& Engine,Enemy_Bullet_Template* Pointern)
 {
 	//av någon anledning fick vi fel när vi ändrade på det här sättet, får kolla upp mer noggrant, kan vara så att vi bara får värdet när vi gör så här
 	//Enemy_Bullet_Template Kula = *Pointern;
@@ -88,15 +88,15 @@ void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 
 	//kollision kod
 	//int PlayerObjectPosition = 0;
-	//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+	//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 	//{
-	//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() == "Player")
+	//	if (GetEngine().ActiveGameObjects[i]->GetTag() == "Player")
 	//	{
 	//		PlayerObjectPosition = i;
 	//		break;
 	//	}
 	//}
-	GameObject* PlayerObject = TouhouEngine::FindObjectWithTag("Player");
+	MBGameEngine::GameObjectReference PlayerObject = Engine.FindObjectWithTag("Player");
 	if (PlayerObject == nullptr)
 	{
 		return;
@@ -109,7 +109,7 @@ void Enemy_2_Kul_Logik(Enemy_Bullet_Template* Pointern)
 		//Player* Player_Pointer = dynamic_cast<Player*>(PlayerObject); //fixa det här, väldigt jank
 		PlayerObject->GetComponent<TouhouPlayer_HP>()->RegisterCollision();
 		
-		TouhouEngine::Destroy(Pointern);
+		Engine.Destroy(Pointern);
 	}
 	/*
 	if (PlayerObject->Position.x - PlayerObject->Hitbox.x / 2 <= Pointern->Position.x + Pointern->Hitbox.x / 2 && PlayerObject->Position.x + PlayerObject->Hitbox.x / 2 >= Pointern->Position.x - Pointern->Hitbox.x / 2)

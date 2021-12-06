@@ -1,8 +1,4 @@
 #include <Engine/TextRendering.h>
-#include<unordered_map>
-#include <cctype>
-#include<Engine.h> 
-#include <iostream>
 //vi har en statisk unordred map som innehåller all den text data vi vill kunna rendera
 //egentligen borde denna typ av text rendering göras i form att atta läsa in en kongig fil
 //TODO Gör så att textläsandet kan göras med hjälp av en extern konfig fil som inte är i koden
@@ -11,7 +7,7 @@
 
 float TextHeight = 0.2;
 float TextWidth = 0.2;
-void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D LowerRightCoordinate, std::array<int,4> Layer,float Size)
+void DrawTextRectangle(MBGameEngine::MBGameEngine& Engine,std::string Text, Vector2D UpperLeftCoordinate, Vector2D LowerRightCoordinate, std::array<int,4> Layer,float Size)
 {
 	TextHeight = Size;
 	TextWidth = Size;
@@ -34,7 +30,7 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 			}
 			continue;
 		}
-		if (!TouhouEngine::NamedTextureLoaded(CharacterToDraw))
+		if (!Engine.NamedTextureLoaded(CharacterToDraw))
 		{
 			//ej loaded, vi möste först ladda in den innan vi kan dra den
 			if (CharacterToDraw[0] == '.')
@@ -42,13 +38,13 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 				//std::cout << "." << std::endl;
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
 			}
 			else
 			{
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
 			}
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita
@@ -60,7 +56,7 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 		//int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3]};
 		MBGE::Transform TextureTransform;
 		TextureTransform.SetPosition(PositionToDraw);
-		TouhouEngine::DrawTexture(CharacterToDraw, TextureTransform, TextWidth, TextHeight, Layer);
+		Engine.DrawTexture(CharacterToDraw, TextureTransform, TextWidth, TextHeight, Layer);
 		//förflyttar positionenen som om det vore helt uniform storlek på texten
 		PositionToDraw.x += TextWidth;
 		if (PositionToDraw.x+TextWidth/2 > LowerRightCoordinate.x)
@@ -70,7 +66,7 @@ void DrawTextRectangle(std::string Text, Vector2D UpperLeftCoordinate, Vector2D 
 		}
 	}
 }
-void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::array<int,4> Layer,float Size, float R, float G, float B , float A)
+void DrawTextRectangle(MBGameEngine::MBGameEngine& Engine,std::string Text, Vector2D TextCenter,std::array<int,4> Layer,float Size, float R, float G, float B , float A)
 {
 	//vi börjar med att räkna ut var någonstans vi ska börja, genom att ta bredden av all vår text och räkna ut hur långt åt vänster vi ska börja
 	float WidthOfTextToDraw = 0;
@@ -95,7 +91,7 @@ void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::array<int,4> L
 			PositionToDraw.x += TextWidth;
 			continue;
 		}
-		if (!TouhouEngine::NamedTextureLoaded(CharacterToDraw))
+		if (!Engine.NamedTextureLoaded(CharacterToDraw))
 		{
 			//ej loaded, vi möste först ladda in den innan vi kan dra den
 			if (CharacterToDraw[0] == '.')
@@ -103,13 +99,13 @@ void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::array<int,4> L
 				//std::cout << "." << std::endl;
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
 			}
 			else
 			{
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				TouhouEngine::LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
 			}
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita
@@ -117,7 +113,7 @@ void DrawTextRectangle(std::string Text, Vector2D TextCenter,std::array<int,4> L
 		//int Layern[] = { Layer[0],Layer[1],Layer[2],Layer[3] };
 		MBGE::Transform TextureTransform;
 		TextureTransform.SetPosition(PositionToDraw);
-		TouhouEngine::DrawTexture(CharacterToDraw, TextureTransform, TextWidth, TextHeight, Layer);
+		Engine.DrawTexture(CharacterToDraw, TextureTransform, TextWidth, TextHeight, Layer);
 		//förflyttar positionenen som om det vore helt uniform storlek på texten
 		PositionToDraw.x += TextWidth;
 	}

@@ -15,6 +15,7 @@ public:
 	bool Finished = false;
 	Johan* Object = nullptr;
 	virtual void Update();
+	MBGameEngine::MBGameEngine& GetEngine();
 	JohanAttack();
 	~JohanAttack();
 };
@@ -80,7 +81,7 @@ private:
 class Johan : public GameObject
 {
 private:
-	MBTouhouEnemy_HP* m_HPComponent = nullptr;
+	MBGameEngine::ObjectReference<MBTouhouEnemy_HP> m_HPComponent;
 public:
 	Johan(Vector2D Position);
 	~Johan();

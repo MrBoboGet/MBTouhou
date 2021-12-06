@@ -11,10 +11,10 @@ void PausMenu::Update()
 {
 	if (!Paused)
 	{
-		if (TouhouEngine::GetKeyPressed("esc"))
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Esc))
 		{
 			Paused = true;
-			ActiveObjectIterator ObjectsIterator = TouhouEngine::GetActiveObjectsIterator();
+			ActiveObjectIterator ObjectsIterator = GetEngine().GetActiveObjectsIterator();
 			while (ObjectsIterator.HasEnded() == false)
 			{
 				if (ObjectsIterator->GetTag() != "PausMenu")
@@ -23,29 +23,29 @@ void PausMenu::Update()
 				}
 				ObjectsIterator++;
 			}
-			//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 			//{
-			//	if (TouhouEngine::ActiveGameObjects[i]->GetTag() != "PausMenu")
+			//	if (GetEngine().ActiveGameObjects[i]->GetTag() != "PausMenu")
 			//	{
-			//		TouhouEngine::ActiveGameObjects[i]->Active = false;
+			//		GetEngine().ActiveGameObjects[i]->Active = false;
 			//	}
 			//}
 		}
 	}
 	else
 	{
-		if (TouhouEngine::GetKeyPressed("esc"))
+		if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Esc))
 		{
 			Paused = false;
-			ActiveObjectIterator ObjectsIterator = TouhouEngine::GetActiveObjectsIterator();
+			ActiveObjectIterator ObjectsIterator = GetEngine().GetActiveObjectsIterator();
 			while (ObjectsIterator.HasEnded() == false)
 			{
 				ObjectsIterator->Active = true;
 				ObjectsIterator++;
 			}
-			//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+			//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 			//{
-			//	TouhouEngine::ActiveGameObjects[i]->Active = true;
+			//	GetEngine().ActiveGameObjects[i]->Active = true;
 			//}
 		}
 		else
@@ -54,16 +54,17 @@ void PausMenu::Update()
 			std::array<int,4> Layer4545 = { 1000001,0,0,0 };
 			MBGE::Transform TextureTransform;
 			TextureTransform.SetPosition(Vector2D(0, 0));
-			TouhouEngine::DrawTexture("Backgrund1.png", TextureTransform, 16, 9, Layer3);
-			DrawTextRectangle("Continue", Vector2D(0, 1.5), Layer4545, 0.4);
-			DrawTextRectangle("Quit", Vector2D(0, -1.5), Layer4545, 0.4);
-			DrawTextRectangle("Retry", Vector2D(0, 0), Layer4545, 0.4);
-			if (TouhouEngine::GetKeyPressed("down") || TouhouEngine::GetKeyPressed("s"))
+			GetEngine().DrawTexture("Backgrund1.png", TextureTransform, 16, 9, Layer3);
+			DrawTextRectangle(GetEngine(),std::string("Continue"), Vector2D(0, 0), Vector2D(0, 0), Layer4545, 23);
+			DrawTextRectangle(GetEngine(),"Continue", Vector2D(0, 1.5), Layer4545, 0.4);
+			DrawTextRectangle(GetEngine(),"Quit", Vector2D(0, -1.5), Layer4545, 0.4);
+			DrawTextRectangle(GetEngine(),"Retry", Vector2D(0, 0), Layer4545, 0.4);
+			if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Down) || GetEngine().GetKeyPressed(MBGameEngine::KeyCode::S))
 			{
 				CurrentOption += 1;
 				CurrentOption %= NumberOfOptions;
 			}
-			if (TouhouEngine::GetKeyPressed("up") || TouhouEngine::GetKeyPressed("w"))
+			if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Up) || GetEngine().GetKeyPressed(MBGameEngine::KeyCode::W))
 			{
 				CurrentOption -= 1;
 				if (CurrentOption < 0)
@@ -73,32 +74,32 @@ void PausMenu::Update()
 			}
 			//MBGE::Transform TextureTransform;
 			TextureTransform.SetPosition(Vector2D(-3, 1.5 - 1.5 * CurrentOption));
-			TouhouEngine::DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer3);
-			if (TouhouEngine::GetKeyPressed("enter"))
+			GetEngine().DrawTexture("Jakob.png", TextureTransform, 1, 1, Layer3);
+			if (GetEngine().GetKeyPressed(MBGameEngine::KeyCode::Enter))
 			{
 				if (CurrentOption == 0)
 				{
 					Paused = false;
-					ActiveObjectIterator ObjectsIterator = TouhouEngine::GetActiveObjectsIterator();
+					ActiveObjectIterator ObjectsIterator = GetEngine().GetActiveObjectsIterator();
 					while (ObjectsIterator.HasEnded() == false)
 					{
 						ObjectsIterator->Active = true;
 						ObjectsIterator++;
 					}
-					//for (int i = 0; i < TouhouEngine::ActiveGameObjects.size(); i++)
+					//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 					//{
-					//	TouhouEngine::ActiveGameObjects[i]->Active = true;
+					//	GetEngine().ActiveGameObjects[i]->Active = true;
 					//}
 				}
 				if (CurrentOption == 1)
 				{
-					TouhouEngine::ClearObjects();
-					TouhouEngine::Create(new Level1());
+					GetEngine().ClearObjects();
+					GetEngine().Create(new Level1());
 				}
 				if(CurrentOption == 2)
 				{
-					TouhouEngine::ClearObjects();
-					TouhouEngine::Create(new MainMenu());
+					GetEngine().ClearObjects();
+					GetEngine().Create(new MainMenu());
 				}
 			}
 		}
