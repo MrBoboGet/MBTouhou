@@ -149,15 +149,15 @@ namespace MBGameEngine
 	}
 	bool MBGameEngine::GetKeyDown(KeyCode KeyToCheck)
 	{
-		return(true);
+		return(m_InternalGraphicsEngine.GetKeyDown(KeyToCheck));
 	}
 	bool MBGameEngine::GetKeyPressed(KeyCode KeyToCheck)
 	{
-		return(true);
+		return(m_InternalGraphicsEngine.GetKeyPressed(KeyToCheck));
 	}
 	bool MBGameEngine::GetKeyReleased(KeyCode KeyToCheck)
 	{
-		return(true);
+		return(m_InternalGraphicsEngine.GetKeyReleased(KeyToCheck));
 	}
 	void MBGameEngine::Destroy(GameObject* ObjectToDelete)
 	{
@@ -214,10 +214,16 @@ namespace MBGameEngine
 	{
 		clock_t Timer = clock();
 		clock_t DeltaTime = 0;
+		size_t DisplayFpsCounter = 0;
 		while (true)
 		{
-			while (((clock() - Timer) / double(CLOCKS_PER_SEC)) < 1 / m_FrameRate)
+			while (((clock() - Timer) / double(CLOCKS_PER_SEC)) <= 1 / double(m_FrameRate))
 			{}
+			DisplayFpsCounter += 1;
+			if (DisplayFpsCounter % 60 == 0)
+			{
+				std::cout << "DeltaTime:" << (clock() - Timer) / double(CLOCKS_PER_SEC) << "=" << double(CLOCKS_PER_SEC) / (clock() - Timer) << "fps" << std::endl;
+			}
 			Timer = clock();
 			p_Update();
 			m_InternalGraphicsEngine.Update();

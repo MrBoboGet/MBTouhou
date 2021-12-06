@@ -22,6 +22,7 @@ int main(void)
 	std::filesystem::current_path("C:/Users/emanu/Desktop/Program/C++/MBTouhou/");
 	MBGameEngine::MBGameEngine TestEngine;
 	TestEngine.WindowCreate(1920, 1080, "OMyGodNej", false);
+	std::cout << "Ny variant, garanterar recompile hoppas jag\n";
 	//TouhouEngine::Create(new Level1()); asd
 	TestEngine.Create(new MainMenu());
 	std::shared_ptr<Shader> Shadern = TestEngine.LoadShader("SpriteShader", "Resources/Shaders/vertexshader.txt", "Resources/Shaders/fragmentshader.txt");

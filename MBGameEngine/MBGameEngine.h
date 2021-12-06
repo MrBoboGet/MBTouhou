@@ -250,12 +250,12 @@ namespace MBGameEngine
 			bool ReturnValue = false;
 			for (size_t i = 0; i < 4; i++)
 			{
-				if (LeftObject.Layer[i] > RightObject.Layer[i])
+				if (LeftObject.Layer[i] < RightObject.Layer[i])
 				{
 					ReturnValue = true;
 					break;
 				}
-				else if (LeftObject.Layer[i] < RightObject.Layer[i])
+				else if (LeftObject.Layer[i] > RightObject.Layer[i])
 				{
 					break;
 				}
