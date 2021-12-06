@@ -21,7 +21,14 @@ void SpriteRenderer::Update()
 	}
 	float Sprite_Width = Width;
 	float Sprite_Height = Sprite_Width * ((float)SpriteTexture->GetHeight() / (float)SpriteTexture->GetWidth());
-	GetEngine().DrawTexture(SpriteTexture, GetGameObject()->Transform, Sprite_Width, Sprite_Height, Layer);
+	MBGE::UniformValue UniformValue;
+	MBMath::MBStaticVector<float, 4> UniformData;
+	UniformData[0] = ColorKoef.R;
+	UniformData[1] = ColorKoef.G;
+	UniformData[2] = ColorKoef.B;
+	UniformData[3] = ColorKoef.A;
+	UniformValue.SetValue("ColorKoef", UniformData);
+	GetEngine().DrawTexture(SpriteTexture,GetEngine().GetNamedShader("SpriteShader"),std::move(UniformValue), GetGameObject()->Transform, Sprite_Width, Sprite_Height, Layer);
 }
 //GameObjectRenderer::GameObjectRenderer(std::string Bild)
 //{

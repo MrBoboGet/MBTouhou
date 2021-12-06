@@ -130,7 +130,7 @@ namespace MBGameEngine
 	{
 		for(std::unique_ptr<GameObject>& Object : m_LoadedGameObjects)
 		{
-			if (Object.get() == nullptr || Object->m_Active == false  || *Object->m_ObjectDeletedPointer == true)
+			if (Object.get() == nullptr || Object->m_Active == false  || *Object->m_ObjectDeletedPointer == true || Object->Active == false)
 			{
 				continue;
 			}
@@ -245,15 +245,23 @@ namespace MBGameEngine
 	}
 	void MBGameEngine::p_DrawDrawObject(DrawObject& ObjectToDraw)
 	{
-		if (ObjectToDraw.Texturen == nullptr)
+		if (ObjectToDraw.Texturen != nullptr)
 		{
-			return;
+			ObjectToDraw.Texturen->Bind(0);
 		}
-		ObjectToDraw.Texturen->Bind(0);
+		std::shared_ptr<Shader> ShaderToUse = nullptr;
+		if (ObjectToDraw.Shader != nullptr)
+		{
+			ShaderToUse = ObjectToDraw.Shader;
+		}
+		else
+		{
+			//LEGACT GREJER, sprite shadern är default
+			ShaderToUse = GetNamedShader("SpriteShader");
+		}
 		//MBGE::UniformValue ValuesToUse;
 		m_SpriteCamera.WorldSpaceCoordinates = MBMath::MBVector3<float>(0, 0, -20);
 		//TouhouEngine::__Camera.Update(ValuesToUse);
-		auto ShaderToUse = GetNamedShader("SpriteShader");
 		ShaderToUse->Bind();
 		m_SpriteRenderingModel->SetShader(ShaderToUse);
 		m_SpriteRenderingModel->SetTexture(ObjectToDraw.Texturen);
@@ -266,7 +274,16 @@ namespace MBGameEngine
 		NewScaling[1] *= ObjectToDraw.Height;
 		m_SpriteRenderingModel->ModelTransform.SetScaling(NewScaling);
 		ShaderToUse->SetUniformMat4f("Model", m_SpriteRenderingModel->ModelTransform.GetModelMatrix().GetContinousData());
+		ObjectToDraw.UniformValues.UpdateUniforms("", ShaderToUse.get());
 		m_SpriteRenderingModel->Draw();
+		//LEGACY AF, SKA BORT
+		if (ObjectToDraw.UniformValues.GetType() == MBGE::DataTypes::Struct)
+		{
+			if (ObjectToDraw.UniformValues.HasValue("ColorKoef"))
+			{
+				ShaderToUse->SetUniformVec4("ColorKoef", 1, 1, 1, 1);
+			}
+		}
 	}
 	void MBGameEngine::PlaySound(std::string const& SoundFile, float Volume)
 	{
@@ -296,9 +313,10 @@ namespace MBGameEngine
 	void MBGameEngine::ClearObjects()
 	{
 		ActiveObjectIterator Iterator = GetActiveObjectsIterator();
-		while (Iterator.HasEnded())
+		while (Iterator.HasEnded() == false)
 		{
 			Destroy(*Iterator);
+			Iterator++;
 		}
 	}
 	std::shared_ptr<Shader> MBGameEngine::GetNamedShader(std::string const& ShaderName)
@@ -337,7 +355,16 @@ namespace MBGameEngine
 		m_LoadedTextures[TextureName] = NewTexture;
 		return(NewTexture);
 	}
-
+	std::shared_ptr<Texture> MBGameEngine::LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath, uint64_t Options)
+	{
+		if (NamedTextureLoaded(TextureName))
+		{
+			return(m_LoadedTextures[TextureName]);
+		}
+		std::shared_ptr<Texture> NewTexture = std::shared_ptr<Texture>(new Texture(ResourcePath,Options));
+		m_LoadedTextures[TextureName] = NewTexture;
+		return(NewTexture);
+	}
 	std::shared_ptr<Shader> MBGameEngine::LoadShader(std::string const& ShaderName, std::string const& VertexFilepath, std::string const& FragmentFilepath)
 	{
 		std::shared_ptr<Shader> NewShader = std::shared_ptr<Shader>(new MBGE::ShaderProgram(VertexFilepath, FragmentFilepath));
@@ -355,6 +382,18 @@ namespace MBGameEngine
 	void MBGameEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, MBGE::Transform TextureTransform, float Width, float Height, std::array<int, 4> Layer)
 	{
 		DrawObject NewDrawObject;
+		NewDrawObject.Texturen = TextureToDraw;
+		NewDrawObject.TextureTransform = TextureTransform;
+		NewDrawObject.Width = Width;
+		NewDrawObject.Height = Height;
+		NewDrawObject.Layer = Layer;
+		m_DrawCalls.push_back(NewDrawObject);
+	}
+	void MBGameEngine::DrawTexture(std::shared_ptr<Texture> TextureToDraw, std::shared_ptr<Shader> ShaderToUse, MBGE::UniformValue InformValues, MBGE::Transform const& TextureTransform, float Width, float Height, std::array<int, 4> const& Layer)
+	{
+		DrawObject NewDrawObject;
+		NewDrawObject.Shader = ShaderToUse;
+		NewDrawObject.UniformValues = std::move(InformValues);
 		NewDrawObject.Texturen = TextureToDraw;
 		NewDrawObject.TextureTransform = TextureTransform;
 		NewDrawObject.Width = Width;

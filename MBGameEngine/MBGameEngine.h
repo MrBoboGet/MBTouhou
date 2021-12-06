@@ -23,6 +23,7 @@ namespace MBGameEngine
 	typedef MBGE::Transform Transform;
 	typedef MBGE::Texture Texture;
 	typedef MBGE::ShaderProgram Shader;
+	typedef MBGE::TextureOptions TextureOptions;
 	template<typename T>
 	class SharedDeletableObjectReference
 	{
@@ -239,6 +240,8 @@ namespace MBGameEngine
 	{
 	public:
 		std::shared_ptr<Texture> Texturen = nullptr;
+		std::shared_ptr<Shader> Shader = nullptr;
+		MBGE::UniformValue UniformValues;
 		ColorRGBA Color;
 		//Vector2D Position;
 		MBGE::Transform TextureTransform;
@@ -319,12 +322,16 @@ namespace MBGameEngine
 		std::shared_ptr<Shader> GetNamedShader(std::string const& ShaderName);
 		std::shared_ptr<Texture> GetNamedTexture(std::string const& TextureName);
 		std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath);
+		std::shared_ptr<Texture> LoadNamedTexture(std::string const& TextureName, std::string const& ResourcePath,uint64_t Options);
 
 		std::shared_ptr<Shader> LoadShader(std::string const& ShaderName, std::string const& VertexFilepath, std::string const& FragmentFilepath);
 		bool NamedTextureLoaded(std::string const& TextureName);
 
+		//DEPRECATED: eftersom att ändar på uniforms änrar för andra så bör vi alltid specificera uniform värden, därav undvik detta
 		void DrawTexture(std::string const& NamedTexture, MBGE::Transform TextureTransform, float Width, float Height, std::array<int, 4> Layer);
 		void DrawTexture(std::shared_ptr<Texture> TextureToDraw, MBGE::Transform TextureTransform, float Width, float Height, std::array<int, 4> Layer);
+		//
+		void DrawTexture(std::shared_ptr<Texture> TextureToDraw,std::shared_ptr<Shader> ShaderToUse,MBGE::UniformValue InformValues, MBGE::Transform const& TextureTransform, float Width, float Height, std::array<int, 4> const& Layer);
 
 		void PlaySound(std::string const& Path, float Volume);
 		void PlaySound(std::string const& , float RelativeVolume, std::string const& Tag);

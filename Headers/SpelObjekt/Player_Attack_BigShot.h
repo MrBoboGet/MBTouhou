@@ -1,6 +1,5 @@
 #pragma once
 #include <SpelObjekt.h>
-#include <Engine\Engine_GenericComponent.h>
 class Player_Attack_BigShot : public Component
 {
 private:

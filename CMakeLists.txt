@@ -111,7 +111,6 @@ endmacro()
 ##END MBPM_VARIABLES
 set(PROJECT_SOURCES 
 
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/Engine_GenericComponent.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SoundEngine/TouhouSoundEngine.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SpriteAnimationRenderer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/TextRendering.cpp"
@@ -141,7 +140,6 @@ set(PROJECT_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/SpelObjekt/Player_Attack_BigShot.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/SpelObjekt.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Headers/Vector2D.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/Engine_GenericComponent.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SoundEngine/TouhouSoundEngine.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/SpriteAnimationRenderer.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}//Source/Engine/TextRendering.h"

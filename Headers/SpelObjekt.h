@@ -1,6 +1,5 @@
 #pragma once
 #include <Gameobject.h>
-#include <Engine/Engine_GenericComponent.h>
 #include <Engine.h>
 #include <MBTouhouTypes.h>
 //bas klass för fiender

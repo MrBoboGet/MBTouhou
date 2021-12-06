@@ -93,13 +93,13 @@ void PausMenu::Update()
 				}
 				if (CurrentOption == 1)
 				{
-					GetEngine().ClearObjects();
 					GetEngine().Create(new Level1());
+					GetEngine().ClearObjects();
 				}
 				if(CurrentOption == 2)
 				{
-					GetEngine().ClearObjects();
 					GetEngine().Create(new MainMenu());
+					GetEngine().ClearObjects();
 				}
 			}
 		}

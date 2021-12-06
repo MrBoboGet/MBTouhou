@@ -665,13 +665,14 @@ void Level1::Update()
 						LevelISFinised = true;
 						//förstör alla object utom level
 						std::vector <MBGameEngine::GameObjectReference> ObjectAttDelete = {};
-						while (ObjectIterator.HasEnded() == false)
+						ActiveObjectIterator ObjectIterator2 = GetEngine().GetActiveObjectsIterator();
+						while (ObjectIterator2.HasEnded() == false)
 						{
-							if (ObjectIterator->GetTag() != "Level")
+							if (ObjectIterator2->GetTag() != "Level")
 							{
-								ObjectAttDelete.push_back(*ObjectIterator);
+								ObjectAttDelete.push_back(*ObjectIterator2);
 							}
-							ObjectIterator++;
+							ObjectIterator2++;
 						}
 						//for (int i = 0; i < GetEngine().ActiveGameObjects.size(); i++)
 						//{

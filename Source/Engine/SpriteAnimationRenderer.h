@@ -1,5 +1,4 @@
 #pragma once
-#include <Engine\Engine_GenericComponent.h>
 #include <vector>
 #include <Gameobject.h>
 //struct AnimationData

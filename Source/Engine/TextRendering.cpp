@@ -7,6 +7,7 @@
 
 float TextHeight = 0.2;
 float TextWidth = 0.2;
+constexpr uint64_t TEXTURE_OPTIONS = uint64_t(MBGameEngine::TextureOptions::NoFilter);
 void DrawTextRectangle(MBGameEngine::MBGameEngine& Engine,std::string Text, Vector2D UpperLeftCoordinate, Vector2D LowerRightCoordinate, std::array<int,4> Layer,float Size)
 {
 	TextHeight = Size;
@@ -38,13 +39,13 @@ void DrawTextRectangle(MBGameEngine::MBGameEngine& Engine,std::string Text, Vect
 				//std::cout << "." << std::endl;
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png", TEXTURE_OPTIONS);
 			}
 			else
 			{
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png", TEXTURE_OPTIONS);
 			}
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita
@@ -99,13 +100,13 @@ void DrawTextRectangle(MBGameEngine::MBGameEngine& Engine,std::string Text, Vect
 				//std::cout << "." << std::endl;
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/ZX_1.png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/ZX_1.png", TEXTURE_OPTIONS);
 			}
 			else
 			{
 				//Texture* NewCharacterTexture = new Texture("Resources/TextImages/" + CharacterToDraw + ".png", "NoFilter");
 				//TouhouEngine::LoadedTextures[CharacterToDraw] = NewCharacterTexture;
-				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png");
+				Engine.LoadNamedTexture(CharacterToDraw, "Resources/TextImages/" + CharacterToDraw + ".png", TEXTURE_OPTIONS);
 			}
 		}
 		//nu har vi en character texture som vi nu kan använda för att rita

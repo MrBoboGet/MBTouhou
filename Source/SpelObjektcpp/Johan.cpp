@@ -219,12 +219,13 @@ void MovingCircleBullet(MBGameEngine::MBGameEngine& Engine,Enemy_Bullet_Template
 	Vector2D BulletPosition = Bullet->Transform.GetPosition();
 	float BulletRotation = Bullet->Transform.GetRotation()[0];
 	//först ändrar vi position för själva cirkel rörelsen
-	BulletPosition = BulletPosition + Vector2D(std::cos(MBMath::DegreeToRadian(Bullet->Direction)) * CircleSpeed, std::sin(MBMath::DegreeToRadian(Bullet->Direction) * CircleSpeed));
+	//float Debug = std::sin(MBMath::DegreeToRadian(Bullet->Direction) * CircleSpeed;
+	BulletPosition = BulletPosition + Vector2D(std::cos(MBMath::DegreeToRadian(Bullet->Direction)) * CircleSpeed, std::sin(MBMath::DegreeToRadian(Bullet->Direction)) * CircleSpeed);
 	//vi kan med nuvarande vinkel räkna ut cirkelcentrum
-	Vector2D DirectionToCenter = Vector2D(std::cos(MBMath::DegreeToRadian(BulletRotation +90 + 90*RotationDirection)), std::sin(MBMath::DegreeToRadian(BulletRotation +90 + 90*RotationDirection)));
+	Vector2D DirectionToCenter = Vector2D(std::cos(MBMath::DegreeToRadian(BulletRotation +90 + (90*RotationDirection))), std::sin(MBMath::DegreeToRadian(BulletRotation +90 + (90*RotationDirection))));
 	Vector2D CircleCenter = BulletPosition + DirectionToCenter * CirleRadius;
 	BulletRotation = BulletRotation + RotationSpeed;
-	BulletPosition = CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(BulletRotation + 90 - 90 * RotationDirection)), std::sin(MBMath::DegreeToRadian(BulletRotation + 90 - 90 * RotationDirection)))*CirleRadius;
+	BulletPosition = CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(BulletRotation + 90 - (90 * RotationDirection))), std::sin(MBMath::DegreeToRadian(BulletRotation + 90 - (90 * RotationDirection))))*CirleRadius;
 	if (Rectangle_Hitbox::Collides(Spelaren->GetComponent<Rectangle_Hitbox>(), Bullet->GetComponent<Rectangle_Hitbox>()))
 	{
 		//Spelaren->GotHit = true;
@@ -259,7 +260,7 @@ void JohanCirclingBulletAttack::Update()
 					MBGameEngine::ObjectReference<Enemy_Bullet_Template> BulletToCreate = GetEngine().Create(new Enemy_Bullet_Template(JohanPosition, "JohanCircleAroundBullet", "Enemy_Bullet", "fiendeattack1.png", 0.2, Vector2D(0.2, 0.2), MovingCircleBullet));
 					BulletToCreate->Transform.SetRotation(MBMath::MBVector3<float>((360 / NumberOfBullets) * i,0,0));
 					BulletToCreate->Direction = 270;
-					BulletToCreate->Transform.SetPosition(CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(BulletToCreate->Transform.GetRotation()[0] + 90 - 90 * RotationDirection)), std::sin(MBMath::DegreeToRadian(BulletToCreate->Transform.GetRotation()[0] + 90 - 90 * RotationDirection))) * CircleRadius);
+					BulletToCreate->Transform.SetPosition(CircleCenter + Vector2D(std::cos(MBMath::DegreeToRadian(BulletToCreate->Transform.GetRotation()[0] + 90 - (90 * RotationDirection))), std::sin(MBMath::DegreeToRadian(BulletToCreate->Transform.GetRotation()[0] + 90 - (90 * RotationDirection)))) * CircleRadius);
 				}
 			}
 		}
@@ -362,6 +363,7 @@ void Johan::Update()
 					if (AttackDelayTimer < 0)
 					{
 						Attacker[CurrentAttackIndex]->Update();
+						Position = Transform.GetPosition();
 					}
 					AttackDelayTimer -= 1;
 				}
