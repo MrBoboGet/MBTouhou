@@ -19,7 +19,7 @@
 int main(void)
 {
 	//int qwerty = glfwInit();
-	std::filesystem::current_path("C:/Users/emanu/Desktop/Program/C++/MBTouhou/");
+	//std::filesystem::current_path("C:/Users/emanu/Desktop/Program/C++/MBTouhou/");
 	MBGameEngine::MBGameEngine TestEngine;
 	TestEngine.WindowCreate(1920, 1080, "OMyGodNej", false);
 	std::cout << "Ny variant, garanterar recompile hoppas jag\n";

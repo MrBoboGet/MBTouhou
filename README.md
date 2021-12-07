@@ -1,0 +1,2 @@
+Contains the files to compile the game, but not the resources needed to play it. All the required files can be installed with mbpm. The executable should have the resources in it's working directory
+to work correctly.
